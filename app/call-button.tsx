@@ -4,17 +4,22 @@ import React, { useState } from 'react';
 import { Device, Call } from '@twilio/voice-sdk';
 import { Button } from '@/components/ui/button';
 import { Phone } from 'lucide-react';
+import { useTwilio } from '@/providers/twilioVoiceContext';
 
 export default function CallButton() {
 	const [identity, setIdentity] = useState<string>('');
 	let device: Device;
 	let token: string = '';
+	const { setDevice } = useTwilio();
 
 	async function startupClient() {
 		console.log('Requesting Access Token...');
 
 		try {
-			const response = await fetch('http://localhost:3001/api/auth/twilio/create-token', { method: 'POST' });
+			const response = await fetch('http://localhost:3000/api/auth/twilio/create-token', {
+				method: 'POST',
+				body: JSON.stringify({ email: 'nblack@velomethod.com' }),
+			});
 			const data = await response.json();
 
 			console.log(data, response);
@@ -57,6 +62,7 @@ export default function CallButton() {
 
 	function intitializeDevice() {
 		console.log('Initializing device');
+
 		device = new Device(token, {
 			logLevel: 1,
 			// Set Opus as our preferred codec. Opus generally performs better, requiring less bandwidth and
@@ -64,6 +70,8 @@ export default function CallButton() {
 			// @ts-ignore
 			codecPreferences: ['opus', 'pcmu'],
 		});
+
+		setDevice(device);
 
 		addDeviceListeners(device);
 

@@ -130,7 +130,7 @@ export type Database = {
           last_updated?: string | null
           name: string
           parent?: string | null
-          update_by: string
+          update_by?: string
         }
         Update: {
           created_at?: string
@@ -634,6 +634,29 @@ export type Database = {
           },
         ]
       }
+      organizations: {
+        Row: {
+          company: number
+          id: string
+        }
+        Insert: {
+          company: number
+          id?: string
+        }
+        Update: {
+          company?: number
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_organizations_company_fkey"
+            columns: ["company"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_relations: {
         Row: {
           company: number | null
@@ -936,6 +959,7 @@ export type Database = {
       statuses: {
         Row: {
           board: number | null
+          category: Database["public"]["Enums"]["statusCategory"] | null
           created_at: string
           id: number
           name: string
@@ -943,6 +967,7 @@ export type Database = {
         }
         Insert: {
           board?: number | null
+          category?: Database["public"]["Enums"]["statusCategory"] | null
           created_at?: string
           id?: number
           name: string
@@ -950,6 +975,7 @@ export type Database = {
         }
         Update: {
           board?: number | null
+          category?: Database["public"]["Enums"]["statusCategory"] | null
           created_at?: string
           id?: number
           name?: string
@@ -1334,6 +1360,19 @@ export type Database = {
         }
         Returns: undefined
       }
+      execute_action:
+        | {
+            Args: {
+              automation_id: number
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              automation_id: string
+            }
+            Returns: undefined
+          }
     }
     Enums: {
       "Block Type":
@@ -1353,9 +1392,11 @@ export type Database = {
         | "hard-drive"
         | "memory-stick"
         | "pc-case"
+        | "monitor"
       impact: "Low" | "Medium" | "High"
       recordType: "ProjectIssue" | "ProjectTicket" | "ServiceTicket"
       severity: "Low" | "Medium" | "High"
+      statusCategory: "TODO" | "IN_PROGRESS" | "DONE"
       where: "OnSite" | "Remote" | "InHouse"
     }
     CompositeTypes: {

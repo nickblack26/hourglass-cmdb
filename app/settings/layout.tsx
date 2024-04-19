@@ -13,18 +13,6 @@ const Layout = ({ children }: Props) => {
 				<h1 className='text-3xl font-semibold'>Settings</h1>
 			</div>
 			<div className='mx-auto grid w-full items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]'>
-				{/* <nav className='grid gap-4 text-sm text-muted-foreground'>
-					<Link href='#' className='font-semibold'>
-						General
-					</Link>
-					<Link href='#'>Security</Link>
-					<Link href='#'>Integrations</Link>
-					<Link href='#'>Support</Link>
-					<Link href='/settings/types'>Types</Link>
-					<Link href='/settings/hours'>Working hours</Link>
-					<Link href='#'>Organizations</Link>
-					<Link href='#'>Advanced</Link>
-				</nav> */}
 				<Links />
 
 				{children}

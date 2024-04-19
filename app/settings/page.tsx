@@ -4,18 +4,29 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { createClient } from '@/lib/supabase/server';
 
-export default function Page() {
+export default async function Page() {
+	const supabase = createClient();
+
+	const { data: organization, error } = await supabase
+		.from('organizations')
+		.select('company(*)')
+		.returns<{ id: string } & { company: Company }>()
+		.single();
+
+	if (!organization?.company) return <div>{JSON.stringify(error)}</div>;
+
 	return (
 		<div className='grid gap-6'>
 			<Card>
 				<CardHeader>
-					<CardTitle>Store Name</CardTitle>
+					<CardTitle>Organization Name</CardTitle>
 					<CardDescription>Used to identify your store in the marketplace.</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form>
-						<Input placeholder='Store Name' />
+						<Input placeholder='Store Name' defaultValue={organization?.company?.name} />
 					</form>
 				</CardContent>
 				<CardFooter className='border-t px-6 py-4'>

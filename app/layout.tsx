@@ -6,6 +6,7 @@ import { Velo } from './velo';
 import { cookies } from 'next/headers';
 import { Metadata } from 'next';
 import { TwilioProvider } from '@/providers/twilioVoiceContext';
+import CallWidget from './call-widget';
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -39,7 +40,7 @@ export default function RootLayout({
 					<Velo defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4}>
 						<div className='relative'>
 							{children}
-							{modal}
+							<CallWidget />
 						</div>
 					</Velo>
 				</TwilioProvider>

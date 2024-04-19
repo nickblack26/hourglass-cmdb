@@ -47,7 +47,7 @@ export async function POST(request: Request, res: Response) {
 		statusText: 'ok'
 	})
 
-	response.headers.append('content-type', 'text/xml')
+	response.headers.set('Content-ype', 'text/xml')
 
 	return response
 }

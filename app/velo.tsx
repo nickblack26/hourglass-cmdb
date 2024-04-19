@@ -17,6 +17,7 @@ interface Props {
 
 export function Velo({ defaultLayout = [15, 85], defaultCollapsed = false, navCollapsedSize, children }: Props) {
 	const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
+
 	//
 	return (
 		<TooltipProvider delayDuration={0}>
