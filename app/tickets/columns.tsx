@@ -34,65 +34,20 @@ export const columns: ColumnDef<Ticket>[] = [
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'id',
-		header: 'Ticket ID',
-		cell: ({ row }) => <div>#TC-{row.getValue('id')}</div>,
+		accessorKey: 'number',
+		header: () => <div className='w-16'>Ticket #</div>,
+		cell: ({ row }) => <div className='w-16'>{row.getValue('number')}</div>,
 	},
 	{
 		accessorKey: 'summary',
-		header: 'Summary',
+		header: () => <div className='w-[500px]'>Summary</div>,
 		cell: ({ row }) => (
-			<Button variant='link' size='default' asChild className='max-w-sm p-0 h-auto'>
+			<Button variant='link' size='default' asChild className='w-[500px] p-0 h-auto'>
 				<Link href={`/tickets/${row.original.id}`} className='line-clamp-1'>
 					{row.getValue('summary')}
 				</Link>
 			</Button>
 		),
-	},
-	{
-		accessorKey: 'priority',
-		header: 'Priority',
-		cell: ({ row }) => {
-			return (
-				<div>
-					<StatusBadge color='yellow' text='Priority 2 - Normal Priority' />
-				</div>
-			);
-		},
-	},
-	{
-		accessorKey: 'recordType',
-		header: 'Type',
-		cell: ({ row }) => (
-			<Badge variant='secondary'>
-				<MessageCircleQuestionIcon className='w-3 h-3 mr-1.5' /> {row.getValue('recordType')}
-			</Badge>
-		),
-	},
-	{
-		accessorKey: 'contact',
-		header: 'Contact',
-		cell: ({ row }) => {
-			const contact = row.getValue('contact') as Contact;
-
-			return (
-				<div className='grid grid-cols-[24px_1fr] gap-1.5 items-center'>
-					<Avatar className='h-6 w-6'>
-						<AvatarFallback className='uppercase h-6 w-6 text-xs'>
-							{contact ? `${contact?.firstName[0]}${contact?.lastName[0]}` : 'VG'}
-						</AvatarFallback>
-					</Avatar>
-					<span className='font-medium'>
-						{contact?.firstName} {contact?.lastName}
-					</span>
-				</div>
-			);
-		},
-	},
-	{
-		accessorKey: 'dateResponded',
-		header: 'Request Date',
-		cell: ({ row }) => <div>{Intl.DateTimeFormat('en-US', { dateStyle: 'short' }).format(new Date(row.getValue('dateResponded') as string))}</div>,
 	},
 	{
 		accessorKey: 'actions',

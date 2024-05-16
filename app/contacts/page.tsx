@@ -9,6 +9,7 @@ import { notFound } from 'next/navigation';
 import ContactList from './contact-list';
 import CSVImporter from '@/components/csv-importer';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import NewContactForm from './new-contact-form';
 
 const Page = async () => {
 	const supabase = createClient();
@@ -37,14 +38,7 @@ const Page = async () => {
 							<EllipsisIcon className='w-4 h-4 text-muted-foreground' />
 						</Button>
 
-						<Sheet>
-							<SheetTrigger asChild>
-								<Button>Add customer</Button>
-							</SheetTrigger>
-							<SheetContent className='sm:max-w-4xl'>
-								<CSVImporter />
-							</SheetContent>
-						</Sheet>
+						<NewContactForm />
 					</div>
 				</header>
 

@@ -29,7 +29,7 @@ const Links = (props: Props) => {
 			href: '/settings',
 			links: [
 				{ name: 'General', href: '', icon: LayoutGrid },
-				{ name: 'Billing', href: '/security', icon: ReceiptText },
+				{ name: 'Billing', href: '/billing', icon: ReceiptText },
 				{ name: 'Security', href: '/security', icon: SquareUser },
 				{ name: 'Integrations', href: '#', icon: Layers },
 				{ name: 'Notifications', href: '#', icon: Bell },

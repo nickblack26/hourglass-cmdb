@@ -1,8 +1,9 @@
-import type { Database as DB, Tables } from '@/types/supabase';
-import { Tables } from '@/types/supabase';
+import type { Database as DB } from '@/types/supabase';
+import type { Database as ADB } from '@/types/supabase/assets';
 
 declare global {
 	type Database = DB;
+	type ADatabase = ADB;
 	type Company = DB['public']['Tables']['companies']['Row'];
 	type CompanyInsert = DB['public']['Tables']['companies']['Row'];
 	type Contact = DB['public']['Tables']['contacts']['Row'];

@@ -2,6 +2,7 @@
 
 import StatusBadge from '@/components/status-badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -62,7 +63,8 @@ export const columns: ColumnDef<Configuration>[] = [
 
 			return (
 				<div>
-					<StatusBadge color={status && status?.name === 'Active' ? 'green' : 'red'} text={status?.name} />
+					<Badge variant='green'>{status?.name}</Badge>
+					{/* <StatusBadge color={status && status?.name === 'Active' ? 'green' : 'red'} text={status?.name} /> */}
 				</div>
 			);
 		},
@@ -72,26 +74,26 @@ export const columns: ColumnDef<Configuration>[] = [
 		header: 'Company',
 		cell: ({ row }) => {
 			const company = row.getValue('company') as Company;
-			const user = row.getValue('user') as Contact;
+			const contact = row.getValue('contact') as Contact;
 			// @ts-ignore
-			return <span>{company && company.name ? company.name : user.company?.name ?? ''}</span>;
+			return <span>{company && company.name ? company.name : contact?.company?.name ?? ''}</span>;
 		},
 	},
 	{
-		accessorKey: 'user',
+		accessorKey: 'contact',
 		header: 'User',
 		cell: ({ row }) => {
-			const user = row.getValue('user') as Contact;
+			const contact = row.getValue('contact') as Contact;
 
 			return (
 				<div className='grid grid-cols-[24px_1fr] gap-1.5 items-center'>
 					<Avatar className='h-6 w-6'>
-						<AvatarFallback className='uppercase h-6 w-6 text-xs'>{`${user.firstName ? user?.firstName[0] : ''}${
-							user.lastName ? user.lastName[0] : ''
+						<AvatarFallback className='uppercase h-6 w-6 text-xs'>{`${contact.firstName ? contact?.firstName[0] : ''}${
+							contact.lastName ? contact.lastName[0] : ''
 						}`}</AvatarFallback>
 					</Avatar>
 					<span className='font-medium'>
-						{user.firstName} {user.lastName}
+						{contact.firstName} {contact.lastName}
 					</span>
 				</div>
 			);

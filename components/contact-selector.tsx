@@ -12,20 +12,12 @@ type Props = {
 
 const ContactSelector = ({ onValueChange, defaultValue, className }: Props) => {
 	const supabase = createClient();
-	const [contacts, setContacts] = useState<
-		| {
-				id: string | null;
-				firstName: string;
-				lastName: string;
-				user_id: number;
-		  }[]
-		| null
-	>([]);
+	const [contacts, setContacts] = useState<Contact[] | null>([]);
 
 	useEffect(() => {
 		supabase
 			.from('contacts')
-			.select('id, firstName, lastName, user_id')
+			.select()
 			.order('firstName')
 			.then(({ data }) => setContacts(data));
 	}, [supabase]);
@@ -42,7 +34,7 @@ const ContactSelector = ({ onValueChange, defaultValue, className }: Props) => {
 			</SelectTrigger>
 			<SelectContent>
 				{contacts?.map((contact) => (
-					<SelectItem key={contact.id} value={contact?.user_id.toString()}>
+					<SelectItem key={contact.id} value={contact?.id}>
 						{contact.firstName} {contact.lastName}
 					</SelectItem>
 				))}

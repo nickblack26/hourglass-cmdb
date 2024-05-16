@@ -5,8 +5,6 @@ import React, { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import ConfigurationsList from './configurations-list';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import NewConfigurationForm from '../products/new-configuration-form';
 import Metric from '@/components/Metric';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import ExpiredWarranties from './expired-warranties';
@@ -20,27 +18,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 const Page = async () => {
 	const supabase = createClient();
-	const getConfigs = supabase
-		.from('configurations')
-		.select('*, type(icon), user(id, firstName, lastName, company(id, name)), status(id, name)')
-		.order('name')
-		.limit(14);
+	const getAssets = supabase.from('assets').select('*');
 	const getContacts = await supabase.from('contacts').select().order('firstName');
 	const getCompanies = await supabase.from('companies').select();
 	const getStatuses = await supabase.from('statuses').select();
 	const getProducts = await supabase.from('products').select();
 
 	const [
-		{ data: configurations, error },
+		{ data: assets, error },
 		{ data: contacts, error: contactError },
 		{ data: companies, error: companyError },
 		{ data: statuses, error: statusError },
 		{ data: products, error: productError },
-	] = await Promise.all([getConfigs, getContacts, getCompanies, getStatuses, getProducts]);
+	] = await Promise.all([getAssets, getContacts, getCompanies, getStatuses, getProducts]);
 
 	// console.log(configurations);
 
-	if (error || !configurations) {
+	if (error || !assets) {
 		console.log(error);
 		notFound();
 	}
@@ -136,7 +130,7 @@ const Page = async () => {
 			<Separator />
 
 			<section className='space-y-3'>
-				<ConfigurationsList data={configurations} />
+				<ConfigurationsList data={assets} />
 			</section>
 		</main>
 	);

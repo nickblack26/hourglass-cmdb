@@ -9,8 +9,13 @@ interface Props extends InputProps {
 
 const LabeledInput = React.forwardRef<HTMLInputElement, Props>(({ className, type, description, label, ...props }, ref) => {
 	return (
-		<div className='grid gap-2'>
-			{label && <Label htmlFor={props.name || props.id}>{label}</Label>}
+		<div className='grid gap-1.5'>
+			{label && (
+				<Label htmlFor={props.name || props.id}>
+					{label}
+					{props.required && <span className='text-red-500'>*</span>}
+				</Label>
+			)}
 			<Input ref={ref} {...props} />
 			{description && <p className='text-[0.8rem] text-muted-foreground'>{description}</p>}
 		</div>

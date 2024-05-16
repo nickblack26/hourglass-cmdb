@@ -27,7 +27,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { Suspense } from 'react';
-import ConfigurationsList from '@/app/configurations/configurations-list';
+import ConfigurationsList from '@/app/assets/configurations-list';
 import { notFound } from 'next/navigation';
 import TicketTable from '@/components/ticket-table';
 

@@ -24,6 +24,8 @@ export default async function Home() {
 		to: subDays(new Date(), 30),
 	};
 
+	// console.log(await outboundResponse.json());
+
 	const { data: ticketData, error } = await supabase
 		.from('tickets')
 		.select('total_tickets:count(), avg_response_time:respondMinutes.avg()')

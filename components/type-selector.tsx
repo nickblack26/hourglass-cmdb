@@ -8,7 +8,7 @@ type Props = {
 
 const TypeSelector = async ({ defaultValue }: Props) => {
 	const supabase = createClient();
-	const { data: types, error } = await supabase.from('assetTypes').select('*').order('name').is('parent', null);
+	const { data: types, error } = await supabase.from('types').select('*').order('name').is('parent', null);
 
 	if (!types) {
 		console.error(error);

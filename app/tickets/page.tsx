@@ -4,6 +4,8 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { AlertOctagonIcon, CalendarDaysIcon, EllipsisIcon, FilterIcon, FocusIcon, MergeIcon, SearchIcon, TicketIcon } from 'lucide-react';
 import TicketList from './ticket-list';
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import TicketForm from './ticket-form';
 
 const Page = async () => {
 	return (
@@ -21,7 +23,26 @@ const Page = async () => {
 						Focus Mode
 					</Button>
 
-					<Button>Add Ticket</Button>
+					<Sheet>
+						<SheetTrigger asChild>
+							<Button>Add Ticket</Button>
+						</SheetTrigger>
+						<SheetContent className='flex flex-col h-full sm:max-w-md'>
+							<SheetHeader>
+								<SheetTitle>New Ticket</SheetTitle>
+							</SheetHeader>
+
+							<TicketForm />
+
+							<SheetFooter>
+								<SheetClose asChild>
+									<Button variant='secondary'>Close</Button>
+								</SheetClose>
+
+								<Button>Save</Button>
+							</SheetFooter>
+						</SheetContent>
+					</Sheet>
 				</div>
 			</header>
 

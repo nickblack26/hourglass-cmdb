@@ -43,7 +43,7 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "contacts"
-            referencedColumns: ["id"]
+            referencedColumns: ["auth_id"]
           },
           {
             foreignKeyName: "public_answer_question_fkey"
@@ -57,104 +57,76 @@ export type Database = {
       assets: {
         Row: {
           avatar: string | null
-          company: number | null
+          company: string | null
+          contact: string | null
           created: string | null
           hasAvatar: boolean | null
           id: string
           label: string | null
           name: string | null
           objectKey: string | null
+          site: string | null
           timestamp: string | null
           type: string | null
           updated: string | null
         }
         Insert: {
           avatar?: string | null
-          company?: number | null
+          company?: string | null
+          contact?: string | null
           created?: string | null
           hasAvatar?: boolean | null
           id?: string
           label?: string | null
           name?: string | null
           objectKey?: string | null
+          site?: string | null
           timestamp?: string | null
           type?: string | null
           updated?: string | null
         }
         Update: {
           avatar?: string | null
-          company?: number | null
+          company?: string | null
+          contact?: string | null
           created?: string | null
           hasAvatar?: boolean | null
           id?: string
           label?: string | null
           name?: string | null
           objectKey?: string | null
+          site?: string | null
           timestamp?: string | null
           type?: string | null
           updated?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "public_assets_company_fkey"
+            foreignKeyName: "assets_assets_company_fkey"
             columns: ["company"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "assets_assets_contact_fkey"
+            columns: ["contact"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["auth_id"]
+          },
+          {
+            foreignKeyName: "assets_assets_site_fkey"
+            columns: ["site"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "public_assets_type_fkey"
             columns: ["type"]
             isOneToOne: false
-            referencedRelation: "assetTypes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      assetTypes: {
-        Row: {
-          created_at: string
-          description: string | null
-          icon: Database["public"]["Enums"]["icon"] | null
-          id: string
-          last_updated: string | null
-          name: string
-          parent: string | null
-          update_by: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          icon?: Database["public"]["Enums"]["icon"] | null
-          id?: string
-          last_updated?: string | null
-          name: string
-          parent?: string | null
-          update_by?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          icon?: Database["public"]["Enums"]["icon"] | null
-          id?: string
-          last_updated?: string | null
-          name?: string
-          parent?: string | null
-          update_by?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_assetTypes_parent_fkey"
-            columns: ["parent"]
-            isOneToOne: false
-            referencedRelation: "assetTypes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_assetTypes_update_by_fkey"
-            columns: ["update_by"]
-            isOneToOne: false
-            referencedRelation: "contacts"
+            referencedRelation: "types"
             referencedColumns: ["id"]
           },
         ]
@@ -246,6 +218,24 @@ export type Database = {
         }
         Relationships: []
       }
+      comments: {
+        Row: {
+          body: string
+          contact: string
+          id: string
+        }
+        Insert: {
+          body: string
+          contact?: string
+          id?: string
+        }
+        Update: {
+          body?: string
+          contact?: string
+          id?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           accountNumber: string | null
@@ -258,7 +248,7 @@ export type Database = {
           dateAcquired: string | null
           deletedFlag: boolean | null
           faxNumber: string | null
-          id: number
+          id: string
           identifier: string | null
           isVendorFlag: boolean | null
           leadFlag: boolean | null
@@ -286,7 +276,7 @@ export type Database = {
           dateAcquired?: string | null
           deletedFlag?: boolean | null
           faxNumber?: string | null
-          id?: number
+          id?: string
           identifier?: string | null
           isVendorFlag?: boolean | null
           leadFlag?: boolean | null
@@ -314,7 +304,7 @@ export type Database = {
           dateAcquired?: string | null
           deletedFlag?: boolean | null
           faxNumber?: string | null
-          id?: number
+          id?: string
           identifier?: string | null
           isVendorFlag?: boolean | null
           leadFlag?: boolean | null
@@ -333,20 +323,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "public_companies_billToCompany_fkey"
-            columns: ["billToCompany"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_companies_country_fkey"
-            columns: ["country"]
-            isOneToOne: false
-            referencedRelation: "countries"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "public_companies_status_fkey"
             columns: ["status"]
             isOneToOne: false
@@ -358,13 +334,6 @@ export type Database = {
             columns: ["territory"]
             isOneToOne: false
             referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_companies_timezone_fkey"
-            columns: ["timezone"]
-            isOneToOne: false
-            referencedRelation: "timezones"
             referencedColumns: ["id"]
           },
         ]
@@ -417,18 +386,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "public_configurations_company_fkey"
-            columns: ["company"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "public_configurations_installed_by_fkey"
             columns: ["installed_by"]
             isOneToOne: false
             referencedRelation: "contacts"
-            referencedColumns: ["id"]
+            referencedColumns: ["auth_id"]
           },
           {
             foreignKeyName: "public_configurations_product_fkey"
@@ -448,78 +410,41 @@ export type Database = {
             foreignKeyName: "public_configurations_type_fkey"
             columns: ["type"]
             isOneToOne: false
-            referencedRelation: "assetTypes"
+            referencedRelation: "types"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_configurations_user_fkey"
-            columns: ["user"]
-            isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["user_id"]
           },
         ]
       }
       contacts: {
         Row: {
-          childrenFlag: string | null
-          company: number | null
-          defaultBillingFlag: string | null
-          defaultFlag: string | null
-          defaultPhoneNbr: string | null
-          defaultPhoneType: string | null
-          disablePortalLoginFlag: string | null
+          auth_id: string | null
+          company: string | null
           firstName: string
-          id: string | null
-          ignoreDuplicates: string | null
+          id: string
           inactiveFlag: string | null
           lastName: string
-          marriedFlag: string | null
-          mobileGuid: string | null
-          portalSecurityLevel: string | null
+          site: string | null
           title: string | null
-          unsubscribeFlag: boolean | null
-          user_id: number
         }
         Insert: {
-          childrenFlag?: string | null
-          company?: number | null
-          defaultBillingFlag?: string | null
-          defaultFlag?: string | null
-          defaultPhoneNbr?: string | null
-          defaultPhoneType?: string | null
-          disablePortalLoginFlag?: string | null
+          auth_id?: string | null
+          company?: string | null
           firstName: string
-          id?: string | null
-          ignoreDuplicates?: string | null
+          id?: string
           inactiveFlag?: string | null
           lastName: string
-          marriedFlag?: string | null
-          mobileGuid?: string | null
-          portalSecurityLevel?: string | null
+          site?: string | null
           title?: string | null
-          unsubscribeFlag?: boolean | null
-          user_id?: number
         }
         Update: {
-          childrenFlag?: string | null
-          company?: number | null
-          defaultBillingFlag?: string | null
-          defaultFlag?: string | null
-          defaultPhoneNbr?: string | null
-          defaultPhoneType?: string | null
-          disablePortalLoginFlag?: string | null
+          auth_id?: string | null
+          company?: string | null
           firstName?: string
-          id?: string | null
-          ignoreDuplicates?: string | null
+          id?: string
           inactiveFlag?: string | null
           lastName?: string
-          marriedFlag?: string | null
-          mobileGuid?: string | null
-          portalSecurityLevel?: string | null
+          site?: string | null
           title?: string | null
-          unsubscribeFlag?: boolean | null
-          user_id?: number
         }
         Relationships: [
           {
@@ -531,39 +456,16 @@ export type Database = {
           },
           {
             foreignKeyName: "public_contacts_id_fkey"
-            columns: ["id"]
+            columns: ["auth_id"]
             isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      favorite_contacts: {
-        Row: {
-          contact: number
-          user: string
-        }
-        Insert: {
-          contact: number
-          user: string
-        }
-        Update: {
-          contact?: number
-          user?: string
-        }
-        Relationships: [
           {
-            foreignKeyName: "public_favorite_contacts_contact_fkey"
-            columns: ["contact"]
+            foreignKeyName: "public_contacts_site_fkey"
+            columns: ["site"]
             isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "public_favorite_contacts_user_fkey"
-            columns: ["user"]
-            isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "sites"
             referencedColumns: ["id"]
           },
         ]
@@ -617,22 +519,7 @@ export type Database = {
           type?: number | null
           updatedAt?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "company_notes_company_fkey"
-            columns: ["company"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "company_notes_enteredBy_fkey"
-            columns: ["enteredBy"]
-            isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["user_id"]
-          },
-        ]
+        Relationships: []
       }
       organizations: {
         Row: {
@@ -647,15 +534,7 @@ export type Database = {
           company?: number
           id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "public_organizations_company_fkey"
-            columns: ["company"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       page_relations: {
         Row: {
@@ -674,13 +553,6 @@ export type Database = {
           page?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "public_page_relations_company_fkey"
-            columns: ["company"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "public_page_relations_configuration_fkey"
             columns: ["configuration"]
@@ -728,27 +600,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      priorities: {
-        Row: {
-          created_at: string
-          id: number
-          name: string
-          sort: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name: string
-          sort: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string
-          sort?: number
-        }
-        Relationships: []
       }
       product_attributes: {
         Row: {
@@ -876,7 +727,7 @@ export type Database = {
             foreignKeyName: "public_question_types_type_fkey"
             columns: ["type"]
             isOneToOne: false
-            referencedRelation: "assetTypes"
+            referencedRelation: "types"
             referencedColumns: ["id"]
           },
         ]
@@ -917,44 +768,31 @@ export type Database = {
         }
         Relationships: []
       }
-      service_locations: {
+      sites: {
         Row: {
-          defaultFlag: boolean | null
-          id: number
-          name: string
-          where: Database["public"]["Enums"]["where"]
+          company: string
+          id: string
+          title: string
         }
         Insert: {
-          defaultFlag?: boolean | null
-          id?: number
-          name: string
-          where: Database["public"]["Enums"]["where"]
+          company: string
+          id?: string
+          title: string
         }
         Update: {
-          defaultFlag?: boolean | null
-          id?: number
-          name?: string
-          where?: Database["public"]["Enums"]["where"]
+          company?: string
+          id?: string
+          title?: string
         }
-        Relationships: []
-      }
-      sources: {
-        Row: {
-          created_at: string
-          id: number
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string
-        }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "public_sites_company_fkey"
+            columns: ["company"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       statuses: {
         Row: {
@@ -991,367 +829,135 @@ export type Database = {
           },
         ]
       }
-      teams: {
+      ticket_assets: {
         Row: {
-          created_at: string
-          id: number
-          name: string
+          asset: string
+          ticket: string
         }
         Insert: {
-          created_at?: string
-          id?: number
-          name: string
+          asset: string
+          ticket: string
         }
         Update: {
-          created_at?: string
-          id?: number
-          name?: string
-        }
-        Relationships: []
-      }
-      tickets: {
-        Row: {
-          allowAllClientsPortalView: boolean | null
-          approved: boolean | null
-          automaticEmailCcFlag: boolean | null
-          automaticEmailContactFlag: boolean | null
-          automaticEmailResourceFlag: boolean | null
-          billExpenses: string | null
-          billingMethod: string | null
-          billProducts: string | null
-          billTime: string | null
-          board: number | null
-          closedBy: string | null
-          closedDate: string | null
-          closedFlag: boolean | null
-          company: number | null
-          configuration: string | null
-          contact: number | null
-          currency: number | null
-          customerUpdatedFlag: boolean | null
-          dateEntered: string | null
-          dateResolved: string | null
-          dateResplan: string | null
-          dateResponded: string | null
-          department: number | null
-          enteredBy: string | null
-          escalationLevel: number | null
-          escalationStartDateUTC: string | null
-          estimatedExpenseCost: string | null
-          estimatedExpenseRevenue: string | null
-          estimatedProductCost: string | null
-          estimatedProductRevenue: string | null
-          estimatedTimeCost: string | null
-          estimatedTimeRevenue: string | null
-          hasChildTicket: boolean | null
-          hasMergedChildTicketFlag: boolean | null
-          id: number
-          impact: Database["public"]["Enums"]["impact"] | null
-          isInSla: boolean | null
-          lastUpdated: string | null
-          location: number | null
-          minutesBeforeWaiting: string | null
-          minutesWaiting: string | null
-          mobileGuid: string | null
-          priority: number | null
-          recordType: Database["public"]["Enums"]["recordType"] | null
-          requestForChangeFlag: boolean | null
-          resolutionHours: number | null
-          resolvedBy: string | null
-          resolveMinutes: number | null
-          resplanBy: string | null
-          resplanHours: number | null
-          resPlanMinutes: number | null
-          resplanSkippedMinutes: string | null
-          respondedBy: string | null
-          respondedHours: number | null
-          respondedSkippedMinutes: string | null
-          respondMinutes: number | null
-          serviceLocation: number | null
-          severity: Database["public"]["Enums"]["severity"] | null
-          sla: number | null
-          slaStatus: string | null
-          source: number | null
-          status: number | null
-          subBillingMethod: string | null
-          summary: string
-          team: number | null
-          type: number | null
-          updatedBy: string | null
-        }
-        Insert: {
-          allowAllClientsPortalView?: boolean | null
-          approved?: boolean | null
-          automaticEmailCcFlag?: boolean | null
-          automaticEmailContactFlag?: boolean | null
-          automaticEmailResourceFlag?: boolean | null
-          billExpenses?: string | null
-          billingMethod?: string | null
-          billProducts?: string | null
-          billTime?: string | null
-          board?: number | null
-          closedBy?: string | null
-          closedDate?: string | null
-          closedFlag?: boolean | null
-          company?: number | null
-          configuration?: string | null
-          contact?: number | null
-          currency?: number | null
-          customerUpdatedFlag?: boolean | null
-          dateEntered?: string | null
-          dateResolved?: string | null
-          dateResplan?: string | null
-          dateResponded?: string | null
-          department?: number | null
-          enteredBy?: string | null
-          escalationLevel?: number | null
-          escalationStartDateUTC?: string | null
-          estimatedExpenseCost?: string | null
-          estimatedExpenseRevenue?: string | null
-          estimatedProductCost?: string | null
-          estimatedProductRevenue?: string | null
-          estimatedTimeCost?: string | null
-          estimatedTimeRevenue?: string | null
-          hasChildTicket?: boolean | null
-          hasMergedChildTicketFlag?: boolean | null
-          id?: number
-          impact?: Database["public"]["Enums"]["impact"] | null
-          isInSla?: boolean | null
-          lastUpdated?: string | null
-          location?: number | null
-          minutesBeforeWaiting?: string | null
-          minutesWaiting?: string | null
-          mobileGuid?: string | null
-          priority?: number | null
-          recordType?: Database["public"]["Enums"]["recordType"] | null
-          requestForChangeFlag?: boolean | null
-          resolutionHours?: number | null
-          resolvedBy?: string | null
-          resolveMinutes?: number | null
-          resplanBy?: string | null
-          resplanHours?: number | null
-          resPlanMinutes?: number | null
-          resplanSkippedMinutes?: string | null
-          respondedBy?: string | null
-          respondedHours?: number | null
-          respondedSkippedMinutes?: string | null
-          respondMinutes?: number | null
-          serviceLocation?: number | null
-          severity?: Database["public"]["Enums"]["severity"] | null
-          sla?: number | null
-          slaStatus?: string | null
-          source?: number | null
-          status?: number | null
-          subBillingMethod?: string | null
-          summary: string
-          team?: number | null
-          type?: number | null
-          updatedBy?: string | null
-        }
-        Update: {
-          allowAllClientsPortalView?: boolean | null
-          approved?: boolean | null
-          automaticEmailCcFlag?: boolean | null
-          automaticEmailContactFlag?: boolean | null
-          automaticEmailResourceFlag?: boolean | null
-          billExpenses?: string | null
-          billingMethod?: string | null
-          billProducts?: string | null
-          billTime?: string | null
-          board?: number | null
-          closedBy?: string | null
-          closedDate?: string | null
-          closedFlag?: boolean | null
-          company?: number | null
-          configuration?: string | null
-          contact?: number | null
-          currency?: number | null
-          customerUpdatedFlag?: boolean | null
-          dateEntered?: string | null
-          dateResolved?: string | null
-          dateResplan?: string | null
-          dateResponded?: string | null
-          department?: number | null
-          enteredBy?: string | null
-          escalationLevel?: number | null
-          escalationStartDateUTC?: string | null
-          estimatedExpenseCost?: string | null
-          estimatedExpenseRevenue?: string | null
-          estimatedProductCost?: string | null
-          estimatedProductRevenue?: string | null
-          estimatedTimeCost?: string | null
-          estimatedTimeRevenue?: string | null
-          hasChildTicket?: boolean | null
-          hasMergedChildTicketFlag?: boolean | null
-          id?: number
-          impact?: Database["public"]["Enums"]["impact"] | null
-          isInSla?: boolean | null
-          lastUpdated?: string | null
-          location?: number | null
-          minutesBeforeWaiting?: string | null
-          minutesWaiting?: string | null
-          mobileGuid?: string | null
-          priority?: number | null
-          recordType?: Database["public"]["Enums"]["recordType"] | null
-          requestForChangeFlag?: boolean | null
-          resolutionHours?: number | null
-          resolvedBy?: string | null
-          resolveMinutes?: number | null
-          resplanBy?: string | null
-          resplanHours?: number | null
-          resPlanMinutes?: number | null
-          resplanSkippedMinutes?: string | null
-          respondedBy?: string | null
-          respondedHours?: number | null
-          respondedSkippedMinutes?: string | null
-          respondMinutes?: number | null
-          serviceLocation?: number | null
-          severity?: Database["public"]["Enums"]["severity"] | null
-          sla?: number | null
-          slaStatus?: string | null
-          source?: number | null
-          status?: number | null
-          subBillingMethod?: string | null
-          summary?: string
-          team?: number | null
-          type?: number | null
-          updatedBy?: string | null
+          asset?: string
+          ticket?: string
         }
         Relationships: [
           {
-            foreignKeyName: "public_tickets_configuration_fkey"
-            columns: ["configuration"]
+            foreignKeyName: "public_ticket_assets_asset_fkey"
+            columns: ["asset"]
             isOneToOne: false
-            referencedRelation: "configurations"
+            referencedRelation: "assets"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "public_tickets_status_fkey"
-            columns: ["status"]
+            foreignKeyName: "public_ticket_assets_ticket_fkey"
+            columns: ["ticket"]
             isOneToOne: false
-            referencedRelation: "statuses"
+            referencedRelation: "tickets"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_tickets_board/id_fkey"
-            columns: ["board"]
-            isOneToOne: false
-            referencedRelation: "boards"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_tickets_company/id_fkey"
-            columns: ["company"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_tickets_contact/id_fkey"
-            columns: ["contact"]
-            isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "service_tickets_priority/id_fkey"
-            columns: ["priority"]
-            isOneToOne: false
-            referencedRelation: "priorities"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_tickets_serviceLocation_fkey"
-            columns: ["serviceLocation"]
-            isOneToOne: false
-            referencedRelation: "service_locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_tickets_sla/id_fkey"
-            columns: ["sla"]
-            isOneToOne: false
-            referencedRelation: "service_level_agreements"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_tickets_source/id_fkey"
-            columns: ["source"]
-            isOneToOne: false
-            referencedRelation: "sources"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_tickets_team/id_fkey"
-            columns: ["team"]
-            isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_tickets_type/id_fkey"
-            columns: ["type"]
-            isOneToOne: false
-            referencedRelation: "types"
-            referencedColumns: ["reference_id"]
           },
         ]
+      }
+      ticket_comments: {
+        Row: {
+          comment: string
+          ticket: string
+        }
+        Insert: {
+          comment: string
+          ticket: string
+        }
+        Update: {
+          comment?: string
+          ticket?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_ticket_comments_comment_fkey"
+            columns: ["comment"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_ticket_comments_ticket_fkey"
+            columns: ["ticket"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tickets: {
+        Row: {
+          id: string
+          number: number | null
+          summary: string
+        }
+        Insert: {
+          id?: string
+          number?: number | null
+          summary: string
+        }
+        Update: {
+          id?: string
+          number?: number | null
+          summary?: string
+        }
+        Relationships: []
       }
       types: {
         Row: {
           created_at: string
+          description: string | null
+          icon: Database["public"]["Enums"]["icon"] | null
           id: string
+          last_updated: string | null
           name: string
-          parent: number | null
-          reference_id: number
+          parent: string | null
+          update_by: string
         }
         Insert: {
           created_at?: string
+          description?: string | null
+          icon?: Database["public"]["Enums"]["icon"] | null
           id?: string
+          last_updated?: string | null
           name: string
-          parent?: number | null
-          reference_id?: number
+          parent?: string | null
+          update_by?: string
         }
         Update: {
           created_at?: string
+          description?: string | null
+          icon?: Database["public"]["Enums"]["icon"] | null
           id?: string
+          last_updated?: string | null
           name?: string
-          parent?: number | null
-          reference_id?: number
+          parent?: string | null
+          update_by?: string
         }
         Relationships: [
           {
-            foreignKeyName: "public_types_parent_fkey"
+            foreignKeyName: "public_assetTypes_parent_fkey"
             columns: ["parent"]
             isOneToOne: false
             referencedRelation: "types"
-            referencedColumns: ["reference_id"]
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_assetTypes_update_by_fkey"
+            columns: ["update_by"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["auth_id"]
           },
         ]
       }
     }
     Views: {
-      average_tickets_created: {
-        Row: {
-          dateEntered: string | null
-          ticket_count: number | null
-        }
-        Relationships: []
-      }
-      ticket_by_first_reply_time: {
-        Row: {
-          response_time_group: string | null
-          ticket_count: number | null
-        }
-        Relationships: []
-      }
-      ticket_source_summary: {
-        Row: {
-          source_name: string | null
-          ticket_count: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       create_new_ticket: {
@@ -1486,3 +1092,4 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
+

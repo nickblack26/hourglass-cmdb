@@ -65,7 +65,7 @@ function handleDisconnectedIncomingCall() {
 
 // MAKE AN OUTGOING CALL
 
-async function makeOutgoingCall(device: Device, to: string) {
+export async function makeOutgoingCall(device: Device, to: string) {
 	var params = {
 		// get the phone number to call from the DOM
 		To: to,

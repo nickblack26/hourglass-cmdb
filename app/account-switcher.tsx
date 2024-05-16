@@ -24,9 +24,9 @@ export function AccountSwitcher({ isCollapsed, accounts }: AccountSwitcherProps)
 					'flex items-center gap-1.5 [&>span]:line-clamp-1 [&>span]:flex [&>span]:w-full [&>span]:items-center [&>span]:gap-1 [&>span]:truncate [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0',
 					isCollapsed && 'flex h-9 w-9 shrink-0 items-center justify-center p-0 [&>span]:w-auto [&>svg]:hidden'
 				)}
-				aria-label='Select account'
+				aria-label='Select service'
 			>
-				<SelectValue placeholder='Select an account'>
+				<SelectValue placeholder='Select a service...'>
 					{accounts.find((account) => account.email === selectedAccount)?.icon}
 					<span className={cn('ml-1.5', isCollapsed && 'hidden')}>{accounts.find((account) => account.email === selectedAccount)?.label}</span>
 				</SelectValue>

@@ -10,10 +10,12 @@ const twilioApiKey = process.env.TWILIO_API_KEY;
 const twilioApiSecret = process.env.TWILIO_API_SECRET;
 
 export async function POST(request: Request, response: Response) {
-  const data = await request.json()
+	// const data = await request.json()
 	// Used specifically for creating Voice tokens
 	const outgoingApplicationSid = process.env.TWILIO_TWIML_APP_SID;
-	const identity = encodeURIComponent(data.get('identity') as string)
+	const identity = encodeURIComponent('nblack@velomethod.com')
+
+	console.log(identity)
 
 	// Create a "grant" which enables a client to use Voice as a given user
 	const voiceGrant = new VoiceGrant({
@@ -24,6 +26,8 @@ export async function POST(request: Request, response: Response) {
 	// Create an access token which we will sign and return to the client,
 	// containing the grant we just created
 	const token = new AccessToken(twilioAccountSid, twilioApiKey, twilioApiSecret, { identity });
+
+	console.log(token)
 
 	token.addGrant(voiceGrant);
 

@@ -64,14 +64,14 @@ export const columns: ColumnDef<Contact>[] = [
 			</div>
 		),
 	},
-	{
-		accessorKey: 'company',
-		header: 'Company',
-		cell: ({ row }) => {
-			const company: Company = row.getValue('company');
-			return <div>{company.name}</div>;
-		},
-	},
+	// {
+	// 	accessorKey: 'company',
+	// 	header: 'Company',
+	// 	cell: ({ row }) => {
+	// 		const company: Company = row.getValue('company');
+	// 		return <div>{company.name}</div>;
+	// 	},
+	// },
 	{
 		accessorKey: 'actions',
 		header: '',

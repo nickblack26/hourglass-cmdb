@@ -41,21 +41,7 @@ import CallCard from '@/components/call-card';
 import CallButton from './call-button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {
-	DropdownMenu,
-	DropdownMenuCheckboxItem,
-	DropdownMenuContent,
-	DropdownMenuGroup,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuRadioGroup,
-	DropdownMenuRadioItem,
-	DropdownMenuSeparator,
-	DropdownMenuSub,
-	DropdownMenuSubContent,
-	DropdownMenuSubTrigger,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { ReactNode } from 'react';
 
 interface NavLink {
 	title: string;
@@ -88,19 +74,19 @@ const firstNavSection: NavLink[] = [
 		href: '/inbox',
 	},
 	{
-		title: 'Configurations',
+		title: 'Assets',
 		label: '',
 		icon: CableIcon,
 		variant: 'ghost',
-		href: '/configurations',
+		href: '/assets',
 	},
-	{
-		title: 'Products',
-		label: '',
-		icon: ShoppingCartIcon,
-		variant: 'ghost',
-		href: '/products',
-	},
+	// {
+	// 	title: 'Products',
+	// 	label: '',
+	// 	icon: ShoppingCartIcon,
+	// 	variant: 'ghost',
+	// 	href: '/products',
+	// },
 	{
 		title: 'Tickets',
 		label: '23',
@@ -108,13 +94,13 @@ const firstNavSection: NavLink[] = [
 		variant: 'ghost',
 		href: '/tickets',
 	},
-	{
-		title: 'Knowledge Base',
-		label: '',
-		icon: SparklesIcon,
-		variant: 'ghost',
-		href: '/knowledge-base',
-	},
+	// {
+	// 	title: 'Knowledge Base',
+	// 	label: '',
+	// 	icon: SparklesIcon,
+	// 	variant: 'ghost',
+	// 	href: '/knowledge-base',
+	// },
 	{
 		title: 'Companies',
 		icon: Building2Icon,
@@ -122,25 +108,47 @@ const firstNavSection: NavLink[] = [
 		href: '/companies',
 	},
 	{
-		title: 'Customers',
+		title: 'Contacts',
 		label: '',
 		icon: UsersIcon,
 		variant: 'ghost',
 		href: '/contacts',
 	},
+	// {
+	// 	title: 'Forums',
+	// 	label: '',
+	// 	icon: MessagesSquareIcon,
+	// 	variant: 'ghost',
+	// 	href: '/forums',
+	// },
+	// {
+	// 	title: 'Reports',
+	// 	label: '',
+	// 	icon: BarChartBigIcon,
+	// 	variant: 'ghost',
+	// 	href: '/reports',
+	// },
+];
+
+const appSections: {
+	label: string;
+	email: string;
+	icon: ReactNode;
+}[] = [
 	{
-		title: 'Forums',
-		label: '',
-		icon: MessagesSquareIcon,
-		variant: 'ghost',
-		href: '/forums',
+		email: 'Service',
+		icon: <TicketIcon />,
+		label: 'Service',
 	},
 	{
-		title: 'Reports',
-		label: '',
-		icon: BarChartBigIcon,
-		variant: 'ghost',
-		href: '/reports',
+		email: 'Product',
+		icon: <ShoppingCartIcon />,
+		label: 'Product',
+	},
+	{
+		email: 'Knowledge Base',
+		icon: <SparklesIcon />,
+		label: 'Knowledge Base',
 	},
 ];
 
@@ -164,22 +172,13 @@ export function Nav({ isCollapsed }: NavProps) {
 				</Button>
 			),
 		},
-		// {
-		// 	links: [
-		// 		{ icon: SettingsIcon, href: '/settings', title: 'Settings', variant: 'ghost' },
-		// 		{ icon: SearchIcon, title: 'Search', variant: 'ghost' },
-		// 		{ icon: UserCircle, title: 'Nick Black', variant: 'ghost', action: <CommandMenu isCollapsed={isCollapsed} /> },
-		// 	],
-		// },
 	];
 
 	return (
 		<nav data-collapsed={isCollapsed} className='group flex flex-col gap-3 p-2 data-[collapsed=true]:py-2 bg-neutral-100 h-screen'>
-			<AccountSwitcher isCollapsed={isCollapsed} accounts={[{ email: 'nblack@velomethod.com', icon: <TriangleIcon />, label: 'Nick Black' }]} />
+			<AccountSwitcher isCollapsed={isCollapsed} accounts={appSections} />
 
 			<Separator />
-
-			{/* <CallButton /> */}
 
 			{navSections.map(({ header, links, footer }, index) => (
 				<ul
