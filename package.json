@@ -55,6 +55,7 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "twilio": "^5.0.1",
+    "twilio-taskrouter": "^2.0.5",
     "uuid": "^9.0.1",
     "vaul": "^0.9.0",
     "zod": "^3.22.4"

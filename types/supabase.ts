@@ -9,127 +9,50 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      answers: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          id: string
-          meets_expectations: boolean
-          question: string
-          rating: number | null
-          text: string
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          meets_expectations?: boolean
-          question: string
-          rating?: number | null
-          text: string
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          meets_expectations?: boolean
-          question?: string
-          rating?: number | null
-          text?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_answer_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["auth_id"]
-          },
-          {
-            foreignKeyName: "public_answer_question_fkey"
-            columns: ["question"]
-            isOneToOne: false
-            referencedRelation: "questions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       assets: {
         Row: {
           avatar: string | null
-          company: string | null
-          contact: string | null
+          company: number | null
           created: string | null
           hasAvatar: boolean | null
           id: string
           label: string | null
           name: string | null
           objectKey: string | null
-          site: string | null
+          product: string | null
           timestamp: string | null
           type: string | null
           updated: string | null
         }
         Insert: {
           avatar?: string | null
-          company?: string | null
-          contact?: string | null
+          company?: number | null
           created?: string | null
           hasAvatar?: boolean | null
           id?: string
           label?: string | null
           name?: string | null
           objectKey?: string | null
-          site?: string | null
+          product?: string | null
           timestamp?: string | null
           type?: string | null
           updated?: string | null
         }
         Update: {
           avatar?: string | null
-          company?: string | null
-          contact?: string | null
+          company?: number | null
           created?: string | null
           hasAvatar?: boolean | null
           id?: string
           label?: string | null
           name?: string | null
           objectKey?: string | null
-          site?: string | null
+          product?: string | null
           timestamp?: string | null
           type?: string | null
           updated?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "assets_assets_company_fkey"
-            columns: ["company"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "assets_assets_contact_fkey"
-            columns: ["contact"]
-            isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["auth_id"]
-          },
-          {
-            foreignKeyName: "assets_assets_site_fkey"
-            columns: ["site"]
-            isOneToOne: false
-            referencedRelation: "sites"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_assets_type_fkey"
-            columns: ["type"]
-            isOneToOne: false
-            referencedRelation: "types"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       attributes: {
         Row: {
@@ -155,51 +78,6 @@ export type Database = {
         }
         Relationships: []
       }
-      blocks: {
-        Row: {
-          annotations: Json | null
-          created_at: string
-          id: string
-          page: string
-          sibling: string | null
-          text: string
-          type: string
-        }
-        Insert: {
-          annotations?: Json | null
-          created_at?: string
-          id?: string
-          page: string
-          sibling?: string | null
-          text: string
-          type?: string
-        }
-        Update: {
-          annotations?: Json | null
-          created_at?: string
-          id?: string
-          page?: string
-          sibling?: string | null
-          text?: string
-          type?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_blocks_page_fkey"
-            columns: ["page"]
-            isOneToOne: false
-            referencedRelation: "pages"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_blocks_sibling_fkey"
-            columns: ["sibling"]
-            isOneToOne: false
-            referencedRelation: "blocks"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       boards: {
         Row: {
           created_at: string
@@ -218,24 +96,6 @@ export type Database = {
         }
         Relationships: []
       }
-      comments: {
-        Row: {
-          body: string
-          contact: string
-          id: string
-        }
-        Insert: {
-          body: string
-          contact?: string
-          id?: string
-        }
-        Update: {
-          body?: string
-          contact?: string
-          id?: string
-        }
-        Relationships: []
-      }
       companies: {
         Row: {
           accountNumber: string | null
@@ -249,7 +109,6 @@ export type Database = {
           deletedFlag: boolean | null
           faxNumber: string | null
           id: string
-          identifier: string | null
           isVendorFlag: boolean | null
           leadFlag: boolean | null
           mobileGuid: string | null
@@ -277,7 +136,6 @@ export type Database = {
           deletedFlag?: boolean | null
           faxNumber?: string | null
           id?: string
-          identifier?: string | null
           isVendorFlag?: boolean | null
           leadFlag?: boolean | null
           mobileGuid?: string | null
@@ -305,7 +163,6 @@ export type Database = {
           deletedFlag?: boolean | null
           faxNumber?: string | null
           id?: string
-          identifier?: string | null
           isVendorFlag?: boolean | null
           leadFlag?: boolean | null
           mobileGuid?: string | null
@@ -338,134 +195,76 @@ export type Database = {
           },
         ]
       }
-      configurations: {
+      company_secrets: {
         Row: {
-          company: number | null
-          expiration_date: string | null
           id: string
-          install_date: string | null
-          installed_by: string | null
-          name: string
-          product: string | null
-          purchase_date: string | null
-          quantity: number | null
-          serial_number: string | null
-          status: number | null
-          type: string | null
-          user: number | null
+          key: string
+          value: string
         }
         Insert: {
-          company?: number | null
-          expiration_date?: string | null
-          id?: string
-          install_date?: string | null
-          installed_by?: string | null
-          name: string
-          product?: string | null
-          purchase_date?: string | null
-          quantity?: number | null
-          serial_number?: string | null
-          status?: number | null
-          type?: string | null
-          user?: number | null
+          id: string
+          key: string
+          value: string
         }
         Update: {
-          company?: number | null
-          expiration_date?: string | null
           id?: string
-          install_date?: string | null
-          installed_by?: string | null
-          name?: string
-          product?: string | null
-          purchase_date?: string | null
-          quantity?: number | null
-          serial_number?: string | null
-          status?: number | null
-          type?: string | null
-          user?: number | null
+          key?: string
+          value?: string
         }
         Relationships: [
           {
-            foreignKeyName: "public_configurations_installed_by_fkey"
-            columns: ["installed_by"]
+            foreignKeyName: "company_secrets_id_fkey"
+            columns: ["id"]
             isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["auth_id"]
-          },
-          {
-            foreignKeyName: "public_configurations_product_fkey"
-            columns: ["product"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_configurations_status_fkey"
-            columns: ["status"]
-            isOneToOne: false
-            referencedRelation: "statuses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_configurations_type_fkey"
-            columns: ["type"]
-            isOneToOne: false
-            referencedRelation: "types"
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
       }
       contacts: {
         Row: {
-          auth_id: string | null
           company: string | null
+          email: string
           firstName: string
           id: string
           inactiveFlag: string | null
           lastName: string
-          site: string | null
           title: string | null
+          workerSid: string | null
         }
         Insert: {
-          auth_id?: string | null
           company?: string | null
+          email: string
           firstName: string
-          id?: string
+          id: string
           inactiveFlag?: string | null
           lastName: string
-          site?: string | null
           title?: string | null
+          workerSid?: string | null
         }
         Update: {
-          auth_id?: string | null
           company?: string | null
+          email?: string
           firstName?: string
           id?: string
           inactiveFlag?: string | null
           lastName?: string
-          site?: string | null
           title?: string | null
+          workerSid?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "public_contacts_company_fkey"
+            foreignKeyName: "contacts_company_fkey"
             columns: ["company"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "public_contacts_id_fkey"
-            columns: ["auth_id"]
+            foreignKeyName: "contacts_id_fkey"
+            columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_contacts_site_fkey"
-            columns: ["site"]
-            isOneToOne: false
-            referencedRelation: "sites"
             referencedColumns: ["id"]
           },
         ]
@@ -488,115 +287,28 @@ export type Database = {
         }
         Relationships: []
       }
-      notes: {
-        Row: {
-          company: number | null
-          createdAt: string
-          enteredBy: number | null
-          flagged: boolean | null
-          id: number
-          text: string
-          type: number | null
-          updatedAt: string
-        }
-        Insert: {
-          company?: number | null
-          createdAt?: string
-          enteredBy?: number | null
-          flagged?: boolean | null
-          id?: number
-          text: string
-          type?: number | null
-          updatedAt?: string
-        }
-        Update: {
-          company?: number | null
-          createdAt?: string
-          enteredBy?: number | null
-          flagged?: boolean | null
-          id?: number
-          text?: string
-          type?: number | null
-          updatedAt?: string
-        }
-        Relationships: []
-      }
       organizations: {
         Row: {
-          company: number
+          company: string
+          features: Json | null
           id: string
         }
         Insert: {
-          company: number
+          company: string
+          features?: Json | null
           id?: string
         }
         Update: {
-          company?: number
+          company?: string
+          features?: Json | null
           id?: string
-        }
-        Relationships: []
-      }
-      page_relations: {
-        Row: {
-          company: number | null
-          configuration: string | null
-          page: string
-        }
-        Insert: {
-          company?: number | null
-          configuration?: string | null
-          page: string
-        }
-        Update: {
-          company?: number | null
-          configuration?: string | null
-          page?: string
         }
         Relationships: [
           {
-            foreignKeyName: "public_page_relations_configuration_fkey"
-            columns: ["configuration"]
+            foreignKeyName: "organizations_company_fkey"
+            columns: ["company"]
             isOneToOne: false
-            referencedRelation: "configurations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_page_relations_page_fkey"
-            columns: ["page"]
-            isOneToOne: true
-            referencedRelation: "pages"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      pages: {
-        Row: {
-          created_at: string
-          id: string
-          last_updated_at: string
-          parent: string | null
-          title: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          last_updated_at?: string
-          parent?: string | null
-          title: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          last_updated_at?: string
-          parent?: string | null
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_pages_parent_fkey"
-            columns: ["parent"]
-            isOneToOne: false
-            referencedRelation: "pages"
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -631,6 +343,35 @@ export type Database = {
           },
         ]
       }
+      product_inventory: {
+        Row: {
+          cost: number | null
+          price: number | null
+          product: string
+          serial: string
+        }
+        Insert: {
+          cost?: number | null
+          price?: number | null
+          product: string
+          serial: string
+        }
+        Update: {
+          cost?: number | null
+          price?: number | null
+          product?: string
+          serial?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_inventory_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           cost: number | null
@@ -639,8 +380,6 @@ export type Database = {
           name: string
           parent: string | null
           price: number | null
-          product_id: string | null
-          quantity: number
         }
         Insert: {
           cost?: number | null
@@ -649,8 +388,6 @@ export type Database = {
           name: string
           parent?: string | null
           price?: number | null
-          product_id?: string | null
-          quantity?: number
         }
         Update: {
           cost?: number | null
@@ -659,8 +396,6 @@ export type Database = {
           name?: string
           parent?: string | null
           price?: number | null
-          product_id?: string | null
-          quantity?: number
         }
         Relationships: [
           {
@@ -668,128 +403,6 @@ export type Database = {
             columns: ["parent"]
             isOneToOne: false
             referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      question_pages: {
-        Row: {
-          page: string
-          question: string
-        }
-        Insert: {
-          page: string
-          question: string
-        }
-        Update: {
-          page?: string
-          question?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_question_pages_page_fkey"
-            columns: ["page"]
-            isOneToOne: false
-            referencedRelation: "pages"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_question_pages_question_fkey"
-            columns: ["question"]
-            isOneToOne: false
-            referencedRelation: "questions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      question_types: {
-        Row: {
-          question: string
-          type: string
-        }
-        Insert: {
-          question: string
-          type: string
-        }
-        Update: {
-          question?: string
-          type?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_question_types_question_fkey"
-            columns: ["question"]
-            isOneToOne: false
-            referencedRelation: "questions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_question_types_type_fkey"
-            columns: ["type"]
-            isOneToOne: false
-            referencedRelation: "types"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      questions: {
-        Row: {
-          id: string
-          notes: string | null
-          title: string
-        }
-        Insert: {
-          id?: string
-          notes?: string | null
-          title: string
-        }
-        Update: {
-          id?: string
-          notes?: string | null
-          title?: string
-        }
-        Relationships: []
-      }
-      service_level_agreements: {
-        Row: {
-          created_at: string
-          id: number
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string
-        }
-        Relationships: []
-      }
-      sites: {
-        Row: {
-          company: string
-          id: string
-          title: string
-        }
-        Insert: {
-          company: string
-          id?: string
-          title: string
-        }
-        Update: {
-          company?: string
-          id?: string
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_sites_company_fkey"
-            columns: ["company"]
-            isOneToOne: false
-            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -829,129 +442,221 @@ export type Database = {
           },
         ]
       }
-      ticket_assets: {
-        Row: {
-          asset: string
-          ticket: string
-        }
-        Insert: {
-          asset: string
-          ticket: string
-        }
-        Update: {
-          asset?: string
-          ticket?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_ticket_assets_asset_fkey"
-            columns: ["asset"]
-            isOneToOne: false
-            referencedRelation: "assets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_ticket_assets_ticket_fkey"
-            columns: ["ticket"]
-            isOneToOne: false
-            referencedRelation: "tickets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      ticket_comments: {
-        Row: {
-          comment: string
-          ticket: string
-        }
-        Insert: {
-          comment: string
-          ticket: string
-        }
-        Update: {
-          comment?: string
-          ticket?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_ticket_comments_comment_fkey"
-            columns: ["comment"]
-            isOneToOne: false
-            referencedRelation: "comments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_ticket_comments_ticket_fkey"
-            columns: ["ticket"]
-            isOneToOne: false
-            referencedRelation: "tickets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       tickets: {
         Row: {
-          id: string
-          number: number | null
+          allowAllClientsPortalView: boolean | null
+          approved: boolean | null
+          automaticEmailCcFlag: boolean | null
+          automaticEmailContactFlag: boolean | null
+          automaticEmailResourceFlag: boolean | null
+          billExpenses: string | null
+          billingMethod: string | null
+          billProducts: string | null
+          billTime: string | null
+          board: number | null
+          closedBy: string | null
+          closedDate: string | null
+          closedFlag: boolean | null
+          company: number | null
+          configuration: string | null
+          contact: number | null
+          currency: number | null
+          customerUpdatedFlag: boolean | null
+          dateEntered: string | null
+          dateResolved: string | null
+          dateResplan: string | null
+          dateResponded: string | null
+          department: number | null
+          enteredBy: string | null
+          escalationLevel: number | null
+          escalationStartDateUTC: string | null
+          estimatedExpenseCost: string | null
+          estimatedExpenseRevenue: string | null
+          estimatedProductCost: string | null
+          estimatedProductRevenue: string | null
+          estimatedTimeCost: string | null
+          estimatedTimeRevenue: string | null
+          hasChildTicket: boolean | null
+          hasMergedChildTicketFlag: boolean | null
+          id: number
+          impact: Database["public"]["Enums"]["impact"] | null
+          isInSla: boolean | null
+          lastUpdated: string | null
+          location: number | null
+          minutesBeforeWaiting: string | null
+          minutesWaiting: string | null
+          mobileGuid: string | null
+          priority: number | null
+          recordType: Database["public"]["Enums"]["recordType"] | null
+          requestForChangeFlag: boolean | null
+          resolutionHours: number | null
+          resolvedBy: string | null
+          resolveMinutes: number | null
+          resplanBy: string | null
+          resplanHours: number | null
+          resPlanMinutes: number | null
+          resplanSkippedMinutes: string | null
+          respondedBy: string | null
+          respondedHours: number | null
+          respondedSkippedMinutes: string | null
+          respondMinutes: number | null
+          serviceLocation: number | null
+          severity: Database["public"]["Enums"]["severity"] | null
+          sla: number | null
+          slaStatus: string | null
+          source: number | null
+          status: number | null
+          subBillingMethod: string | null
           summary: string
+          team: number | null
+          type: number | null
+          updatedBy: string | null
         }
         Insert: {
-          id?: string
-          number?: number | null
+          allowAllClientsPortalView?: boolean | null
+          approved?: boolean | null
+          automaticEmailCcFlag?: boolean | null
+          automaticEmailContactFlag?: boolean | null
+          automaticEmailResourceFlag?: boolean | null
+          billExpenses?: string | null
+          billingMethod?: string | null
+          billProducts?: string | null
+          billTime?: string | null
+          board?: number | null
+          closedBy?: string | null
+          closedDate?: string | null
+          closedFlag?: boolean | null
+          company?: number | null
+          configuration?: string | null
+          contact?: number | null
+          currency?: number | null
+          customerUpdatedFlag?: boolean | null
+          dateEntered?: string | null
+          dateResolved?: string | null
+          dateResplan?: string | null
+          dateResponded?: string | null
+          department?: number | null
+          enteredBy?: string | null
+          escalationLevel?: number | null
+          escalationStartDateUTC?: string | null
+          estimatedExpenseCost?: string | null
+          estimatedExpenseRevenue?: string | null
+          estimatedProductCost?: string | null
+          estimatedProductRevenue?: string | null
+          estimatedTimeCost?: string | null
+          estimatedTimeRevenue?: string | null
+          hasChildTicket?: boolean | null
+          hasMergedChildTicketFlag?: boolean | null
+          id?: number
+          impact?: Database["public"]["Enums"]["impact"] | null
+          isInSla?: boolean | null
+          lastUpdated?: string | null
+          location?: number | null
+          minutesBeforeWaiting?: string | null
+          minutesWaiting?: string | null
+          mobileGuid?: string | null
+          priority?: number | null
+          recordType?: Database["public"]["Enums"]["recordType"] | null
+          requestForChangeFlag?: boolean | null
+          resolutionHours?: number | null
+          resolvedBy?: string | null
+          resolveMinutes?: number | null
+          resplanBy?: string | null
+          resplanHours?: number | null
+          resPlanMinutes?: number | null
+          resplanSkippedMinutes?: string | null
+          respondedBy?: string | null
+          respondedHours?: number | null
+          respondedSkippedMinutes?: string | null
+          respondMinutes?: number | null
+          serviceLocation?: number | null
+          severity?: Database["public"]["Enums"]["severity"] | null
+          sla?: number | null
+          slaStatus?: string | null
+          source?: number | null
+          status?: number | null
+          subBillingMethod?: string | null
           summary: string
+          team?: number | null
+          type?: number | null
+          updatedBy?: string | null
         }
         Update: {
-          id?: string
-          number?: number | null
+          allowAllClientsPortalView?: boolean | null
+          approved?: boolean | null
+          automaticEmailCcFlag?: boolean | null
+          automaticEmailContactFlag?: boolean | null
+          automaticEmailResourceFlag?: boolean | null
+          billExpenses?: string | null
+          billingMethod?: string | null
+          billProducts?: string | null
+          billTime?: string | null
+          board?: number | null
+          closedBy?: string | null
+          closedDate?: string | null
+          closedFlag?: boolean | null
+          company?: number | null
+          configuration?: string | null
+          contact?: number | null
+          currency?: number | null
+          customerUpdatedFlag?: boolean | null
+          dateEntered?: string | null
+          dateResolved?: string | null
+          dateResplan?: string | null
+          dateResponded?: string | null
+          department?: number | null
+          enteredBy?: string | null
+          escalationLevel?: number | null
+          escalationStartDateUTC?: string | null
+          estimatedExpenseCost?: string | null
+          estimatedExpenseRevenue?: string | null
+          estimatedProductCost?: string | null
+          estimatedProductRevenue?: string | null
+          estimatedTimeCost?: string | null
+          estimatedTimeRevenue?: string | null
+          hasChildTicket?: boolean | null
+          hasMergedChildTicketFlag?: boolean | null
+          id?: number
+          impact?: Database["public"]["Enums"]["impact"] | null
+          isInSla?: boolean | null
+          lastUpdated?: string | null
+          location?: number | null
+          minutesBeforeWaiting?: string | null
+          minutesWaiting?: string | null
+          mobileGuid?: string | null
+          priority?: number | null
+          recordType?: Database["public"]["Enums"]["recordType"] | null
+          requestForChangeFlag?: boolean | null
+          resolutionHours?: number | null
+          resolvedBy?: string | null
+          resolveMinutes?: number | null
+          resplanBy?: string | null
+          resplanHours?: number | null
+          resPlanMinutes?: number | null
+          resplanSkippedMinutes?: string | null
+          respondedBy?: string | null
+          respondedHours?: number | null
+          respondedSkippedMinutes?: string | null
+          respondMinutes?: number | null
+          serviceLocation?: number | null
+          severity?: Database["public"]["Enums"]["severity"] | null
+          sla?: number | null
+          slaStatus?: string | null
+          source?: number | null
+          status?: number | null
+          subBillingMethod?: string | null
           summary?: string
-        }
-        Relationships: []
-      }
-      types: {
-        Row: {
-          created_at: string
-          description: string | null
-          icon: Database["public"]["Enums"]["icon"] | null
-          id: string
-          last_updated: string | null
-          name: string
-          parent: string | null
-          update_by: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          icon?: Database["public"]["Enums"]["icon"] | null
-          id?: string
-          last_updated?: string | null
-          name: string
-          parent?: string | null
-          update_by?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          icon?: Database["public"]["Enums"]["icon"] | null
-          id?: string
-          last_updated?: string | null
-          name?: string
-          parent?: string | null
-          update_by?: string
+          team?: number | null
+          type?: number | null
+          updatedBy?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "public_assetTypes_parent_fkey"
-            columns: ["parent"]
+            foreignKeyName: "service_tickets_board/id_fkey"
+            columns: ["board"]
             isOneToOne: false
-            referencedRelation: "types"
+            referencedRelation: "boards"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_assetTypes_update_by_fkey"
-            columns: ["update_by"]
-            isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["auth_id"]
           },
         ]
       }
@@ -1092,4 +797,3 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
-

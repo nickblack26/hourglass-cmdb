@@ -40,7 +40,7 @@ export default function RootLayout({
 					<Velo defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4}>
 						<div className='relative'>
 							{children}
-							<CallWidget />
+							{/* <CallWidget /> */}
 						</div>
 					</Velo>
 				</TwilioProvider>

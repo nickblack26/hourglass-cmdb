@@ -1,18 +1,32 @@
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
+import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
 type Props = {};
 
-const Page = (props: Props) => {
+const Page = async (props: Props) => {
+	const supabase = createClient();
+	const { data, error } = await supabase.from('organizations').select().single();
+
+	if (!data || error) return <div></div>;
+
 	return (
 		<div>
 			<section>
 				<Card>
-					<CardHeader>
-						<CardTitle>Talk</CardTitle>
-						<CardDescription>Enable talk for your organziation.</CardDescription>
+					<CardHeader className='flex flex-row space-y-0 justify-between'>
+						<div className='space-y-1.5'>
+							<CardTitle>Voice</CardTitle>
+							<CardDescription>Enable talk for your organziation.</CardDescription>
+						</div>
+
+						<Button variant='secondary' asChild>
+							<Link href='/settings/channels/voice'>Configure</Link>
+						</Button>
 					</CardHeader>
 
 					<CardContent>
@@ -20,7 +34,7 @@ const Page = (props: Props) => {
 					</CardContent>
 
 					<CardFooter>
-						<Switch />
+						<Switch defaultChecked={data.features && (data?.features['voice'] as boolean)} />
 					</CardFooter>
 				</Card>
 			</section>

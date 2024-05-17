@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 
 const AccessToken = require('twilio').jwt.AccessToken;
 const VoiceGrant = AccessToken.VoiceGrant;

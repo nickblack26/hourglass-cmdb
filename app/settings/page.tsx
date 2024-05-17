@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/server';
+import { sectionedFeatures } from './features';
+import { Switch } from '@/components/ui/switch';
 
 export default async function Page() {
 	const supabase = createClient();
@@ -33,6 +35,7 @@ export default async function Page() {
 					<Button>Save</Button>
 				</CardFooter>
 			</Card>
+
 			<Card>
 				<CardHeader>
 					<CardTitle>Plugins Directory</CardTitle>
@@ -53,6 +56,30 @@ export default async function Page() {
 					<Button>Save</Button>
 				</CardFooter>
 			</Card>
+
+			<section className='px-0 space-y-2'>
+				<h2>Features</h2>
+
+				{sectionedFeatures.map((section) => (
+					<div key={section.name}>
+						<h4 className='mb-2'>{section.name}</h4>
+
+						<div className='space-y-4'>
+							{section.features.map((feature) => (
+								<Card key={feature.name}>
+									<CardHeader>
+										<CardTitle>{feature.name}</CardTitle>
+										{feature.description && <CardDescription>{feature.description}</CardDescription>}
+									</CardHeader>
+									<CardContent>
+										<Switch defaultChecked={feature.enabled} />
+									</CardContent>
+								</Card>
+							))}
+						</div>
+					</div>
+				))}
+			</section>
 		</div>
 	);
 }
