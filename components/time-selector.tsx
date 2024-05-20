@@ -1,4 +1,4 @@
-import { WorkDay } from '@/app/settings/account/hours/data';
+import { WorkDay } from '@/app/(organization)/settings/account/hours/data';
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { format } from 'date-fns';

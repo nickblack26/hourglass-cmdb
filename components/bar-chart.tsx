@@ -1,6 +1,6 @@
 'use client';
 
-import { ChartData } from '@/app/charts/ticket-by-first-reply';
+import { ChartData } from '@/app/(organization)/charts/ticket-by-first-reply';
 import React from 'react';
 import { Bar, BarChart as RBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 

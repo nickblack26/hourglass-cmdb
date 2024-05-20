@@ -57,3 +57,26 @@ export const createConfiguration = async (formData: FormData) => {
 
 	revalidateTag('configurations');
 }
+
+export const createUser = async (formData: FormData) => {
+	console.log(formData)
+	const supabase = createClient();
+	const firstName = formData.get('firstName') as string;
+	const lastName = formData.get('lastName') as string;
+	const email = formData.get('email') as string;
+	const password = formData.get('password') as string;
+
+	const { data, error } = await supabase.auth.signUp({
+		email,
+		password,
+		options: {
+			data: {
+				firstName,
+				lastName,
+				// email
+			}
+		}
+	})
+
+	console.log(data, error)
+}

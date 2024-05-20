@@ -86,7 +86,7 @@
 		@apply text-lg font-semibold;
 	}
 	header {
-		@apply flex w-full justify-between items-center py-3 px-6;
+		@apply flex w-full justify-between items-center py-3 px-6 sticky top-0 bg-background/80 z-10 backdrop-blur-lg;
 	}
 	section {
 		@apply py-3 px-6;

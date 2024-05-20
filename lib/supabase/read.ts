@@ -1,6 +1,7 @@
 'use server';
 import { unstable_cache } from 'next/cache';
 import { createClient } from './server';
+import { redirect } from 'next/navigation';
 
 export const getCachedPage = unstable_cache(async (id: string) => await getPage(id), ['pages'], { tags: ['pages'] });
 
@@ -15,3 +16,12 @@ const getPage = async (id: string) => {
 
 	return page;
 };
+
+export const signOut = async () => {
+	const supabase = createClient()
+	await supabase.auth.signOut()
+
+	console.log('signing out')
+
+	redirect('/login')
+}

@@ -17,9 +17,10 @@ declare global {
 	type Status = DB['public']['Tables']['statuses']['Row'];
 	type Ticket = DB['public']['Tables']['tickets']['Row'];
 	type Page = DB['public']['Tables']['pages']['Row'];
-	type Configuration = DB['public']['Tables']['configurations']['Row'];
-	type ConfigurationInsert = DB['public']['Tables']['configurations']['Insert'];
-	type ConfigurationUpdate = DB['public']['Tables']['configurations']['Update'];
+	type Asset = DB['public']['Tables']['assets']['Row'];
+	type AssetInsert = DB['public']['Tables']['assets']['Insert'];
+	type AssetUpdate = DB['public']['Tables']['assets']['Update'];
+	type AssetType = DB['public']['Tables']['asset_types']['Update'];
 	type Block = DB['public']['Tables']['blocks']['Row'];
 	type BlockInsert = DB['public']['Tables']['blocks']['Insert'];
 	type BlockUpdate = DB['public']['Tables']['blocks']['Update'];

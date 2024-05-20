@@ -1,4 +1,6 @@
 import { Device, Call } from '@twilio/voice-sdk';
+const AccessToken = require('twilio').jwt.AccessToken;
+const TaskRouterGrant = AccessToken.TaskRouterGrant;
 
 import { config } from '@/config'
 
@@ -77,3 +79,34 @@ export function handleIncomingCall(call: Call) {
 // 	// 	audioSelectionDiv.classList.remove('hide');
 // 	// }
 // }
+
+export function createAccessToken(
+  accountSid: string,
+  signingKeySid: string,
+  signingKeySecret: string,
+  workspaceSid: string,
+workerSid: string,
+  identity: string
+) {
+	const taskRouterGrant = new TaskRouterGrant({
+		workerSid,
+		workspaceSid,
+		role: "worker",
+	});
+	
+	try {
+		const accessToken = new AccessToken(
+			accountSid,
+			signingKeySid,
+			signingKeySecret,
+			{identity}
+		);
+		accessToken.addGrant(taskRouterGrant);
+		accessToken.identity = identity
+		console.log(accessToken)
+
+		return accessToken.toJwt();
+	} catch (error) {
+		console.error(error)	
+	}
+}

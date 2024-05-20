@@ -35,7 +35,10 @@ const ContactSelector = ({ onValueChange, defaultValue, className }: Props) => {
 			<SelectContent>
 				{contacts?.map((contact) => (
 					<SelectItem key={contact.id} value={contact?.id}>
-						{contact.firstName} {contact.lastName}
+						<div>
+							{contact.firstName} {contact.lastName}
+							<p className='text-xs text-secondary-foreground'>{contact.company}</p>
+						</div>
 					</SelectItem>
 				))}
 			</SelectContent>

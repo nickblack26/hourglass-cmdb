@@ -1,23 +1,38 @@
 import { Call } from '@twilio/voice-sdk';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Button } from './ui/button';
-import { Dot, Grip, Phone } from 'lucide-react';
+import { ChevronDown, Circle, Dot, Grip, Phone, X } from 'lucide-react';
 import { Progress } from './ui/progress';
 import { Avatar, AvatarFallback } from './ui/avatar';
-import { cn } from '@/lib/utils';
 import { Separator } from './ui/separator';
+import { type Activity, Reservation } from 'twilio-taskrouter';
+import { Select, SelectContent, SelectItem, SelectTrigger } from './ui/select';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 type Props = {
 	call?: Call;
+	reservation?: Reservation;
 	isCollapsed: boolean;
 };
 
-const CallCard = ({ call, isCollapsed }: Props) => {
+const CallCard = ({ call, reservation, isCollapsed }: Props) => {
+	const [activities, setActivities] = useState<Activity[]>([]);
+	const [isOpen, setIsOpen] = useState<boolean>(false);
+
+	useEffect(() => {
+		if (!reservation) return;
+		setIsOpen(true);
+		reservation.on('accepted', (e) => {
+			// e.on()
+		});
+	}, [reservation]);
+	console.log(isCollapsed);
+
 	return (
-		<Popover>
+		<Popover open={isOpen} onOpenChange={setIsOpen}>
 			<PopoverTrigger asChild>
-				<Button variant='ghost' size='lg' className='flex items-center h-9 w-9 p-0'>
+				{/* <Button variant='ghost' size='sm' className='flex items-center h-9 w-auto p-0'>
 					<div className='p-1.5 rounded-md bg-secondary'>
 						<Phone className='h-3.5 w-3.5' />
 					</div>
@@ -29,15 +44,83 @@ const CallCard = ({ call, isCollapsed }: Props) => {
 							<p className='text-sm text-muted-foreground'>(123) 456-7890</p>
 						</div>
 					)}
-				</Button>
+				</Button> */}
+				{isCollapsed ? (
+					<Tooltip delayDuration={0}>
+						<TooltipTrigger asChild>
+							<Button variant='ghost' size='icon' className='h-9 w-9'>
+								<Phone className='h-3.5 w-3.5' />
+								<span className='sr-only'>Phone</span>
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent side='right' className='flex items-center gap-3'>
+							Phone
+						</TooltipContent>
+					</Tooltip>
+				) : (
+					<Button variant='ghost' size='icon' className='justify-start'>
+						<Phone className='h-3.5 w-3.5' />
+
+						<div>
+							<p>Call</p>
+
+							<p className='text-sm text-muted-foreground'>(123) 456-7890</p>
+						</div>
+					</Button>
+				)}
 			</PopoverTrigger>
+
 			<PopoverContent side='right' className='z-50 md:min-w-96'>
+				<header className='px-1.5 grid grid-cols-3 items-center'>
+					<Select defaultValue='WA86669809ccf0ad1907fe6e154259ce69'>
+						<SelectTrigger>
+							<div className='flex items-center gap-1.5'>
+								<Circle className='w-2 h-2 fill-green-500 stroke-green-500' />
+								<span>Online</span>
+							</div>
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value='WA86669809ccf0ad1907fe6e154259ce69'>
+								<div className='flex items-center gap-1.5'>
+									<Circle className='w-2 h-2 fill-gray-500 stroke-gray-500' />
+									Offline
+								</div>
+							</SelectItem>
+							<SelectItem value='WAde91c2ed3cb06ae36e980ca51c215fee'>
+								<div className='flex items-center gap-1.5'>
+									<Circle className='w-2 h-2 fill-green-500 stroke-green-500' />
+									Available
+								</div>
+							</SelectItem>
+							<SelectItem value='WA6755aa0b5f199dbf148c1633fc4e367e'>
+								<div className='flex items-center gap-1.5'>
+									<Circle className='w-2 h-2 fill-gray-500 stroke-gray-500' />
+									Unavailable
+								</div>
+							</SelectItem>
+						</SelectContent>
+					</Select>
+					<Button variant={'ghost'} size={'icon'} className='col-span-2 justify-self-end' onClick={() => setIsOpen(!isOpen)}>
+						<X className='w-3.5 h-3.5' />
+					</Button>
+				</header>
+
+				<Separator />
+
 				<section className='px-1.5 space-y-3'>
 					<div className='flex justify-between gap-4'>
-						<h4>Incoming Call</h4>
-						<p>
-							Answer in <Progress value={73} />
-						</p>
+						{reservation?.status === 'accepted' ? (
+							<h4>
+								Call in progress - <span>00:45</span>
+							</h4>
+						) : (
+							<h4>Incoming Call</h4>
+						)}
+						{reservation?.status !== 'accepted' && (
+							<p>
+								Answer in <Progress value={reservation?.timeout} />
+							</p>
+						)}
 					</div>
 
 					<div className='flex items-center gap-3'>
@@ -46,9 +129,10 @@ const CallCard = ({ call, isCollapsed }: Props) => {
 						</Avatar>
 
 						<div>
-							<h5 className=''>Xavi Hernandez</h5>
+							<h5 className=''>{reservation?.task.attributes['name']}</h5>
 							<p className='text-sm text-muted-foreground'>
-								<Phone className='w-3 h-3 inline-block' />+ 678-908-456
+								<Phone className='w-3 h-3 inline-block' />
+								{reservation?.task.attributes['from']}
 							</p>
 						</div>
 					</div>
@@ -63,18 +147,20 @@ const CallCard = ({ call, isCollapsed }: Props) => {
 				<Separator />
 
 				<section className='px-1.5 grid grid-cols-2 items-center gap-2 '>
-					<Button variant='outline'>Assign</Button>
-					<Button>Accept</Button>
+					<Button variant='destructive' onClick={async () => await reservation?.reject()}>
+						Reject
+					</Button>
+					<Button onClick={async () => await reservation?.accept()}>Accept</Button>
 				</section>
 
 				<Separator />
 
 				<section className='px-1.5 grid grid-cols-2 items-center gap-2 '>
-					<Button variant='outline'>Assign</Button>
-					<Button size='icon' variant='secondary' className='rounded-full flex flex-col'>
-						<Grip className='w-3.5 h-3.5' />
-						<Dot className='w-3.5 h-3.5 -mt-1' />
-					</Button>
+					{reservation?.status === 'accepted' ? (
+						<Button onClick={async () => await reservation.task.wrapUp({ reason: 'Wrapping' })}>Complete</Button>
+					) : (
+						<Button variant='outline'>Reject</Button>
+					)}
 				</section>
 			</PopoverContent>
 		</Popover>

@@ -15,7 +15,7 @@ import {
 } from '@tanstack/react-table';
 
 import { DataTableToolbar } from '@/components/data-table-toolbar';
-import { columns } from '@/app/tickets/columns';
+import { columns } from '@/app/(organization)/tickets/columns';
 import { DataTable } from '@/components/data-table';
 
 export default function TicketTable({ data }: { data: Ticket[] }) {

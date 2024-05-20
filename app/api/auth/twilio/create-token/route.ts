@@ -1,12 +1,12 @@
-
-const AccessToken = require('twilio').jwt.AccessToken;
+import Twilio from "twilio";
+const AccessToken = Twilio.jwt.AccessToken;
 const VoiceGrant = AccessToken.VoiceGrant;
 
 // Used when generating any kind of tokens
 // To set up environmental variables, see http://twil.io/secure
-const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
-const twilioApiKey = process.env.TWILIO_API_KEY;
-const twilioApiSecret = process.env.TWILIO_API_SECRET;
+const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID!;
+const twilioApiKey = process.env.TWILIO_API_KEY!;
+const twilioApiSecret = process.env.TWILIO_API_SECRET!;
 
 export async function POST(request: Request, response: Response) {
 	// const data = await request.json()

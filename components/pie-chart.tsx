@@ -1,5 +1,5 @@
 'use client';
-import { ChartData } from '@/app/charts/ticket-by-first-reply';
+import { ChartData } from '@/app/(organization)/charts/ticket-by-first-reply';
 import { cn } from '@/lib/utils';
 import React from 'react';
 import { PieChart as RPieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';

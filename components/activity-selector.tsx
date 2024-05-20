@@ -13,16 +13,16 @@ type Props = {
 };
 
 const ActivitySelector = ({ onValueChange, defaultValue, className }: Props) => {
-	const twilio = useTwilio();
 	const [activities, setActivities] = useState<Activity[] | null>([]);
+	const { accountSid, workspaceSid, authToken } = useTwilio();
 
 	useEffect(() => {
 		const headers = new Headers();
-		headers.append('authToken', 'TWILIO AUTH TOKEN');
-		fetch('http://localhost:3000/api/twilio/TWILIO ACCOUNT SID/workspace/TWILIO WORKSPACE SID/activities', { headers })
+		headers.append('authToken', authToken ?? '');
+		fetch(`http://localhost:3000/api/twilio/${accountSid}/workspace/${workspaceSid}/activities`, { headers })
 			.then((response) => response.json())
 			.then((data) => setActivities(data));
-	}, []);
+	}, [accountSid, workspaceSid, authToken]);
 
 	if (activities === null) {
 		return <div></div>;

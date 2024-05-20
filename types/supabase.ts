@@ -9,10 +9,32 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      asset_types: {
+        Row: {
+          created_at: string
+          icon: Database["public"]["Enums"]["icon"]
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          icon: Database["public"]["Enums"]["icon"]
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          icon?: Database["public"]["Enums"]["icon"]
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       assets: {
         Row: {
           avatar: string | null
-          company: number | null
+          company: string | null
+          contact: string | null
           created: string | null
           hasAvatar: boolean | null
           id: string
@@ -26,7 +48,8 @@ export type Database = {
         }
         Insert: {
           avatar?: string | null
-          company?: number | null
+          company?: string | null
+          contact?: string | null
           created?: string | null
           hasAvatar?: boolean | null
           id?: string
@@ -40,7 +63,8 @@ export type Database = {
         }
         Update: {
           avatar?: string | null
-          company?: number | null
+          company?: string | null
+          contact?: string | null
           created?: string | null
           hasAvatar?: boolean | null
           id?: string
@@ -52,7 +76,36 @@ export type Database = {
           type?: string | null
           updated?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "assets_company_fkey"
+            columns: ["company"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assets_contact_fkey"
+            columns: ["contact"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assets_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "product_inventory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assets_type_fkey"
+            columns: ["type"]
+            isOneToOne: false
+            referencedRelation: "asset_types"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       attributes: {
         Row: {
@@ -75,24 +128,6 @@ export type Database = {
           id?: string
           name?: string
           price?: number | null
-        }
-        Relationships: []
-      }
-      boards: {
-        Row: {
-          created_at: string
-          id: number
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string
         }
         Relationships: []
       }
@@ -178,22 +213,7 @@ export type Database = {
           website?: string | null
           zip?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "public_companies_status_fkey"
-            columns: ["status"]
-            isOneToOne: false
-            referencedRelation: "statuses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_companies_territory_fkey"
-            columns: ["territory"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       company_secrets: {
         Row: {
@@ -269,24 +289,6 @@ export type Database = {
           },
         ]
       }
-      locations: {
-        Row: {
-          created_at: string
-          id: number
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string
-        }
-        Relationships: []
-      }
       organizations: {
         Row: {
           company: string
@@ -346,18 +348,21 @@ export type Database = {
       product_inventory: {
         Row: {
           cost: number | null
+          id: string
           price: number | null
           product: string
           serial: string
         }
         Insert: {
           cost?: number | null
+          id?: string
           price?: number | null
           product: string
           serial: string
         }
         Update: {
           cost?: number | null
+          id?: string
           price?: number | null
           product?: string
           serial?: string
@@ -403,41 +408,6 @@ export type Database = {
             columns: ["parent"]
             isOneToOne: false
             referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      statuses: {
-        Row: {
-          board: number | null
-          category: Database["public"]["Enums"]["statusCategory"] | null
-          created_at: string
-          id: number
-          name: string
-          sort: number | null
-        }
-        Insert: {
-          board?: number | null
-          category?: Database["public"]["Enums"]["statusCategory"] | null
-          created_at?: string
-          id?: number
-          name: string
-          sort?: number | null
-        }
-        Update: {
-          board?: number | null
-          category?: Database["public"]["Enums"]["statusCategory"] | null
-          created_at?: string
-          id?: number
-          name?: string
-          sort?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_statuses_board_fkey"
-            columns: ["board"]
-            isOneToOne: false
-            referencedRelation: "boards"
             referencedColumns: ["id"]
           },
         ]
@@ -650,15 +620,7 @@ export type Database = {
           type?: number | null
           updatedBy?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "service_tickets_board/id_fkey"
-            columns: ["board"]
-            isOneToOne: false
-            referencedRelation: "boards"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {

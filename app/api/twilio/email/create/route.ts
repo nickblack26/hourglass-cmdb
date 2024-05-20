@@ -8,11 +8,11 @@ export async function POST(request: Request, response: Response) {
 	console.log(formData)
 
 	try {
-		const { data, error } = await supabase.from('tickets').insert({ summary, source: 4 }).select()
+		// const { data, error } = await supabase.from('tickets').insert({ summary, source: 4 }).select()
 
-		console.log(data, error)
+		// console.log(data, error)
 
-		if (error) throw error
+		// if (error) throw error
 		
 		return new Response('OK')
 	} catch (error) {

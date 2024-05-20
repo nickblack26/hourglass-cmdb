@@ -1,23 +1,45 @@
 'use client';
 import { UserCircle, User, Circle, LogOut } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User as AuthUser } from '@supabase/supabase-js';
-import ActivitySelector from './activity-selector';
+import { signOut } from '@/lib/supabase/read';
+import { Worker } from 'twilio-taskrouter';
+import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import Link from 'next/link';
 
 type Props = {
-	user: AuthUser;
+	user: Contact;
+	worker: Worker | null;
+	isCollapsed: boolean;
 };
 
-const UserInfo = ({ user }: Props) => {
+const UserInfo = ({ user, worker, isCollapsed }: Props) => {
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
-				<Button variant='ghost' size='lg' className='flex items-center h-9 w-9 p-0'>
-					<User className='h-4 w-4' />
-				</Button>
+				{isCollapsed ? (
+					<Tooltip delayDuration={0}>
+						<TooltipTrigger asChild>
+							<Button variant='ghost' size='icon' className='h-9 w-9'>
+								<User className='h-4 w-4' />
+								<span className='sr-only'>User</span>
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent side='right' className='flex items-center gap-3'>
+							Settings
+						</TooltipContent>
+					</Tooltip>
+				) : (
+					<Button variant='ghost' size='icon' className='justify-start'>
+						<User className='h-4 w-4 mr-1.5' />
+						<span className='group-[[data-collapsed=true]]:hidden'>
+							{user.firstName} {user.lastName}
+						</span>
+					</Button>
+				)}
 			</PopoverTrigger>
 
 			<PopoverContent side='right' className='z-50 md:min-w-48 mb-4 space-y-1.5'>
@@ -29,25 +51,30 @@ const UserInfo = ({ user }: Props) => {
 					</Avatar>
 
 					<div>
-						<p className='font-semibold text-sm'>Nick Black</p>
-						<p className='text-sm'>nblack@velomethod.com</p>
+						<p className='font-semibold text-sm'>
+							{user.firstName} {user.lastName}
+						</p>
+						<p className='text-sm'>{user.email}</p>
 					</div>
 				</header>
 
 				<section className='px-0'>
 					<div className='grid grid-cols-5 gap-1.5'>
-						<ActivitySelector className='col-span-2' />
-						{/* <Popover>
+						{/* <ActivitySelector className='col-span-2' /> */}
+						<Popover>
 							<PopoverTrigger asChild>
 								<Button variant={'outline'} className='justify-start text-left font-normal col-span-2'>
-									<Circle className='mr-1.5 h-3 w-3 fill-green-500 stroke-green-500' />
-									<span>Available</span>
+									<Circle
+										className={cn(
+											'mr-1.5 h-3 w-3',
+											worker && worker?.available ? 'fill-green-500 stroke-green-500' : 'fill-gray-500 stroke-gray-500'
+										)}
+									/>
+									<span>{worker && worker?.available ? 'Available' : 'Unavailable'}</span>
 								</Button>
 							</PopoverTrigger>
-							<PopoverContent className='w-auto p-0'>
-								
-							</PopoverContent>
-						</Popover> */}
+							<PopoverContent className='w-auto p-0'></PopoverContent>
+						</Popover>
 
 						<Popover>
 							<PopoverTrigger asChild>
@@ -70,7 +97,7 @@ const UserInfo = ({ user }: Props) => {
 
 						<Popover>
 							<PopoverTrigger asChild>
-								<Button variant={'outline'} className='justify-start text-left font-normal col-span-5'>
+								<Button variant={'outline'} className='justify-start text-left font-normal col-span-5' onClick={async () => signOut()}>
 									<LogOut className='w-3 h-3 mr-3' />
 									<span>Sign out</span>
 								</Button>

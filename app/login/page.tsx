@@ -49,7 +49,7 @@ const Page = async (props: Props) => {
 									Forgot your password?
 								</Link>
 							</div>
-							<Input name='password' type='password' required />
+							<Input name='password' type='password' placeholder='•••••••••' required />
 						</div>
 						<Button type='submit' className='w-full'>
 							Login
@@ -60,7 +60,7 @@ const Page = async (props: Props) => {
 					</form>
 					<div className='mt-4 text-center text-sm'>
 						Don&apos;t have an account?{' '}
-						<Link href='#' className='underline'>
+						<Link href='/signup' className='underline'>
 							Sign up
 						</Link>
 					</div>

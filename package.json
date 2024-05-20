@@ -10,6 +10,7 @@
     "typeGen": "bunx supabase gen types typescript --project-id 'epsdmlzpwfpzodiifuod' --schema public > types/supabase.ts"
   },
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^1.1.9",
     "@hookform/resolvers": "^3.3.4",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -52,6 +53,7 @@
     "react-resizable-panels": "^2.0.13",
     "react-textarea-autosize": "^8.5.3",
     "recharts": "^2.12.3",
+    "sonner": "^1.4.41",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "twilio": "^5.0.1",
