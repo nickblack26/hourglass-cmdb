@@ -1,10 +1,8 @@
 'use client';
 import React, { act, useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useTwilio } from '@/providers/twilioVoiceContext';
-import { Activity } from '@/types/twilio/taskrouter';
 import { cn } from '@/lib/utils';
-import { Circle } from 'lucide-react';
+import type { ActivityInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/activity';
 
 type Props = {
 	onValueChange?: (...event: any[]) => void;
@@ -13,16 +11,16 @@ type Props = {
 };
 
 const ActivitySelector = ({ onValueChange, defaultValue, className }: Props) => {
-	const [activities, setActivities] = useState<Activity[] | null>([]);
-	const { accountSid, workspaceSid, authToken } = useTwilio();
+	const [activities, setActivities] = useState<ActivityInstance[]>([]);
 
 	useEffect(() => {
 		const headers = new Headers();
-		headers.append('authToken', authToken ?? '');
-		fetch(`http://localhost:3000/api/twilio/${accountSid}/workspace/${workspaceSid}/activities`, { headers })
-			.then((response) => response.json())
-			.then((data) => setActivities(data));
-	}, [accountSid, workspaceSid, authToken]);
+		headers.append('authToken', '927970c354916b481735c0d2d3d46591' ?? '');
+		fetch(`http://localhost:3000/api/twilio/1/workspace/$1/activities`, { headers, next: { tags: ['queues'] } })
+			.then((r) => r.json())
+			.then((d) => setActivities(d))
+			.catch((e) => console.error(e));
+	}, []);
 
 	if (activities === null) {
 		return <div></div>;
@@ -31,16 +29,10 @@ const ActivitySelector = ({ onValueChange, defaultValue, className }: Props) => 
 	const selectedActivity = activities?.find((activity) => activity.sid === defaultValue);
 
 	return (
-		<Select name='activity' onValueChange={onValueChange} defaultValue={defaultValue}>
-			<SelectTrigger aria-label='Select contact' className={className}>
-				<SelectValue placeholder='Select contact'>
-					<Circle
-						className={cn(
-							'mr-1.5 h-3 w-3 inline-block',
-							selectedActivity?.available ? 'fill-green-500 stroke-green-500' : 'fill-gray-500 stroke-gray-500'
-						)}
-					/>
-					<span className={cn('ml-1.5')}>{selectedActivity?.friendlyName}</span>
+		<Select name='activity' onValueChange={onValueChange} defaultValue={defaultValue ?? undefined}>
+			<SelectTrigger aria-label='Select activity' className={className}>
+				<SelectValue placeholder='Select activity...'>
+					{selectedActivity && <span className={cn('ml-1.5')}>{selectedActivity?.friendlyName}</span>}
 				</SelectValue>
 			</SelectTrigger>
 			<SelectContent>

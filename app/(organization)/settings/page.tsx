@@ -1,12 +1,8 @@
-import Link from 'next/link';
-
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/server';
-import { sectionedFeatures } from './features';
-import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+import LabeledInput from '@/components/labled-input';
 
 export default async function Page() {
 	const supabase = createClient();
@@ -14,71 +10,61 @@ export default async function Page() {
 	const { data: organization, error } = await supabase
 		.from('organizations')
 		.select('company(*)')
-		.returns<{ id: string } & { company: Company }>()
+		.eq('id', 'e1d916e9-4eed-45e1-bb81-f53aa0e437c5')
+		.returns<Array<{ id: string } & { company: Company }>>()
 		.single();
 
 	if (!organization?.company) return <div>{JSON.stringify(error)}</div>;
 
 	return (
 		<div className='grid gap-6'>
-			<Card>
-				<CardHeader>
-					<CardTitle>Organization Name</CardTitle>
-					<CardDescription>Used to identify your store in the marketplace.</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<form>
-						<Input placeholder='Store Name' defaultValue={organization?.company?.name} />
-					</form>
-				</CardContent>
-				<CardFooter className='border-t px-6 py-4'>
-					<Button>Save</Button>
-				</CardFooter>
-			</Card>
+			<section className='space-y-1.5 px-0'>
+				<h1>Workspace</h1>
+				<p className='text-sm text-muted-foreground'>Manage your workspace settings. Your workspace is in the United States region</p>
+			</section>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>Plugins Directory</CardTitle>
-					<CardDescription>The directory within your project, in which your plugins are located.</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<form className='flex flex-col gap-4'>
-						<Input placeholder='Project Name' defaultValue='/content/plugins' />
-						<div className='flex items-center space-x-2'>
-							<Checkbox id='include' defaultChecked />
-							<label htmlFor='include' className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
-								Allow administrators to change the directory.
-							</label>
-						</div>
-					</form>
-				</CardContent>
-				<CardFooter className='border-t px-6 py-4'>
-					<Button>Save</Button>
-				</CardFooter>
-			</Card>
+			<Separator />
 
-			<section className='px-0 space-y-2'>
-				<h2>Features</h2>
+			<section className='space-y-6 px-0'>
+				<h4>Logo</h4>
 
-				{sectionedFeatures.map((section) => (
-					<div key={section.name}>
-						<h4 className='mb-2'>{section.name}</h4>
-
-						<div className='space-y-4'>
-							{section.features.map((feature) => (
-								<Card key={feature.name}>
-									<CardHeader>
-										<CardTitle>{feature.name}</CardTitle>
-										{feature.description && <CardDescription>{feature.description}</CardDescription>}
-									</CardHeader>
-									<CardContent>
-										<Switch defaultChecked={feature.enabled} />
-									</CardContent>
-								</Card>
-							))}
+				<div className='space-y-3'>
+					<div className='w-16 rounded-sm overflow-hidden border relative'>
+						<Input type='file' className='opacity-0 absolute w-full h-full z-50' />
+						<div className='w-16 h-16 grid place-items-center text-2xl bg-blue-400 text-white'>
+							<div>HA</div>
 						</div>
 					</div>
-				))}
+
+					<p className='text-sm text-muted-foreground'>Pick a logo for your workspace. Recommended size is 256x256px.</p>
+				</div>
+			</section>
+
+			<Separator />
+
+			<section className='px-0 space-y-6'>
+				<h4>General</h4>
+
+				<LabeledInput placeholder='Acme Inc' name='name' label='Workspace name' />
+
+				<LabeledInput placeholder='Acme Inc' name='name' label='Workspace name' />
+
+				<Button size='sm'>Update</Button>
+			</section>
+
+			<Separator />
+
+			<section className='px-0 space-y-6'>
+				<h4>Delete workspace</h4>
+
+				<p className='text-sm text-muted-foreground'>
+					If you want to permanently delete this workspace and all of its data, including but not limited to users, issues, and comments, you can do
+					so below.
+				</p>
+
+				<Button size='sm' variant='destructive'>
+					Delete this workspace
+				</Button>
 			</section>
 		</div>
 	);

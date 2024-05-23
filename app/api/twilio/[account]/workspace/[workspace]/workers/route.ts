@@ -1,13 +1,18 @@
-import { createClient } from "@/lib/supabase/server";
-import type { Worker } from "@/types/twilio/taskrouter";
+import { cookies as nextCookies } from "next/headers";
+import { Twilio } from "twilio";
 import { revalidateTag } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
 
-export async function GET(request: Request, { params }: { params: { account: string; workspace: string } }) {
-	const { workspace, account } = params;
+export async function GET(request: Request) {
 	const authToken = request.headers.get('authToken')
-	const client = require('twilio')(account, authToken);
+	// if (!authToken) return;
+	const cookies = nextCookies()
+	const account = cookies.get('twilio:accountSid')?.value
+	const workspace = cookies.get('twilio:workspaceSid')?.value
+	const client = new Twilio('', '');
+	// if (!workspace) return;
 	
-	const response: Worker[] = await client.taskrouter.v1.workspaces(workspace)
+	const response = await client.taskrouter.v1.workspaces('')
 		.workers
 		.list({limit: 20})
 
@@ -15,7 +20,8 @@ export async function GET(request: Request, { params }: { params: { account: str
 }
 
 export async function POST(request: Request, { params }: { params: { account: string; workspace: string } }) {
-	const { workspace, account } = params;
+	const authToken = request.headers.get('authToken')
+	if (!authToken) return;
 	const formData = await request.formData()
 	const supabase = createClient()
 	const { data, error } = await supabase.from('contacts').select('email').eq('id', formData.get('contact') as string).single()
@@ -23,14 +29,18 @@ export async function POST(request: Request, { params }: { params: { account: st
 		console.log(error)
 		return
 	};
-	const authToken = request.headers.get('authToken')
-	const client = require('twilio')(account, authToken);
-	
-	const response: Worker[] = await client.taskrouter.v1.workspaces(workspace)
-		.workers
-		.create({friendlyName: data.email, attributes: { contact_uri: encodeURIComponent(data.email) }})
+	const cookies = nextCookies()
+	const account = cookies.get('twilio:accountSid')?.value
+	const workspace = cookies.get('twilio:workspaceSid')?.value
 
-		revalidateTag('workers')
+	if (!workspace) return;
+	const client = new Twilio(account, authToken!);
+	
+	const response = await client.taskrouter.v1.workspaces(workspace)
+		.workers
+		.create({friendlyName: data.email, attributes: JSON.stringify({ contact_uri: encodeURIComponent(data.email) })})
+
+	revalidateTag('workers')
 
 	return Response.json(response)
 }

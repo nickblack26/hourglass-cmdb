@@ -11,8 +11,8 @@ export async function POST(request: Request, response: Response) {
 
 	// Create a "grant" which enables a client to use Voice as a given user
 	const taskRouterGrant = new TaskRouterGrant({
-		workerSid: '',
-		workspaceSid: '',
+		workerSid: 'WKb5da5afacb2f51aaaccd4e7317bc4009',
+		workspaceSid: 'WS5e78e58ca4bf4da51f0f5be99e147d4a',
 		role: "worker",
 	});
 

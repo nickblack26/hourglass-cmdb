@@ -3,6 +3,7 @@ import { Velo } from '@/components/velo';
 import { cookies } from 'next/headers';
 import { TwilioProvider } from '@/providers/twilioVoiceContext';
 import { createClient } from '@/lib/supabase/server';
+import { JabraProvider } from '@/providers/jabraProvider';
 
 type Props = {
 	children: React.ReactNode;
@@ -12,7 +13,9 @@ const Layout = async ({ children }: Props) => {
 	const cookieStore = cookies();
 	const supabase = createClient();
 
-	const { data, error } = await supabase
+	const { data: teams } = await supabase.from('teams').select();
+
+	const { data } = await supabase
 		.from('company_secrets')
 		.select()
 		.eq('id', 'eaf9a72d-7b5d-48cf-90f4-83d63a9fc242')
@@ -26,7 +29,7 @@ const Layout = async ({ children }: Props) => {
 		data: { user },
 	} = await supabase.auth.getUser();
 
-	const { data: contact, contactError } = await supabase
+	const { data: contact } = await supabase
 		.from('contacts')
 		.select()
 		.eq('id', user?.id ?? '')
@@ -41,11 +44,13 @@ const Layout = async ({ children }: Props) => {
 	const defaultCollapsed = collapsed ? JSON?.parse(collapsed.value) : true;
 
 	return (
-		<TwilioProvider contact={contact} accountSid={accountSid} authToken={authToken} workspaceSid={workspaceSid}>
-			<Velo defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4}>
-				{children}
-			</Velo>
-		</TwilioProvider>
+		<JabraProvider>
+			<TwilioProvider contact={contact} accountSid={accountSid} authToken={authToken} workspaceSid={workspaceSid}>
+				<Velo defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4} teams={teams || []}>
+					{children}
+				</Velo>
+			</TwilioProvider>
+		</JabraProvider>
 	);
 };
 

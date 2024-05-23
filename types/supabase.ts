@@ -9,70 +9,40 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      asset_types: {
-        Row: {
-          created_at: string
-          icon: Database["public"]["Enums"]["icon"]
-          id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          icon: Database["public"]["Enums"]["icon"]
-          id?: string
-          name: string
-        }
-        Update: {
-          created_at?: string
-          icon?: Database["public"]["Enums"]["icon"]
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
       assets: {
         Row: {
-          avatar: string | null
           company: string | null
           contact: string | null
           created: string | null
-          hasAvatar: boolean | null
           id: string
           label: string | null
           name: string | null
           objectKey: string | null
           product: string | null
-          timestamp: string | null
           type: string | null
           updated: string | null
         }
         Insert: {
-          avatar?: string | null
           company?: string | null
           contact?: string | null
           created?: string | null
-          hasAvatar?: boolean | null
           id?: string
           label?: string | null
           name?: string | null
           objectKey?: string | null
           product?: string | null
-          timestamp?: string | null
           type?: string | null
           updated?: string | null
         }
         Update: {
-          avatar?: string | null
           company?: string | null
           contact?: string | null
           created?: string | null
-          hasAvatar?: boolean | null
           id?: string
           label?: string | null
           name?: string | null
           objectKey?: string | null
           product?: string | null
-          timestamp?: string | null
           type?: string | null
           updated?: string | null
         }
@@ -95,14 +65,46 @@ export type Database = {
             foreignKeyName: "assets_product_fkey"
             columns: ["product"]
             isOneToOne: false
-            referencedRelation: "product_inventory"
+            referencedRelation: "productInventory"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "assets_type_fkey"
             columns: ["type"]
             isOneToOne: false
-            referencedRelation: "asset_types"
+            referencedRelation: "assetTypes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assetTypes: {
+        Row: {
+          created_at: string
+          icon: Database["public"]["Enums"]["icon"]
+          id: string
+          name: string
+          organization: string | null
+        }
+        Insert: {
+          created_at?: string
+          icon: Database["public"]["Enums"]["icon"]
+          id?: string
+          name: string
+          organization?: string | null
+        }
+        Update: {
+          created_at?: string
+          icon?: Database["public"]["Enums"]["icon"]
+          id?: string
+          name?: string
+          organization?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_types_organization_fkey"
+            columns: ["organization"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -136,26 +138,14 @@ export type Database = {
           accountNumber: string | null
           addressLine1: string | null
           addressLine2: string | null
-          annualRevenue: string | null
-          billToCompany: number | null
           city: string | null
-          country: number | null
           dateAcquired: string | null
-          deletedFlag: boolean | null
           faxNumber: string | null
           id: string
-          isVendorFlag: boolean | null
-          leadFlag: boolean | null
-          mobileGuid: string | null
           name: string | null
+          organization: string
           phoneNumber: string | null
           state: string | null
-          status: number | null
-          taxIdentifier: string | null
-          territory: number | null
-          timezone: number | null
-          unsubscribeFlag: string | null
-          vendorIdentifier: string | null
           website: string | null
           zip: string | null
         }
@@ -163,26 +153,14 @@ export type Database = {
           accountNumber?: string | null
           addressLine1?: string | null
           addressLine2?: string | null
-          annualRevenue?: string | null
-          billToCompany?: number | null
           city?: string | null
-          country?: number | null
           dateAcquired?: string | null
-          deletedFlag?: boolean | null
           faxNumber?: string | null
           id?: string
-          isVendorFlag?: boolean | null
-          leadFlag?: boolean | null
-          mobileGuid?: string | null
           name?: string | null
+          organization: string
           phoneNumber?: string | null
           state?: string | null
-          status?: number | null
-          taxIdentifier?: string | null
-          territory?: number | null
-          timezone?: number | null
-          unsubscribeFlag?: string | null
-          vendorIdentifier?: string | null
           website?: string | null
           zip?: string | null
         }
@@ -190,45 +168,41 @@ export type Database = {
           accountNumber?: string | null
           addressLine1?: string | null
           addressLine2?: string | null
-          annualRevenue?: string | null
-          billToCompany?: number | null
           city?: string | null
-          country?: number | null
           dateAcquired?: string | null
-          deletedFlag?: boolean | null
           faxNumber?: string | null
           id?: string
-          isVendorFlag?: boolean | null
-          leadFlag?: boolean | null
-          mobileGuid?: string | null
           name?: string | null
+          organization?: string
           phoneNumber?: string | null
           state?: string | null
-          status?: number | null
-          taxIdentifier?: string | null
-          territory?: number | null
-          timezone?: number | null
-          unsubscribeFlag?: string | null
-          vendorIdentifier?: string | null
           website?: string | null
           zip?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "companies_organization_fkey"
+            columns: ["organization"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       company_secrets: {
         Row: {
           id: string
-          key: string
+          key: Database["public"]["Enums"]["secretKeyType"]
           value: string
         }
         Insert: {
           id: string
-          key: string
+          key: Database["public"]["Enums"]["secretKeyType"]
           value: string
         }
         Update: {
           id?: string
-          key?: string
+          key?: Database["public"]["Enums"]["secretKeyType"]
           value?: string
         }
         Relationships: [
@@ -249,6 +223,7 @@ export type Database = {
           id: string
           inactiveFlag: string | null
           lastName: string
+          organization: string | null
           title: string | null
           workerSid: string | null
         }
@@ -259,6 +234,7 @@ export type Database = {
           id: string
           inactiveFlag?: string | null
           lastName: string
+          organization?: string | null
           title?: string | null
           workerSid?: string | null
         }
@@ -269,6 +245,7 @@ export type Database = {
           id?: string
           inactiveFlag?: string | null
           lastName?: string
+          organization?: string | null
           title?: string | null
           workerSid?: string | null
         }
@@ -287,23 +264,39 @@ export type Database = {
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "contacts_organization_fkey"
+            columns: ["organization"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
         ]
       }
       organizations: {
         Row: {
-          company: string
+          company: string | null
           features: Json | null
           id: string
+          logoUrl: string | null
+          urlKey: string | null
+          userCount: number | null
         }
         Insert: {
-          company: string
+          company?: string | null
           features?: Json | null
           id?: string
+          logoUrl?: string | null
+          urlKey?: string | null
+          userCount?: number | null
         }
         Update: {
-          company?: string
+          company?: string | null
           features?: Json | null
           id?: string
+          logoUrl?: string | null
+          urlKey?: string | null
+          userCount?: number | null
         }
         Relationships: [
           {
@@ -315,7 +308,7 @@ export type Database = {
           },
         ]
       }
-      product_attributes: {
+      productAttributes: {
         Row: {
           attribute: string
           product: string
@@ -345,7 +338,7 @@ export type Database = {
           },
         ]
       }
-      product_inventory: {
+      productInventory: {
         Row: {
           cost: number | null
           id: string
@@ -408,6 +401,41 @@ export type Database = {
             columns: ["parent"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          color: string
+          icon: Database["public"]["Enums"]["icon"]
+          id: string
+          identifier: string
+          name: string
+          organization: string
+        }
+        Insert: {
+          color: string
+          icon: Database["public"]["Enums"]["icon"]
+          id?: string
+          identifier: string
+          name: string
+          organization: string
+        }
+        Update: {
+          color?: string
+          icon?: Database["public"]["Enums"]["icon"]
+          id?: string
+          identifier?: string
+          name?: string
+          organization?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_organization_fkey"
+            columns: ["organization"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -622,16 +650,82 @@ export type Database = {
         }
         Relationships: []
       }
+      users: {
+        Row: {
+          email: string | null
+          id: string
+          image: string | null
+          name: string | null
+        }
+        Insert: {
+          email?: string | null
+          id: string
+          image?: string | null
+          name?: string | null
+        }
+        Update: {
+          email?: string | null
+          id?: string
+          image?: string | null
+          name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      authorize: {
+        Args: {
+          requested_permission: Database["public"]["Enums"]["app_permission"]
+        }
+        Returns: boolean
+      }
+      check_user_organization: {
+        Args: {
+          org_id: string
+          user_id: string
+        }
+        Returns: boolean
+      }
+      check_user_organization_membership:
+        | {
+            Args: Record<PropertyKey, never>
+            Returns: boolean
+          }
+        | {
+            Args: {
+              user_id: string
+            }
+            Returns: boolean
+          }
+        | {
+            Args: {
+              user_id: string
+              org_id: string
+            }
+            Returns: boolean
+          }
       create_new_ticket: {
         Args: {
           summary: string
         }
         Returns: undefined
+      }
+      custom_access_token_hook: {
+        Args: {
+          event: Json
+        }
+        Returns: Json
       }
       execute_action:
         | {
@@ -648,6 +742,8 @@ export type Database = {
           }
     }
     Enums: {
+      app_permission: "channels.delete" | "messages.delete"
+      app_role: "admin" | "moderator"
       "Block Type":
         | "heading_1"
         | "heading_2"
@@ -668,6 +764,10 @@ export type Database = {
         | "monitor"
       impact: "Low" | "Medium" | "High"
       recordType: "ProjectIssue" | "ProjectTicket" | "ServiceTicket"
+      secretKeyType:
+        | "TWILIO_ACCOUNT_SID"
+        | "TWILIO_AUTH_TOKEN"
+        | "TWILIO_WORKSPACE_SID"
       severity: "Low" | "Medium" | "High"
       statusCategory: "TODO" | "IN_PROGRESS" | "DONE"
       where: "OnSite" | "Remote" | "InHouse"

@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import ContactSelector from '@/components/contact-selector';
 import { cookies } from 'next/headers';
+import CallWorkflowBuilder from '@/components/call-workflow-builder';
 
 type Props = {};
 
@@ -27,33 +28,31 @@ const Page = async (props: Props) => {
 		.returns<CompanyWithSecrets[]>()
 		.single();
 
-	console.log(error);
+	// console.log(error);
 
 	if (!organization || error) return notFound();
 
 	const data = organization.company;
 	const authToken = data.company_secrets.find((s) => s.key === 'TWILIO_AUTH_TOKEN')?.value;
-	const accountSid = data.company_secrets.find((s) => s.key === 'TWILIO_ACCOUNT_SID')?.value;
-	const workspaceSid = data.company_secrets.find((s) => s.key === 'TWILIO_WORKSPACE_SID')?.value;
 
-	data.company_secrets.forEach((secret) => console.log(secret.key, secret.value));
+	// data.company_secrets.forEach((secret) => console.log(secret.key, secret.value));
 
 	const headers = new Headers();
 	headers.append('authToken', authToken ?? '');
 
 	const responses = await Promise.all([
-		fetch(`http://localhost:3000/api/twilio/${accountSid}/workspace/${workspaceSid}/workflows`, { headers, next: { tags: ['workflows'] } }),
-		fetch(`http://localhost:3000/api/twilio/${accountSid}/workspace/${workspaceSid}/queues`, { headers, next: { tags: ['queues'] } }),
-		fetch(`http://localhost:3000/api/twilio/${accountSid}/workspace/${workspaceSid}/workers`, { headers, next: { tags: ['workers'] } }),
+		fetch(`http://localhost:3000/api/twilio/1}/workspace/1/workflows`, { headers, next: { tags: ['workflows'] } }),
+		fetch(`http://localhost:3000/api/twilio/1/workspace/$1/queues`, { headers, next: { tags: ['queues'] } }),
+		fetch(`http://localhost:3000/api/twilio/1/workspace/1/workers`, { headers, next: { tags: ['workers'] } }),
 	]);
 
 	const [workflows, queues, workers] = await Promise.all(responses.map((response) => response.json()));
 
-	console.log(workflows);
+	console.log(queues, workers);
 
 	const createWorker = async (formData: FormData) => {
 		'use server';
-		fetch(`http://localhost:3000/api/twilio/${accountSid}/workspace/${workspaceSid}/workers`, { method: 'POST', body: formData, headers });
+		fetch(`http://localhost:3000/api/twilio/${1}/workspace/${1}/workers`, { method: 'POST', body: formData, headers });
 	};
 
 	return (
@@ -137,6 +136,10 @@ const Page = async (props: Props) => {
 								</TableRow>
 							</TableHeader>
 							<TableBody>
+								<Dialog>
+									<DialogTrigger>Customize</DialogTrigger>
+									<CallWorkflowBuilder queues={queues} workers={workers} />
+								</Dialog>
 								{workflows &&
 									workflows?.length > 0 &&
 									workflows?.map((workflow: Workflow) => (

@@ -9,6 +9,7 @@ import { Separator } from './ui/separator';
 import { type Activity, Reservation } from 'twilio-taskrouter';
 import { Select, SelectContent, SelectItem, SelectTrigger } from './ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { useJabra } from '@/providers/jabraProvider';
 
 type Props = {
 	call?: Call;
@@ -17,17 +18,19 @@ type Props = {
 };
 
 const CallCard = ({ call, reservation, isCollapsed }: Props) => {
+	const { currentCallControl } = useJabra();
 	const [activities, setActivities] = useState<Activity[]>([]);
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (!reservation) return;
+		currentCallControl?.signalIncomingCall();
+
 		setIsOpen(true);
 		reservation.on('accepted', (e) => {
 			// e.on()
 		});
-	}, [reservation]);
-	console.log(isCollapsed);
+	}, [reservation, currentCallControl]);
 
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>

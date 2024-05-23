@@ -77,13 +77,13 @@
 		@apply min-h-screen relative flex flex-col;
 	}
 	h1 {
-		@apply text-2xl font-semibold;
+		@apply text-2xl font-medium;
 	}
 	h2 {
-		@apply text-xl font-semibold;
+		@apply text-xl font-medium;
 	}
 	h3 {
-		@apply text-lg font-semibold;
+		@apply text-lg font-medium;
 	}
 	header {
 		@apply flex w-full justify-between items-center py-3 px-6 sticky top-0 bg-background/80 z-10 backdrop-blur-lg;

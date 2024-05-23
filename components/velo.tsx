@@ -13,9 +13,10 @@ interface Props {
 	defaultCollapsed?: boolean;
 	navCollapsedSize: number;
 	children: React.ReactNode;
+	teams: Team[];
 }
 
-export function Velo({ defaultLayout = [15, 85], defaultCollapsed = false, navCollapsedSize, children }: Props) {
+export function Velo({ defaultLayout = [15, 85], defaultCollapsed = false, navCollapsedSize, children, teams }: Props) {
 	const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
 
 	//
@@ -41,7 +42,7 @@ export function Velo({ defaultLayout = [15, 85], defaultCollapsed = false, navCo
 					// }}
 					className={cn(isCollapsed && 'min-w-[50px] transition-all duration-300 ease-in-out sticky top-0 left-0')}
 				>
-					<Nav isCollapsed={false} />
+					<Nav isCollapsed={false} teams={teams} />
 				</ResizablePanel>
 
 				<ResizableHandle withHandle />

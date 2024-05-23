@@ -1,4 +1,5 @@
 'use server'
+import jwt from 'jsonwebtoken'
 
 import { cookies } from "next/headers";
 
@@ -7,15 +8,16 @@ export const setProviderCookies = (accountSid: string | undefined, authToken: st
 
 	console.log(accountSid, authToken, workspaceSid)
 	
+	
 	if (!!!accountSid) {
-		cookieStore.set('TWILIO_ACCOUNT_SID', accountSid!);
+		cookieStore.set('twilio:accountSid', accountSid!);
 	}
 
 	if (!!!accountSid) {
-		cookieStore.set('TWILIO_AUTH_TOKEN', authToken!);
+		cookieStore.set('twilio:authToken', authToken!);
 	}
 
 	if (!!!accountSid) {
-		cookieStore.set('TWILIO_WORKSPACE_SID', workspaceSid!);
+		cookieStore.set('twilio:workspaceSid', workspaceSid!);
 	}
 };

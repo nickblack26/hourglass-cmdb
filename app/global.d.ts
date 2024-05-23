@@ -29,4 +29,5 @@ declare global {
 	type Severity = DB['public']['Enums']['severity'];
 	type Where = DB['public']['Enums']['where'];
 	type BlockType = DB['public']['Enums']['Block Type'];
+	type Team = DB['public']['Tables']['teams']['Row'];
 }

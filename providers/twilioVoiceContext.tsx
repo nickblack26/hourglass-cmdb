@@ -4,14 +4,16 @@ import { setProviderCookies } from '@/app/actions';
 import type { Device, Call } from '@twilio/voice-sdk';
 import React, { useContext, useEffect, useState } from 'react';
 import { Reservation, Worker } from 'twilio-taskrouter';
+import { Twilio } from 'twilio';
+import { useJabra } from './jabraProvider';
 
 interface TwilioProviderProps {
 	reservations: Reservation[];
 	worker: Worker | undefined;
-	accountSid: string | undefined;
-	workspaceSid: string | undefined;
-	authToken: string | undefined;
+	currentWorkspace: string | undefined;
+	setCurrentWorkspace: React.Dispatch<React.SetStateAction<string | undefined>>;
 	identity: string;
+	client: Twilio | undefined;
 	setIdentity: React.Dispatch<React.SetStateAction<string>>;
 	currentCall?: Call;
 	setCurrentCall: React.Dispatch<React.SetStateAction<Call | undefined>>;
@@ -22,10 +24,10 @@ interface TwilioProviderProps {
 const initialValues: TwilioProviderProps = {
 	reservations: [],
 	worker: undefined,
-	accountSid: '',
-	workspaceSid: '',
-	authToken: '',
 	identity: '',
+	client: undefined,
+	currentWorkspace: '',
+	setCurrentWorkspace: () => undefined,
 	setIdentity: () => undefined,
 	currentCall: undefined,
 	setCurrentCall: () => undefined,
@@ -47,22 +49,24 @@ const { Provider } = context;
 export const TwilioProvider = ({ contact, accountSid, authToken, workspaceSid, children }: WithChildProps) => {
 	const [worker, setWorker] = useState<Worker>();
 	const [reservations, setReservations] = useState<Reservation[]>([]);
+	const [currentWorkspace, setCurrentWorkspace] = useState<string | undefined>(workspaceSid);
 	const [identity, setIdentity] = useState<string>('');
 	const [currentCall, setCurrentCall] = useState<Call | undefined>();
 	const [device, setDevice] = useState<Device | undefined>();
+	const client = new Twilio('', '');
+
+	const { currentCallControl } = useJabra();
 
 	useEffect(() => {
 		setProviderCookies(accountSid, authToken, workspaceSid);
-		console.log(contact, accountSid, workspaceSid, contact?.workerSid);
-		if (!contact || !accountSid || !workspaceSid || !contact.workerSid) return;
-
 		if (!worker) {
-			fetch('http://localhost:3000/api/twilio/1/create-key', { method: 'POST' })
+			fetch('https://localhost:3001/api/twilio/1/create-key', { method: 'POST' })
 				.then((response) => response.json())
 				.then((data) => {
+					console.log(data);
 					setWorker(new Worker(data.token));
 				})
-				.catch((data) => console.log(data));
+				.catch((data) => console.error(data));
 		}
 
 		worker?.on('ready', (worker) => {
@@ -72,35 +76,29 @@ export const TwilioProvider = ({ contact, accountSid, authToken, workspaceSid, c
 		worker?.on('reservationCreated', (reservation: Reservation) => {
 			console.log(`Reservation ${reservation.sid} has been created for ${worker.sid}`);
 			console.log(`Task attributes are: ${reservation.task.attributes}`);
-			setReservations([...reservations, reservation]);
 
+			console.log(worker.activities);
+
+			currentCallControl?.signalIncomingCall();
 			reservation.on('accepted', (acceptedReservation) => {
 				console.log(`Reservation ${acceptedReservation.sid} was accepted.`);
+
 				setReservations([...reservations.filter((res) => res.sid === acceptedReservation.sid)]);
 			});
-
-			// reservation
-			// 	.accept()
-			// 	.then((acceptedReservation) => {
-			// 		console.log(`Reservation status is ${acceptedReservation.status}`);
-			// 	})
-			// 	.catch((err) => {
-			// 		console.log(`Error: ${err}`);
-			// 	});
 		});
 
 		return () => {
 			worker?.removeAllListeners();
 		};
-	}, [contact, accountSid, workspaceSid, worker, authToken, reservations]);
+	}, []);
 
 	const values = {
 		reservations,
 		worker,
-		accountSid,
-		workspaceSid,
-		authToken,
 		identity,
+		client,
+		currentWorkspace,
+		setCurrentWorkspace,
 		setIdentity,
 		currentCall,
 		setCurrentCall,
