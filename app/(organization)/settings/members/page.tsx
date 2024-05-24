@@ -16,12 +16,13 @@ type Props = {};
 
 const Page = async (props: Props) => {
 	const supabase = createClient();
-	const { data: users, error } = await supabase.from('contacts').select();
+	const { data: users } = await supabase.from('users').select('id, firstName, lastName, email');
 
 	const action = async (formData: FormData) => {
 		'use server';
-		const { data, error } = await supabase.from('contacts').select().csv();
-		console.log(data, error);
+		const userEntry = formData.get('users') as string;
+		const emails = userEntry.split(',');
+		await Promise.all(emails.map((email) => supabase.auth.signUp({ email: email.trim(), password: '' })));
 	};
 
 	return (
@@ -57,10 +58,11 @@ const Page = async (props: Props) => {
 								<DialogHeader>
 									<DialogTitle>Invite to your workspace</DialogTitle>
 								</DialogHeader>
-
-								<LabeledInput label='Email'>
-									<Textarea placeholder='email@example.com, email2@example.com...' minRows={3} />
-								</LabeledInput>
+								<form action={action} name='inviteUsers' id='inviteUsers'>
+									<LabeledInput name='users' label='Email'>
+										<Textarea placeholder='email@example.com, email2@example.com...' name='users' minRows={3} />
+									</LabeledInput>
+								</form>
 
 								<DialogFooter className='sm:justify-between'>
 									<Button variant='link'>
@@ -74,7 +76,7 @@ const Page = async (props: Props) => {
 											</Button>
 										</DialogClose>
 
-										<Button type='submit' form='queueForm'>
+										<Button type='submit' form='inviteUsers'>
 											Save
 										</Button>
 									</div>

@@ -58,7 +58,7 @@ export type Database = {
             foreignKeyName: "assets_contact_fkey"
             columns: ["contact"]
             isOneToOne: false
-            referencedRelation: "contacts"
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {
@@ -215,70 +215,13 @@ export type Database = {
           },
         ]
       }
-      contacts: {
-        Row: {
-          company: string | null
-          email: string
-          firstName: string
-          id: string
-          inactiveFlag: string | null
-          lastName: string
-          organization: string | null
-          title: string | null
-          workerSid: string | null
-        }
-        Insert: {
-          company?: string | null
-          email: string
-          firstName: string
-          id: string
-          inactiveFlag?: string | null
-          lastName: string
-          organization?: string | null
-          title?: string | null
-          workerSid?: string | null
-        }
-        Update: {
-          company?: string | null
-          email?: string
-          firstName?: string
-          id?: string
-          inactiveFlag?: string | null
-          lastName?: string
-          organization?: string | null
-          title?: string | null
-          workerSid?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "contacts_company_fkey"
-            columns: ["company"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "contacts_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "contacts_organization_fkey"
-            columns: ["organization"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       organizations: {
         Row: {
           company: string | null
           features: Json | null
           id: string
           logoUrl: string | null
+          name: string | null
           urlKey: string | null
           userCount: number | null
         }
@@ -287,6 +230,7 @@ export type Database = {
           features?: Json | null
           id?: string
           logoUrl?: string | null
+          name?: string | null
           urlKey?: string | null
           userCount?: number | null
         }
@@ -295,6 +239,7 @@ export type Database = {
           features?: Json | null
           id?: string
           logoUrl?: string | null
+          name?: string | null
           urlKey?: string | null
           userCount?: number | null
         }
@@ -652,28 +597,87 @@ export type Database = {
       }
       users: {
         Row: {
-          email: string | null
+          company: string | null
+          email: string
+          firstName: string
           id: string
-          image: string | null
-          name: string | null
+          inactiveFlag: string | null
+          lastName: string
+          organization: string | null
+          title: string | null
+          workerSid: string | null
         }
         Insert: {
-          email?: string | null
+          company?: string | null
+          email: string
+          firstName: string
           id: string
-          image?: string | null
-          name?: string | null
+          inactiveFlag?: string | null
+          lastName: string
+          organization?: string | null
+          title?: string | null
+          workerSid?: string | null
         }
         Update: {
-          email?: string | null
+          company?: string | null
+          email?: string
+          firstName?: string
           id?: string
-          image?: string | null
-          name?: string | null
+          inactiveFlag?: string | null
+          lastName?: string
+          organization?: string | null
+          title?: string | null
+          workerSid?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "users_id_fkey"
+            foreignKeyName: "contacts_company_fkey"
+            columns: ["company"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_id_fkey"
             columns: ["id"]
             isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_organization_fkey"
+            columns: ["organization"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      userTeams: {
+        Row: {
+          team: string
+          user: string
+        }
+        Insert: {
+          team: string
+          user: string
+        }
+        Update: {
+          team?: string
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "userTeams_team_fkey"
+            columns: ["team"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "userTeams_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
@@ -740,6 +744,20 @@ export type Database = {
             }
             Returns: undefined
           }
+      is_organization_member: {
+        Args: {
+          organization_id: string
+          user_id: string
+        }
+        Returns: boolean
+      }
+      is_team_member: {
+        Args: {
+          team_id: string
+          user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       app_permission: "channels.delete" | "messages.delete"

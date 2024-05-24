@@ -42,7 +42,7 @@ const Links = ({ teams }: Props) => {
 
 	const sections: LinkSection[] = [
 		{
-			name: 'Workplace',
+			name: 'Workspace',
 			icon: Building,
 			href: '/settings',
 			links: [
@@ -56,6 +56,7 @@ const Links = ({ teams }: Props) => {
 				{ name: 'SLAs', href: '/slas', icon: ReceiptText },
 				{ name: 'Queues', href: '/queues', icon: ReceiptText },
 				{ name: 'Workflows', href: '/workflows', icon: ReceiptText },
+				{ name: 'Types', href: '/types', icon: ReceiptText },
 				{ name: 'Integrations', href: '#', icon: Layers },
 				{ name: 'Plans', href: '/plans', icon: ReceiptText },
 				{ name: 'Billing', href: '/billing', icon: ReceiptText },

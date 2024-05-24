@@ -16,7 +16,7 @@ const ContactSelector = ({ onValueChange, defaultValue, className }: Props) => {
 
 	useEffect(() => {
 		supabase
-			.from('contacts')
+			.from('users')
 			.select()
 			.order('firstName')
 			.then(({ data }) => setContacts(data));

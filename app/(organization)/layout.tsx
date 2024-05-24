@@ -30,7 +30,7 @@ const Layout = async ({ children }: Props) => {
 	} = await supabase.auth.getUser();
 
 	const { data: contact } = await supabase
-		.from('contacts')
+		.from('users')
 		.select()
 		.eq('id', user?.id ?? '')
 		.single();
@@ -45,11 +45,11 @@ const Layout = async ({ children }: Props) => {
 
 	return (
 		<JabraProvider>
-			<TwilioProvider contact={contact} accountSid={accountSid} authToken={authToken} workspaceSid={workspaceSid}>
-				<Velo defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4} teams={teams || []}>
-					{children}
-				</Velo>
-			</TwilioProvider>
+			{/* <TwilioProvider contact={contact} accountSid={accountSid} authToken={authToken} workspaceSid={workspaceSid}> */}
+			<Velo defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4} teams={teams || []}>
+				{children}
+			</Velo>
+			{/* </TwilioProvider> */}
 		</JabraProvider>
 	);
 };

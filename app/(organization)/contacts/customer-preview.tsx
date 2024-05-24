@@ -14,7 +14,7 @@ import CustomerTicketPreview from './customer-ticket-preview';
 export default async function CustomerPreviewSheet({ id }: { id: number }) {
 	const supabase = createClient();
 	const { data: contact, error } = await supabase
-		.from('contacts')
+		.from('users')
 		.select('id, firstName, lastName, title, defaultPhoneNbr, company(id, name), tickets(*)')
 		.eq('id', id)
 		.single();

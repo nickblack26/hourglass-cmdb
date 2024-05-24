@@ -16,7 +16,7 @@ import ViewFullDetails from './full-route-refresh';
 const Page = async (props: any) => {
 	const supabase = createClient();
 	const { data: contact } = await supabase
-		.from('contacts')
+		.from('users')
 		.select('id, firstName, lastName, title, defaultPhoneNbr, company(id, name)')
 		.eq('id', props.params.id)
 		.single();

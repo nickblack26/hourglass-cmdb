@@ -66,10 +66,13 @@ export function CommandMenu({ isCollapsed, ...props }: Props) {
 					</kbd>
 				)}
 			</Button>
+
 			<CommandDialog open={open} onOpenChange={setOpen}>
 				<CommandInput placeholder='Type a command or search...' />
+
 				<CommandList>
 					<CommandEmpty>No results found.</CommandEmpty>
+
 					<CommandGroup heading='Links'>
 						{/* {docsConfig.mainNav
 							.filter((navitem) => !navitem.external)
@@ -86,6 +89,7 @@ export function CommandMenu({ isCollapsed, ...props }: Props) {
 								</CommandItem>
 							))} */}
 					</CommandGroup>
+
 					{/* {docsConfig.sidebarNav.map((group) => (
 						<CommandGroup key={group.title} heading={group.title}>
 							{group.items.map((navItem) => (
@@ -104,7 +108,9 @@ export function CommandMenu({ isCollapsed, ...props }: Props) {
 							))}
 						</CommandGroup>
 					))} */}
+
 					<CommandSeparator />
+
 					<CommandGroup heading='Theme'>
 						<CommandItem onSelect={() => runCommand(() => setTheme('light'))}>
 							<SunIcon className='mr-1.5 h-4 w-4' />

@@ -29,7 +29,7 @@ type Props = {
 const Layout = async ({ children, params }: Props) => {
 	const supabase = createClient();
 
-	const { data: contact } = await supabase.from('contacts').select('id, firstName, lastName, title, company(id, name)').eq('id', params.id).single();
+	const { data: contact } = await supabase.from('users').select('id, firstName, lastName, title, company(id, name)').eq('id', params.id).single();
 
 	if (!contact) return notFound();
 

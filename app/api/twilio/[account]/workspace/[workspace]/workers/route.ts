@@ -24,7 +24,7 @@ export async function POST(request: Request, { params }: { params: { account: st
 	if (!authToken) return;
 	const formData = await request.formData()
 	const supabase = createClient()
-	const { data, error } = await supabase.from('contacts').select('email').eq('id', formData.get('contact') as string).single()
+	const { data, error } = await supabase.from('users').select('email').eq('id', formData.get('contact') as string).single()
 	if (!data || error) {
 		console.log(error)
 		return

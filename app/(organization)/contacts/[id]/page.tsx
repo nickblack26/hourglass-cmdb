@@ -23,7 +23,7 @@ import TicketTable from '@/components/ticket-table';
 const Page = async ({ params }: { params: { id: string } }) => {
 	const supabase = createClient();
 
-	const { data: contact } = await supabase.from('contacts').select('id, firstName, lastName, title, company(id, name)').eq('id', params.id).single();
+	const { data: contact } = await supabase.from('users').select('id, firstName, lastName, title, company(id, name)').eq('id', params.id).single();
 
 	if (!contact) return notFound();
 

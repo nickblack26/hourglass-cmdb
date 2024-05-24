@@ -90,7 +90,7 @@ const firstNavSection: NavLink[] = [
 		href: '/companies',
 	},
 	{
-		title: 'Contacts',
+		title: 'users',
 		label: '',
 		icon: UsersIcon,
 		variant: 'ghost',
@@ -144,14 +144,17 @@ export function Nav({ isCollapsed, teams }: NavProps) {
 				{navSections.map(({ header, links, footer }, index) => (
 					<ul key={index} className='flex flex-col gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-3'>
 						{header && !isCollapsed ? (
-							<Collapsible defaultOpen>
+							<Collapsible
+								defaultOpen
+								className='flex flex-col gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-3'
+							>
 								<div className='flex items-center gap-1.5'>
 									<h2 className='text-xs px-3 font-medium text-muted-foreground'>{header}</h2>
 									<CollapsibleTrigger>
 										<ArrowDown className='w-3 h-3 transition-transform duration-200' />
 									</CollapsibleTrigger>
 								</div>
-								<CollapsibleContent>
+								<CollapsibleContent className='flex flex-col gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-3'>
 									{links.length > 0 &&
 										links.map((link, index) =>
 											isCollapsed ? (

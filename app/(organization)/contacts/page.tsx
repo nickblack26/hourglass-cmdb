@@ -13,7 +13,7 @@ import NewContactForm from './new-contact-form';
 
 const Page = async () => {
 	const supabase = createClient();
-	const contactsWithCompany = supabase.from('contacts').select('*, company(id, name)').order('firstName');
+	const contactsWithCompany = supabase.from('users').select('*, company(id, name)').order('firstName');
 
 	const companiesQuery = supabase.from('companies').select().limit(15).order('id');
 
