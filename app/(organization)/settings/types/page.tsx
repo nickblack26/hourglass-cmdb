@@ -1,13 +1,15 @@
+'use server';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Cable, Cpu, HardDrive, Laptop, LucideIcon, MemoryStick, PcCase, Phone, PlusCircle, Printer, Router, Server } from 'lucide-react';
+import { Cable, Cpu, HardDrive, Laptop, ListFilterIcon, LucideIcon, MemoryStick, PcCase, Phone, Printer, Router, Server } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { IconSelector } from './icon-selector';
+import SettingsSection from '../settings-section';
+import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import TypeItem from './type-item';
+import LabeledInput from '@/components/labled-input';
+import { createAssetType } from '@/lib/supabase/create';
 
 interface Icon {
 	name: string;
@@ -18,7 +20,10 @@ interface Icon {
 export default async function Page() {
 	const supabase = createClient();
 
-	const { data: types, error } = await supabase.from('assetTypes').select();
+	const [{ data: types }, { data: organization }] = await Promise.all([
+		supabase.from('assetTypes').select('*, assetTypes(*)').is('parent', null),
+		supabase.from('organizations').select('id').single(),
+	]);
 
 	const icons: Icon[] = [
 		{ name: 'Phone', value: 'phone', icon: Phone },
@@ -35,7 +40,65 @@ export default async function Page() {
 
 	return (
 		<div className='grid gap-6'>
-			<Card>
+			<SettingsSection title='Workspace Types' description='Manage workspace types' />
+
+			<Separator />
+
+			<SettingsSection
+				title=''
+				description='Use labels and label groups to help organize and filter issues in your workspace. Labels created in this section are available for all teams to use. To create labels or label groups that only apply to certain teams, add them in the team-specific label settings.'
+			>
+				<div className='flex items-center justify-between gap-1.5'>
+					<div className='flex items-center gap-1.5'>
+						<Input placeholder='Filter by name...' className='max-w-72 h-8 w-full' />
+						<Button variant='outline'>
+							<ListFilterIcon className='w-3.5 h-3.5 mr-1.5' /> Filters
+						</Button>
+					</div>
+
+					<div className='flex items-center gap-1.5'>
+						<Button variant='outline'>New group</Button>
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button>New type</Button>
+							</DialogTrigger>
+
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>New type</DialogTitle>
+								</DialogHeader>
+
+								<form id='newTypeForm' action={createAssetType} className='space-y-3'>
+									<LabeledInput name='name' placeholder='Type name' label='Name' />
+
+									<LabeledInput name='icon' placeholder='icon' label='Icon'>
+										<IconSelector />
+									</LabeledInput>
+								</form>
+
+								<DialogFooter>
+									<DialogClose asChild>
+										<Button type='button' variant='secondary'>
+											Cancel
+										</Button>
+									</DialogClose>
+									<Button type='submit' form='newTypeForm'>
+										Save
+									</Button>
+								</DialogFooter>
+							</DialogContent>
+						</Dialog>
+					</div>
+				</div>
+
+				<div className='space-y-1.5'>
+					{types?.map((type) => (
+						<TypeItem key={type.id} type={type} />
+					))}
+				</div>
+			</SettingsSection>
+
+			{/* <Card>
 				<CardHeader>
 					<CardTitle>Stock</CardTitle>
 					<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
@@ -46,13 +109,13 @@ export default async function Page() {
 							<TableRow>
 								<TableHead>Name</TableHead>
 								<TableHead>Icon</TableHead>
-								{/* <TableHead className='w-[100px]'>Size</TableHead> */}
+								<TableHead className='w-[100px]'>Size</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
 							{types?.map((type) => (
 								<TableRow key={type.id}>
-									{/* <TableCell className='font-semibold'>GGPC-001</TableCell> */}
+									<TableCell className='font-semibold'>GGPC-001</TableCell>
 									<TableCell>
 										<Label htmlFor='name' className='sr-only'>
 											Name
@@ -74,7 +137,7 @@ export default async function Page() {
 						Add Type
 					</Button>
 				</CardFooter>
-			</Card>
+			</Card> */}
 		</div>
 	);
 }

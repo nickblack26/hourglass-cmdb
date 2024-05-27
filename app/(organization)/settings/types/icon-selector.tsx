@@ -14,6 +14,7 @@ export function IconSelector() {
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
+			<input name='icon' hidden value={selectedIcon?.value ?? undefined} />
 			<PopoverTrigger asChild>
 				<Button variant='outline' size='sm' className='w-full justify-start'>
 					{selectedIcon ? (
