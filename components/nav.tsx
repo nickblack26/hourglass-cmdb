@@ -24,8 +24,10 @@ import { AccountSwitcher } from './account-switcher';
 import { Separator } from '@/components/ui/separator';
 import { usePathname } from 'next/navigation';
 import { CommandMenu } from '@/components/command-menu';
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import UserInfo from './user-info';
+import { createClient } from '@/lib/supabase/client';
 
 interface NavLink {
 	title: string;
@@ -320,7 +322,9 @@ export function Nav({ isCollapsed, teams }: NavProps) {
 
 					<CommandMenu isCollapsed={isCollapsed} />
 
-					{/* {user && <UserInfo user={user} isCollapsed={isCollapsed} />} */}
+					<Suspense fallback={<div>Loading...</div>}>
+						<UserInfo isCollapsed={isCollapsed} />
+					</Suspense>
 				</ul>
 			</div>
 		</nav>

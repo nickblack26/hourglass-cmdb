@@ -31,4 +31,6 @@ declare global {
 	type Where = DB['public']['Enums']['where'];
 	type BlockType = DB['public']['Enums']['Block Type'];
 	type Team = DB['public']['Tables']['teams']['Row'];
+
+	type Integration = DB['public']['Tables']['integrations']['Row']
 }

@@ -1,5 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { icons } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import {
 	Bell,
@@ -15,6 +17,7 @@ import {
 	ReceiptText,
 	HandPlatter,
 	Building,
+	ArrowDown,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -36,6 +39,17 @@ interface Link {
 	href: string;
 	icon: LucideIcon;
 }
+
+const teamLinks: Link[] = [
+	{ name: 'General', href: '#', icon: HandPlatter },
+	{ name: 'Members', href: '/members', icon: HandPlatter },
+	{ name: 'Workflow', href: '/workflow', icon: HandPlatter },
+	{ name: 'Triage', href: '/triage', icon: HandPlatter },
+	{ name: 'Labels', href: '/lables', icon: HandPlatter },
+	{ name: 'Templates', href: '/templates', icon: HandPlatter },
+	{ name: 'Cycles', href: '/cycles', icon: HandPlatter },
+	{ name: 'Notifications', href: '/notifications', icon: HandPlatter },
+];
 
 const Links = ({ teams }: Props) => {
 	const pathname = usePathname();
@@ -76,12 +90,6 @@ const Links = ({ teams }: Props) => {
 				{ name: 'Advanced', href: '#', icon: LayoutGrid },
 			],
 		},
-		{
-			name: 'Teams',
-			icon: SquareUser,
-			href: '/settings/teams',
-			links: teams?.map((team) => ({ name: team.name, href: team.identifier, icon: LayoutGrid })),
-		},
 	];
 
 	return (
@@ -106,6 +114,41 @@ const Links = ({ teams }: Props) => {
 					})}
 				</ul>
 			))}
+
+			{teams?.map((team) => {
+				const teamIcon = icons.find((i) => i.value === team.icon);
+				return (
+					<Collapsible key={team.id} defaultOpen>
+						<ul>
+							<CollapsibleTrigger className='flex items-center gap-2 text-muted-foreground mb-2'>
+								{teamIcon && <teamIcon.icon className='w-3.5 h-3.5 inline' />}
+								<span className='text-sm font-medium'>{team.name}</span>
+								<ArrowDown className='w-3.5 h-3.5 inline' />
+							</CollapsibleTrigger>
+							<CollapsibleContent>
+								{teamLinks.map((link) => {
+									const href = `/settings/teams/${team.identifier}${link.href}`;
+
+									return (
+										<li key={link.href} className='pl-3'>
+											<Button
+												variant={pathname === href ? 'secondary' : 'ghost'}
+												size='sm'
+												className='h-7 py-0 w-full text-left justify-start'
+												asChild
+											>
+												<Link href={href} className={cn('text-muted-foreground', pathname === href && 'text-primary font-semibold')}>
+													{link.name}
+												</Link>
+											</Button>
+										</li>
+									);
+								})}
+							</CollapsibleContent>
+						</ul>
+					</Collapsible>
+				);
+			})}
 		</nav>
 	);
 };

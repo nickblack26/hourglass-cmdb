@@ -19,8 +19,6 @@ const Page = async (props: Props) => {
 			password: formData.get('password') as string,
 		});
 
-		console.log(data);
-
 		if (error) {
 			console.log(error);
 			return;

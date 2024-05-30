@@ -16,6 +16,7 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Metadata } from 'next';
+import WorkingHoursForm from '../contacts/new-contact-form/working-hours';
 
 export const metadata: Metadata = {
 	title: 'Workspace',
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 export default async function Page() {
 	const supabase = createClient();
 
-	const { data: organization } = await supabase.from('organizations').select('id, name, urlKey').single();
+	const { data: organization } = await supabase.from('organizations').select('id, name, urlKey, workSchedule').single();
 
 	return (
 		<div className='grid gap-6'>
@@ -54,6 +55,14 @@ export default async function Page() {
 				<LabeledInput placeholder='Acme Inc' name='name' label='Workspace name' defaultValue={organization?.name ?? undefined} />
 
 				<LabeledInput placeholder='acme-inc' name='urlKey' label='Workspace url' defaultValue={organization?.urlKey ?? undefined} />
+
+				<Button size='sm'>Update</Button>
+			</SettingsSection>
+
+			<Separator />
+
+			<SettingsSection title='Work schedule'>
+				<WorkingHoursForm workSchedule={organization?.workSchedule} />
 
 				<Button size='sm'>Update</Button>
 			</SettingsSection>

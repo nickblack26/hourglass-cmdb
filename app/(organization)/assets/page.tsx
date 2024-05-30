@@ -8,7 +8,6 @@ import ConfigurationsList from './configurations-list';
 import Metric from '@/components/Metric';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import ExpiredWarranties from './expired-warranties';
-import { createConfiguration } from '@/lib/supabase/create';
 import LabeledInput from '@/components/labled-input';
 
 const Page = async () => {
@@ -54,7 +53,7 @@ const Page = async () => {
 							<DialogHeader>
 								<DialogTitle>Create Asset</DialogTitle>
 							</DialogHeader>
-							<form action={createConfiguration} className='grid gap-3'>
+							<form className='grid gap-3'>
 								<LabeledInput name='name' label='Name' placeholder='Configuration Name' />
 
 								{/* <StatusSelector />

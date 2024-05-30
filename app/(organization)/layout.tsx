@@ -2,7 +2,6 @@ import React from 'react';
 import { Velo } from '@/components/velo';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
-import { JabraProvider } from '@/providers/jabraProvider';
 
 type Props = {
 	children: React.ReactNode;
@@ -20,14 +19,29 @@ const Layout = async ({ children }: Props) => {
 	const defaultLayout = layout ? JSON.parse(layout.value) : undefined;
 	const defaultCollapsed = collapsed ? JSON?.parse(collapsed.value) : true;
 
+	const body = new FormData();
+	body.set('accountSid', '');
+	body.set('authToken', '');
+
+	await fetch('http://localhost:3000/api/orgContext', {
+		method: 'POST',
+		body: body,
+	});
+
 	return (
-		<JabraProvider>
-			{/* <TwilioProvider contact={contact} accountSid={accountSid} authToken={authToken} workspaceSid={workspaceSid}> */}
-			<Velo defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4} teams={teams || []}>
-				{children}
-			</Velo>
-			{/* </TwilioProvider> */}
-		</JabraProvider>
+		<Velo
+			defaultLayout={defaultLayout}
+			defaultCollapsed={defaultCollapsed}
+			navCollapsedSize={4}
+			teams={teams || []}
+		>
+			{children}
+		</Velo>
+		// <JabraProvider>
+		// 	<TwilioProvider contact={contact} accountSid={accountSid} authToken={authToken} workspaceSid={workspaceSid}> */}
+
+		// 	</TwilioProvider>
+		// </JabraProvider>
 	);
 };
 

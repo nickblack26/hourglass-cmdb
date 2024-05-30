@@ -8,19 +8,23 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Icon, icons } from '@/lib/data';
 
-export function IconSelector() {
+type Props = {
+	defaultValue?: string;
+	className?: string;
+};
+
+export function IconSelector({ defaultValue, className }: Props) {
 	const [open, setOpen] = React.useState(false);
-	const [selectedIcon, setSelectedIcon] = React.useState<Icon | null>(null);
+	const [selectedIcon, setSelectedIcon] = React.useState<Icon | null>(icons.find((i) => i.value === defaultValue) || null);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<input name='icon' hidden value={selectedIcon?.value ?? undefined} />
+			<input name='icon' hidden defaultValue={selectedIcon?.value ?? undefined} />
 			<PopoverTrigger asChild>
-				<Button variant='outline' size='sm' className='w-full justify-start'>
+				<Button variant='outline' size='icon' className={cn('p-1.5 shrink-0', selectedIcon && 'w-9', className)}>
 					{selectedIcon ? (
 						<>
-							<selectedIcon.icon className='mr-2 h-4 w-4 shrink-0' />
-							{selectedIcon.label}
+							<selectedIcon.icon className='h-3.5 w-3.5' />
 						</>
 					) : (
 						<>+ Set icon</>

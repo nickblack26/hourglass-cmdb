@@ -84,6 +84,7 @@ export type Database = {
           id: string
           name: string
           organization: string | null
+          parent: string | null
         }
         Insert: {
           created_at?: string
@@ -91,6 +92,7 @@ export type Database = {
           id?: string
           name: string
           organization?: string | null
+          parent?: string | null
         }
         Update: {
           created_at?: string
@@ -98,6 +100,7 @@ export type Database = {
           id?: string
           name?: string
           organization?: string | null
+          parent?: string | null
         }
         Relationships: [
           {
@@ -105,6 +108,13 @@ export type Database = {
             columns: ["organization"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assetTypes_parent_fkey"
+            columns: ["parent"]
+            isOneToOne: false
+            referencedRelation: "assetTypes"
             referencedColumns: ["id"]
           },
         ]
@@ -189,28 +199,86 @@ export type Database = {
           },
         ]
       }
-      company_secrets: {
+      integrations: {
         Row: {
           id: string
-          key: Database["public"]["Enums"]["secretKeyType"]
-          value: string
+          name: string
+          type: Database["public"]["Enums"]["integrationType"]
         }
         Insert: {
-          id: string
-          key: Database["public"]["Enums"]["secretKeyType"]
-          value: string
+          id?: string
+          name: string
+          type: Database["public"]["Enums"]["integrationType"]
         }
         Update: {
           id?: string
-          key?: Database["public"]["Enums"]["secretKeyType"]
+          name?: string
+          type?: Database["public"]["Enums"]["integrationType"]
+        }
+        Relationships: []
+      }
+      organizationCredentials: {
+        Row: {
+          integration: string
+          organization: string
+          type: Database["public"]["Enums"]["secretKeyType"]
+          value: string
+        }
+        Insert: {
+          integration: string
+          organization: string
+          type: Database["public"]["Enums"]["secretKeyType"]
+          value: string
+        }
+        Update: {
+          integration?: string
+          organization?: string
+          type?: Database["public"]["Enums"]["secretKeyType"]
           value?: string
         }
         Relationships: [
           {
-            foreignKeyName: "company_secrets_id_fkey"
-            columns: ["id"]
+            foreignKeyName: "organizationCredentials_integration_fkey"
+            columns: ["integration"]
             isOneToOne: false
-            referencedRelation: "companies"
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizationCredentials_organization_fkey"
+            columns: ["organization"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizationIntegrations: {
+        Row: {
+          integration: string
+          organization: string
+        }
+        Insert: {
+          integration: string
+          organization: string
+        }
+        Update: {
+          integration?: string
+          organization?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizationIntegrations_integration_fkey"
+            columns: ["integration"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizationIntegrations_organization_fkey"
+            columns: ["organization"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -224,6 +292,7 @@ export type Database = {
           name: string | null
           urlKey: string | null
           userCount: number | null
+          workSchedule: Json | null
         }
         Insert: {
           company?: string | null
@@ -233,6 +302,7 @@ export type Database = {
           name?: string | null
           urlKey?: string | null
           userCount?: number | null
+          workSchedule?: Json | null
         }
         Update: {
           company?: string | null
@@ -242,6 +312,7 @@ export type Database = {
           name?: string | null
           urlKey?: string | null
           userCount?: number | null
+          workSchedule?: Json | null
         }
         Relationships: [
           {
@@ -349,6 +420,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      slas: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          penalty_clause: string | null
+          response_time: unknown
+          updated_at: string | null
+          uptime_percentage: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          penalty_clause?: string | null
+          response_time: unknown
+          updated_at?: string | null
+          uptime_percentage: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          penalty_clause?: string | null
+          response_time?: unknown
+          updated_at?: string | null
+          uptime_percentage?: number
+        }
+        Relationships: []
       }
       teams: {
         Row: {
@@ -781,6 +882,7 @@ export type Database = {
         | "pc-case"
         | "monitor"
       impact: "Low" | "Medium" | "High"
+      integrationType: "headset" | "communication"
       recordType: "ProjectIssue" | "ProjectTicket" | "ServiceTicket"
       secretKeyType:
         | "TWILIO_ACCOUNT_SID"

@@ -23,17 +23,26 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu';
+import { createClient } from '@/lib/supabase/client';
+import { useEffect, useState } from 'react';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 type Props = {
-	user: Contact;
 	worker: Worker | null;
 	isCollapsed: boolean;
 };
 
 type Checked = DropdownMenuCheckboxItemProps['checked'];
 
-const UserInfo = ({ user, worker, isCollapsed }: Props) => {
+const UserInfo = ({ worker, isCollapsed }: Props) => {
+	const [user, setUser] = useState<SupabaseUser | undefined>();
 	const { callControlDevices, currentCallControl, setCurrentCallControl } = useJabra();
+
+	const supabase = createClient();
+
+	useEffect(() => {
+		supabase.auth.getSession().then(({ data }) => setUser(data.session?.user));
+	}, [supabase.auth]);
 
 	return (
 		<Popover>
@@ -51,10 +60,10 @@ const UserInfo = ({ user, worker, isCollapsed }: Props) => {
 						</TooltipContent>
 					</Tooltip>
 				) : (
-					<Button variant='ghost' size='icon' className='justify-start'>
+					<Button variant='ghost' size='icon' className='justify-start w-auto px-3'>
 						<User className='h-4 w-4 mr-1.5' />
 						<span className='group-[[data-collapsed=true]]:hidden'>
-							{user.firstName} {user.lastName}
+							{user?.user_metadata.firstName} {user?.user_metadata.lastName}
 						</span>
 					</Button>
 				)}
@@ -64,7 +73,7 @@ const UserInfo = ({ user, worker, isCollapsed }: Props) => {
 				<header className='p-0 justify-start gap-3'>
 					<div>
 						<p className='font-semibold text-sm'>Nick Black</p>
-						<p className='text-sm'>{user.email}</p>
+						<p className='text-sm'>{user?.user_metadata.email}</p>
 					</div>
 				</header>
 
