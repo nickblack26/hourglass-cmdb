@@ -1,9 +1,9 @@
 'use client';
 import React, { useState } from 'react';
-import { workDays as defaultWorkDays } from '@/app/(organization)/settings/account/hours/data';
+import { workDays as defaultWorkDays } from '@/app/settings/account/hours/data';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
-import TimeSelector from '@/components/time-selector';
+import TimeSelector from '@/components/selector/time-selector';
 
 type Props = {};
 
@@ -14,9 +14,15 @@ const WorkingHoursForm = (props: Props) => {
 			{defaultWorkDays
 				.sort((a, b) => a.day.id - b.day.id)
 				.map((day, index) => (
-					<div key={day.day.id} className='grid grid-cols-3 items-center gap-3 justify-between border-t first:border-t-0 py-2'>
+					<div
+						key={day.day.id}
+						className='grid grid-cols-3 items-center gap-3 justify-between border-t first:border-t-0 py-2'
+					>
 						<div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-							<Switch defaultChecked={day.enabled} onCheckedChange={(e) => setWorkDays([...workDays, { ...workDays[index], enabled: e }])} />
+							<Switch
+								defaultChecked={day.enabled}
+								onCheckedChange={(e) => setWorkDays([...workDays, { ...workDays[index], enabled: e }])}
+							/>
 							<p>{day.day.name}</p>
 						</div>
 

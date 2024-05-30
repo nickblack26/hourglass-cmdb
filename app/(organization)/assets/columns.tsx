@@ -3,12 +3,26 @@
 import StatusBadge from '@/components/status-badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { icons } from '@/lib/data';
 import { deleteConfiguration } from '@/lib/supabase/delete';
+import { cn } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisIcon, Trash2 } from 'lucide-react';
 import Link from 'next/link';
@@ -45,12 +59,13 @@ export const columns: ColumnDef<Asset>[] = [
 			const icon = icons.find((icon) => icon.value === type?.icon);
 
 			return (
-				<Button variant='link' size='default' className='text-blue-600' asChild>
-					<Link href={`/assets/${row.original.id}`} className='line-clamp-1'>
-						{icon && <icon.icon className='w-3.5 h-3.5 mr-1.5' />}
-						{row.getValue('name')}
-					</Link>
-				</Button>
+				<Link
+					href={`/asset/${row.original.id}`}
+					className={cn(buttonVariants({ variant: 'link', size: 'default' }), 'text-blue-600')}
+				>
+					{icon && <icon.icon className='mr-1.5' />}
+					{row.getValue('name')}
+				</Link>
 			);
 		},
 	},
@@ -86,12 +101,12 @@ export const columns: ColumnDef<Asset>[] = [
 			return (
 				<div className='grid grid-cols-[24px_1fr] gap-1.5 items-center'>
 					<Avatar className='h-6 w-6'>
-						<AvatarFallback className='uppercase h-6 w-6 text-xs'>{`${contact.firstName ? contact?.firstName[0] : ''}${
-							contact.lastName ? contact.lastName[0] : ''
+						<AvatarFallback className='uppercase h-6 w-6 text-xs'>{`${contact?.firstName ? contact?.firstName[0] : ''}${
+							contact?.lastName ? contact?.lastName[0] : ''
 						}`}</AvatarFallback>
 					</Avatar>
 					<span className='font-medium'>
-						{contact.firstName} {contact.lastName}
+						{contact?.firstName} {contact?.lastName}
 					</span>
 				</div>
 			);
@@ -104,14 +119,17 @@ export const columns: ColumnDef<Asset>[] = [
 			<Dialog>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant='ghost' size='sm'>
+						<Button
+							variant='ghost'
+							size='sm'
+						>
 							<EllipsisIcon className='w-4 h-4' />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
 						<DialogTrigger asChild>
 							<DropdownMenuItem className='text-red-500 focus:bg-red-50 focus:text-red-500'>
-								<Trash2 className='h-3.5 w-3.5 mr-1.5' />
+								<Trash2 className=' w-3.5 mr-1.5' />
 								Delete
 							</DropdownMenuItem>
 						</DialogTrigger>

@@ -3,6 +3,7 @@ import { Velo } from '@/components/velo';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { JabraProvider } from '@/providers/jabraProvider';
+import { redirect } from 'next/navigation';
 
 type Props = {
 	children: React.ReactNode;
@@ -14,6 +15,18 @@ const Layout = async ({ children }: Props) => {
 
 	const { data: teams } = await supabase.from('teams').select();
 
+	const {
+		data: { session },
+	} = await supabase.auth.getSession();
+
+	const { data: user } = await supabase
+		.from('users')
+		.select()
+		.eq('id', session?.user?.id ?? '')
+		.single();
+
+	if (!user) return redirect('/login');
+
 	const layout = cookieStore.get('react-resizable-panels:layout');
 	const collapsed = cookieStore.get('react-resizable-panels:collapsed');
 
@@ -23,7 +36,7 @@ const Layout = async ({ children }: Props) => {
 	return (
 		<JabraProvider>
 			{/* <TwilioProvider contact={contact} accountSid={accountSid} authToken={authToken} workspaceSid={workspaceSid}> */}
-			<Velo defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4} teams={teams || []}>
+			<Velo user={user} defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4} teams={teams || []}>
 				{children}
 			</Velo>
 			{/* </TwilioProvider> */}

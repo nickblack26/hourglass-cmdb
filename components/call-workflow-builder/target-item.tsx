@@ -54,7 +54,7 @@ const TargetItem = ({ target, index, queues, workers, teams }: Props) => {
 	return (
 		<>
 			<div className='flex items-center gap-1.5 grow'>
-				<GripVertical className='h-3.5 w-3.5' />
+				<GripVertical className=' w-3.5' />
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant='outline' className='w-full'>

@@ -25,6 +25,15 @@ const nextConfig = {
 
 		return config;
 	},
+	async redirects() {
+		return [
+			{
+				source: '/team/:key',
+				destination: '/team/:key/companies',
+				permanent: true,
+			},
+		];
+	},
 };
 
 export default nextConfig;

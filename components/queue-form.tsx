@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 import LabeledInput from './labled-input';
 import { TaskQueueInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/taskQueue';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import ActivitySelector from './activity-selector';
+import ActivitySelector from './selector/activity-selector';
 
 type Props = {
 	queue?: TaskQueueInstance;
@@ -18,10 +18,25 @@ const QueueForm = ({ queue }: Props) => {
 	};
 
 	return (
-		<form action={action} name='queueForm' id='queueForm' className='space-y-3'>
-			<LabeledInput name='name' label='Queue name' placeholder='Name' defaultValue={queue?.friendlyName} required />
+		<form
+			action={action}
+			name='queueForm'
+			id='queueForm'
+			className='space-y-3'
+		>
+			<LabeledInput
+				name='name'
+				label='Queue name'
+				placeholder='Name'
+				defaultValue={queue?.friendlyName}
+				required
+			/>
 
-			<LabeledInput name='order' label='Task order' required>
+			<LabeledInput
+				name='order'
+				label='Task order'
+				required
+			>
 				<Select defaultValue='FIFO'>
 					<SelectTrigger>
 						<SelectValue placeholder='Choose task order...' />
@@ -33,7 +48,11 @@ const QueueForm = ({ queue }: Props) => {
 				</Select>
 			</LabeledInput>
 
-			<LabeledInput name='reservationActivity' label='Reservation activity' required>
+			<LabeledInput
+				name='reservationActivity'
+				label='Reservation activity'
+				required
+			>
 				<Suspense
 					fallback={
 						<Select disabled>
@@ -47,7 +66,11 @@ const QueueForm = ({ queue }: Props) => {
 				</Suspense>
 			</LabeledInput>
 
-			<LabeledInput name='assignmentActivity' label='Assignment Activity' required>
+			<LabeledInput
+				name='assignmentActivity'
+				label='Assignment Activity'
+				required
+			>
 				<Suspense
 					fallback={
 						<Select disabled>
