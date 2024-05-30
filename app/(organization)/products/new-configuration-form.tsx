@@ -9,9 +9,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { createClient } from '@/lib/supabase/client';
-import ContactSelector from '@/components/contact-selector';
+import ContactSelector from '@/components/selector/contact-selector';
 import { Suspense } from 'react';
-import CompanySelector from '@/components/company-selector';
+import CompanySelector from '@/components/selector/company-selector';
 
 const formSchema = z.object({
 	company: z.nullable(z.number().optional()),
@@ -53,7 +53,10 @@ export default function NewConfigurationForm({ products }: { products: Product[]
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+			<form
+				onSubmit={form.handleSubmit(onSubmit)}
+				className='space-y-8'
+			>
 				<FormField
 					control={form.control}
 					name='name'
@@ -61,7 +64,10 @@ export default function NewConfigurationForm({ products }: { products: Product[]
 						<FormItem>
 							<FormLabel>Name</FormLabel>
 							<FormControl>
-								<Input placeholder='Velo-12345' {...field} />
+								<Input
+									placeholder='Velo-12345'
+									{...field}
+								/>
 							</FormControl>
 							<FormDescription>This is the public display name.</FormDescription>
 							<FormMessage />
@@ -84,7 +90,11 @@ export default function NewConfigurationForm({ products }: { products: Product[]
 									</Select>
 								}
 							>
-								<CompanySelector onValueChange={field.onChange} defaultValue={field.value?.toString()} {...field} />
+								<CompanySelector
+									onValueChange={field.onChange}
+									defaultValue={field.value?.toString()}
+									{...field}
+								/>
 							</Suspense>
 
 							<FormMessage />
@@ -107,7 +117,11 @@ export default function NewConfigurationForm({ products }: { products: Product[]
 									</Select>
 								}
 							>
-								<ContactSelector onValueChange={field.onChange} defaultValue={field.value?.toString()} {...field} />
+								<ContactSelector
+									onValueChange={field.onChange}
+									defaultValue={field.value?.toString()}
+									{...field}
+								/>
 							</Suspense>
 
 							<FormMessage />
@@ -122,7 +136,10 @@ export default function NewConfigurationForm({ products }: { products: Product[]
 						<FormItem>
 							<FormLabel>Product</FormLabel>
 
-							<Select onValueChange={field.onChange} defaultValue={field.value ?? undefined}>
+							<Select
+								onValueChange={field.onChange}
+								defaultValue={field.value ?? undefined}
+							>
 								<FormControl>
 									<SelectTrigger>
 										<SelectValue placeholder='Select a company' />
@@ -130,7 +147,10 @@ export default function NewConfigurationForm({ products }: { products: Product[]
 								</FormControl>
 								<SelectContent>
 									{products.map(({ name, id }) => (
-										<SelectItem key={id} value={id.toString()}>
+										<SelectItem
+											key={id}
+											value={id.toString()}
+										>
 											{name}
 										</SelectItem>
 									))}

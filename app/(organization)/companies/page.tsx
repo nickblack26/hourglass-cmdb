@@ -6,7 +6,10 @@ import CompanyTable from './company-table';
 
 export default async function Page() {
 	const supabase = createClient();
-	const { data } = await supabase.from('companies').select();
+	const companiesQuery = supabase.from('companies').select().order('name');
+	const viewsQuery = supabase.from('views').select().order('name');
+
+	const [{ data: companies }, { data: views }] = await Promise.all([companiesQuery, viewsQuery]);
 
 	return (
 		<main>
@@ -19,7 +22,7 @@ export default async function Page() {
 			<Separator />
 
 			<section className='space-y-3'>
-				<CompanyTable data={data ?? []} />
+				<CompanyTable data={companies ?? []} />
 			</section>
 		</main>
 	);

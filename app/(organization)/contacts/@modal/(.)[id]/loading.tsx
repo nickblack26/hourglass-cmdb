@@ -37,18 +37,30 @@ const Loading = () => {
 	return (
 		<Modal>
 			<div className='grid grid-cols-2 justify-items-stretch h-full overflow-hidden'>
-				<Card className='bg-background rounded-lg h-full overflow-hidden flex flex-col' style={{ gridColumn: '2 / -1' }}>
+				<Card
+					className='bg-background rounded-lg h-full overflow-hidden flex flex-col'
+					style={{ gridColumn: '2 / -1' }}
+				>
 					<CardHeader className='flex flex-row items-center justify-between space-y-0 p-3'>
 						<div className='flex items-center gap-3'>
 							<CardTitle className='text-xl'>Customer Preview</CardTitle>
 
-							<Separator orientation='vertical' className='h-4' />
+							<Separator
+								orientation='vertical'
+								className='h-4'
+							/>
 
-							<Button variant='outline' className='rounded-full w-6 h-6 p-0'>
+							<Button
+								variant='outline'
+								className='rounded-full w-6 h-6 p-0'
+							>
 								<ChevronDownIcon className='w-4 h-4' />
 							</Button>
 
-							<Button variant='outline' className='rounded-full w-6 h-6 p-0'>
+							<Button
+								variant='outline'
+								className='rounded-full w-6 h-6 p-0'
+							>
 								<ChevronUpIcon className='w-4 h-4' />
 							</Button>
 
@@ -56,11 +68,17 @@ const Loading = () => {
 						</div>
 
 						<div className='flex items-center space-x-1.5'>
-							<Button variant='outline' size='sm'>
+							<Button
+								variant='outline'
+								size='sm'
+							>
 								View Full Details
 							</Button>
 
-							<Button variant='ghost' size='sm'>
+							<Button
+								variant='ghost'
+								size='sm'
+							>
 								<XIcon className='w-4 h-4' />
 							</Button>
 						</div>
@@ -79,7 +97,13 @@ const Loading = () => {
 								</div>
 
 								<p className='flex items-center'>
-									<Image src='/microsoftLogo.png' alt='Microsoft logo' height={12} width={12} className='inline-block mr-1.5' />
+									<Image
+										src='/microsoftLogo.png'
+										alt='Microsoft logo'
+										height={12}
+										width={12}
+										className='inline-block mr-1.5'
+									/>
 									<Skeleton className='h-4 w-12' />
 								</p>
 							</div>
@@ -91,21 +115,30 @@ const Loading = () => {
 								<Skeleton className='h-5 w-24' />
 							</div>
 
-							<Separator orientation='vertical' className='h-6' />
+							<Separator
+								orientation='vertical'
+								className='h-6'
+							/>
 
 							<div className='space-y-1.5 w-full'>
 								<p className='text-xs text-muted-foreground tracking-tight'>OVERDUE TICKETS</p>
 								<Skeleton className='h-5 w-24' />
 							</div>
 
-							<Separator orientation='vertical' className='h-6' />
+							<Separator
+								orientation='vertical'
+								className='h-6'
+							/>
 
 							<div className='space-y-1.5 w-full'>
 								<p className='text-xs text-muted-foreground tracking-tight'>AVG. RESPONSE TIME</p>
 								<Skeleton className='h-5 w-24' />
 							</div>
 
-							<Separator orientation='vertical' className='h-6' />
+							<Separator
+								orientation='vertical'
+								className='h-6'
+							/>
 
 							<div className='space-y-1.5 w-full'>
 								<p className='text-xs text-muted-foreground tracking-tight'>TOTAL RESPONSE TIME</p>
@@ -117,7 +150,10 @@ const Loading = () => {
 							<h3 className='font-medium text-muted-foreground'>Customer Details</h3>
 							<div className='grid grid-cols-2 gap-6'>
 								{customerDetails.map((detail, index) => (
-									<div key={detail.label} className='space-y-3'>
+									<div
+										key={detail.label}
+										className='space-y-3'
+									>
 										<div className='flex justify-between items-center gap-1.5'>
 											<p className='text-muted-foreground text-sm text-nowrap'>{detail.label}</p>
 											<div className='col-span-2 justify-self-end truncate text-sm'>{detail.value}</div>

@@ -1,332 +1,208 @@
 'use client';
-
-import Link from 'next/link';
-import {
-	LucideIcon,
-	LineChartIcon,
-	TicketIcon,
-	SparklesIcon,
-	UsersIcon,
-	CircleHelpIcon,
-	CableIcon,
-	ShoppingCartIcon,
-	Building2Icon,
-	Settings,
-	Inbox,
-	Scan,
-	Calendar,
-	ArrowDown,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { AccountSwitcher } from './account-switcher';
-import { Separator } from '@/components/ui/separator';
+import { Ticket, Focus, Building2, Settings, Inbox, SquareUser, Users, Cable } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { CommandMenu } from '@/components/command-menu';
-import { ReactNode, Suspense } from 'react';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import NavLinkItem from './nav-link-item';
+import NavLinkSection from './nav-link-section';
 import UserInfo from './user-info';
-import { createClient } from '@/lib/supabase/client';
+import { LinkItem, LinkSection } from '@/types/data';
+import { icons } from '@/lib/data';
+import Image from 'next/image';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { Button, buttonVariants } from './ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuGroup,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
-interface NavLink {
-	title: string;
-	label?: string;
-	icon: LucideIcon;
-	variant: 'default' | 'ghost';
-	href?: string;
-	action?: React.ReactNode;
-}
-
-interface NavSection {
-	header?: string;
-	links: NavLink[];
-	footer?: string | React.ReactNode;
-}
-
-const userNavSection: NavLink[] = [
+const userNavSection: LinkItem[] = [
 	{
-		title: 'Inbox',
-		label: '9',
+		name: 'Inbox',
 		icon: Inbox,
-		variant: 'default',
 		href: '/inbox',
 	},
 	{
-		title: 'My issues',
-		label: '128',
-		icon: Scan,
-		variant: 'default',
+		name: 'My issues',
+		icon: Focus,
 		href: '/my-issues/assigned',
 	},
 ];
 
-const firstNavSection: NavLink[] = [
+const firstNavSection: LinkItem[] = [
 	{
-		title: 'Dashboard',
-		label: '128',
-		icon: LineChartIcon,
-		variant: 'default',
-		href: '/',
-	},
-	{
-		title: 'Assets',
-		label: '',
-		icon: CableIcon,
-		variant: 'ghost',
+		name: 'Assets',
+		icon: Cable,
 		href: '/assets',
 	},
-
 	{
-		title: 'Tickets',
-		label: '23',
-		icon: TicketIcon,
-		variant: 'ghost',
+		name: 'Tickets',
+		icon: Ticket,
 		href: '/tickets',
 	},
-
 	{
-		title: 'Companies',
-		icon: Building2Icon,
-		variant: 'ghost',
+		name: 'Companies',
+		icon: Building2,
 		href: '/companies',
 	},
 	{
-		title: 'users',
-		label: '',
-		icon: UsersIcon,
-		variant: 'ghost',
+		name: 'Users',
+		icon: Users,
+		href: '/contacts',
+	},
+	{
+		name: 'Teams',
+		icon: SquareUser,
 		href: '/contacts',
 	},
 ];
 
-const appSections: {
-	label: string;
-	email: string;
-	icon: ReactNode;
-}[] = [
-	{
-		email: 'Service',
-		icon: <TicketIcon />,
-		label: 'Service',
-	},
-	{
-		email: 'Product',
-		icon: <ShoppingCartIcon />,
-		label: 'Product',
-	},
-	{
-		email: 'Knowledge Base',
-		icon: <SparklesIcon />,
-		label: 'Knowledge Base',
-	},
-];
-
-interface NavProps {
+type Props = {
 	isCollapsed: boolean;
 	teams: Team[];
-}
+	user: Contact;
+};
 
-export function Nav({ isCollapsed, teams }: NavProps) {
-	const mappedTeams: NavLink[] = teams.map((team) => ({ title: team.name, icon: Calendar, variant: 'default', href: `/teams/${team.identifier}` }));
+export function Nav({ isCollapsed, teams, user }: Props) {
 	const pathname = usePathname();
-	const navSections: NavSection[] = [
+
+	const mappedTeams: LinkItem[] = teams.map((team) => ({
+		name: team.name,
+		icon: icons.find((icon) => icon.value === team.icon)?.icon,
+		href: `/team/${team.identifier}`,
+		links: [
+			{
+				name: 'Companies',
+				icon: SquareUser,
+				href: `/team/${team.identifier}/companies`,
+			},
+			{
+				name: 'Contacts',
+				icon: Users,
+				href: `/team/${team.identifier}/contacts`,
+			},
+			{
+				name: 'Assets',
+				icon: Cable,
+				href: `/team/${team.identifier}/assets`,
+			},
+			{
+				name: 'Tickets',
+				icon: Ticket,
+				href: `/team/${team.identifier}/tickets`,
+			},
+		],
+	}));
+
+	const navSections: LinkSection[] = [
 		{ links: userNavSection },
-		{ header: 'Workspace', links: firstNavSection },
-		{ header: 'Teams', links: mappedTeams },
+		{ name: 'Workspace', links: firstNavSection },
+		{ name: 'Teams', links: mappedTeams },
 	];
 
 	return (
-		<nav data-collapsed={isCollapsed} className='group flex flex-col gap-3 p-2 data-[collapsed=true]:py-2 bg-neutral-100 h-screen'>
-			<AccountSwitcher isCollapsed={isCollapsed} accounts={appSections} />
-
-			<Separator />
-
-			<div className='flex flex-col h-full gap-6 pb-3'>
-				{navSections.map(({ header, links, footer }, index) => (
-					<ul key={index} className='flex flex-col gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-3'>
-						{header && !isCollapsed ? (
-							<Collapsible
-								defaultOpen
-								className='flex flex-col gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-3'
-							>
-								<div className='flex items-center gap-1.5'>
-									<h2 className='text-xs px-3 font-medium text-muted-foreground'>{header}</h2>
-									<CollapsibleTrigger>
-										<ArrowDown className='w-3 h-3 transition-transform duration-200' />
-									</CollapsibleTrigger>
-								</div>
-								<CollapsibleContent className='flex flex-col gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-3'>
-									{links.length > 0 &&
-										links.map((link, index) =>
-											isCollapsed ? (
-												<Tooltip key={index} delayDuration={0}>
-													<TooltipTrigger asChild>
-														{link.href ? (
-															<Link
-																href={link?.href ?? '#'}
-																className={cn(
-																	buttonVariants({ variant: link.href === pathname ? 'default' : 'ghost', size: 'icon' }),
-																	'h-9 w-9',
-																	link.href === pathname && 'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-																)}
-															>
-																<link.icon className='h-4 w-4' />
-																<span className='sr-only'>{link.title}</span>
-															</Link>
-														) : (
-															<>{link.action}</>
-														)}
-													</TooltipTrigger>
-													<TooltipContent side='right' className='flex items-center gap-3'>
-														{link.title}
-														{link.label && <span className='ml-auto text-muted-foreground'>{link.label}</span>}
-													</TooltipContent>
-												</Tooltip>
-											) : (
-												<>
-													{link.href ? (
-														<Link
-															key={index}
-															href={link?.href ?? '#'}
-															className={cn(
-																buttonVariants({ variant: link.href === pathname ? 'default' : 'ghost', size: 'sm' }),
-																link.href === pathname && 'dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white',
-																'justify-start',
-																index + 1 === links.length && 'mt-auto'
-															)}
-														>
-															<link.icon className='mr-1.5 h-4 w-4' />
-															{link.title && !isCollapsed && <span className='group-[[data-collapsed=true]]:hidden'>{link.title}</span>}
-															{link.label && !isCollapsed && (
-																<span
-																	className={cn(
-																		'ml-auto',
-																		link.variant === 'default' && 'text-background dark:text-white',
-																		'rounded-full bg-red-600 w-6 h-6 flex items-center justify-center'
-																	)}
-																>
-																	{link.label}
-																</span>
-															)}
-														</Link>
-													) : (
-														<></>
-													)}
-												</>
-											)
-										)}
-								</CollapsibleContent>
-							</Collapsible>
-						) : (
-							<>
-								{header && !isCollapsed && <h2 className='text-xs px-3 font-medium text-muted-foreground'>{header}</h2>}
-								{links.length > 0 &&
-									links.map((link, index) =>
-										isCollapsed ? (
-											<Tooltip key={index} delayDuration={0}>
-												<TooltipTrigger asChild>
-													{link.href ? (
-														<Link
-															href={link?.href ?? '#'}
-															className={cn(
-																buttonVariants({ variant: link.href === pathname ? 'default' : 'ghost', size: 'icon' }),
-																'h-9 w-9',
-																link.href === pathname && 'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-															)}
-														>
-															<link.icon className='h-4 w-4' />
-															<span className='sr-only'>{link.title}</span>
-														</Link>
-													) : (
-														<>{link.action}</>
-													)}
-												</TooltipTrigger>
-												<TooltipContent side='right' className='flex items-center gap-3'>
-													{link.title}
-													{link.label && <span className='ml-auto text-muted-foreground'>{link.label}</span>}
-												</TooltipContent>
-											</Tooltip>
-										) : (
-											<>
-												{link.href ? (
-													<Link
-														key={index}
-														href={link?.href ?? '#'}
-														className={cn(
-															buttonVariants({ variant: link.href === pathname ? 'default' : 'ghost', size: 'sm' }),
-															link.href === pathname && 'dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white',
-															'justify-start',
-															index + 1 === links.length && 'mt-auto'
-														)}
-													>
-														<link.icon className='mr-1.5 h-4 w-4' />
-														{link.title && !isCollapsed && <span className='group-[[data-collapsed=true]]:hidden'>{link.title}</span>}
-														{link.label && !isCollapsed && (
-															<span
-																className={cn(
-																	'ml-auto',
-																	link.variant === 'default' && 'text-background dark:text-white',
-																	'rounded-full bg-red-600 w-6 h-6 flex items-center justify-center'
-																)}
-															>
-																{link.label}
-															</span>
-														)}
-													</Link>
-												) : (
-													<></>
-												)}
-											</>
-										)
-									)}
-								{footer && !isCollapsed && <span className='text-xs px-3 font-light text-muted-foreground'>{footer}</span>}
-							</>
-						)}
-					</ul>
-				))}
-
-				<ul className='flex flex-col gap-1 mt-auto'>
-					{isCollapsed ? (
-						<Tooltip delayDuration={0}>
-							<TooltipTrigger asChild>
-								<Link
-									href='/settings'
-									className={cn(
-										buttonVariants({ variant: pathname.includes('/settings') ? 'default' : 'ghost', size: 'icon' }),
-										'h-9 w-9',
-										pathname.includes('/settings') && 'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-									)}
-								>
-									<Settings className='h-4 w-4' />
-									<span className='sr-only'>Settings</span>
-								</Link>
-							</TooltipTrigger>
-							<TooltipContent side='right' className='flex items-center gap-3'>
-								Settings
-							</TooltipContent>
-						</Tooltip>
-					) : (
-						<Link
-							href='/settings'
-							className={cn(
-								buttonVariants({ variant: pathname.includes('/settings') ? 'default' : 'ghost', size: 'sm' }),
-								pathname.includes('/settings') && 'dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white',
-								'justify-start'
-							)}
+		<nav
+			data-collapsed={isCollapsed}
+			className='group flex flex-col gap-3 p-2 data-[collapsed=true]:py-2 bg-secondary h-screen'
+		>
+			<div className='inline-flex items-center'>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							variant='ghost'
+							className='justify-start w-full'
 						>
-							<Settings className='h-4 w-4 mr-1.5' />
-							<span className='group-[[data-collapsed=true]]:hidden'>Settings</span>
-						</Link>
-					)}
+							<Image
+								src='/hourglass.svg'
+								alt='Hourglass logo'
+								width={14}
+								height={14}
+								className='mr-1.5'
+							/>
 
-					<CommandMenu isCollapsed={isCollapsed} />
+							<span className='group-[[data-collapsed=true]]:hidden font-semibold text-primary text-sm line-clamp-1'>
+								Hourglass
+							</span>
+						</Button>
+					</DropdownMenuTrigger>
 
-					<Suspense fallback={<div>Loading...</div>}>
-						<UserInfo isCollapsed={isCollapsed} />
-					</Suspense>
-				</ul>
+					<DropdownMenuContent
+						align='start'
+						className='w-52'
+					>
+						<DropdownMenuGroup>
+							<DropdownMenuItem asChild>
+								<Link href='/settings/account/preferences'>Preferences</Link>
+							</DropdownMenuItem>
+						</DropdownMenuGroup>
+
+						<DropdownMenuSeparator />
+
+						<DropdownMenuGroup>
+							<DropdownMenuItem asChild>
+								<Link href='/settings'>Workspace settings</Link>
+							</DropdownMenuItem>
+
+							<DropdownMenuItem>
+								<Link href='/settings/members'>Invite and manage members</Link>
+							</DropdownMenuItem>
+						</DropdownMenuGroup>
+
+						<DropdownMenuSeparator />
+
+						<DropdownMenuGroup>
+							<DropdownMenuItem>Download desktop app</DropdownMenuItem>
+						</DropdownMenuGroup>
+
+						<DropdownMenuSeparator />
+
+						<DropdownMenuGroup>
+							<DropdownMenuItem>Logout</DropdownMenuItem>
+						</DropdownMenuGroup>
+					</DropdownMenuContent>
+				</DropdownMenu>
+
+				{user && (
+					<div className='ml-auto'>
+						<UserInfo
+							worker={null}
+							user={user}
+							isCollapsed={isCollapsed}
+						/>
+					</div>
+				)}
 			</div>
+
+			{navSections.map((section, index) => (
+				<ul
+					key={index}
+					className='flex flex-col gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-3'
+				>
+					<NavLinkSection
+						section={section}
+						isCollapsed={isCollapsed}
+						pathname={pathname}
+					/>
+				</ul>
+			))}
+
+			<ul className='flex flex-col gap-1 mt-auto'>
+				<NavLinkItem
+					link={{
+						icon: Settings,
+						name: 'Settings',
+						href: '/settings',
+					}}
+					isCollapsed={isCollapsed}
+					pathname={pathname}
+				/>
+
+				<CommandMenu isCollapsed={isCollapsed} />
+			</ul>
 		</nav>
 	);
 }

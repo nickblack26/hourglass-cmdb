@@ -26,8 +26,8 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"app/(organization)/settings/queues/page.tss",
-		"app/(organization)/settings/members/page.tsx"
+		"app/settings/queues/page.tss",
+		"app/settings/members/page.tsx"
 	],
 	"exclude": ["node_modules"]
 }

@@ -17,7 +17,7 @@ import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { columns } from './columns';
 import { DataTable } from '@/components/data-table';
 
-const ConfigurationsList = ({ data }: { data: Configuration[] }) => {
+const ConfigurationsList = ({ data }: { data: Asset[] }) => {
 	const [rowSelection, setRowSelection] = React.useState({});
 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -46,7 +46,10 @@ const ConfigurationsList = ({ data }: { data: Configuration[] }) => {
 	});
 	return (
 		<>
-			<DataTableToolbar table={table} searchKey='name' />
+			<DataTableToolbar
+				table={table}
+				searchKey='name'
+			/>
 			<DataTable table={table} />
 		</>
 	);

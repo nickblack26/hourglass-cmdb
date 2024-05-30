@@ -1,8 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-import { workDays as defaultWorkDays } from '@/app/(organization)/settings/account/hours/data';
+import { workDays as defaultWorkDays } from '@/app/settings/account/hours/data';
 import { Switch } from '@/components/ui/switch';
-import TimeSelector from '@/components/time-selector';
+import TimeSelector from '@/components/selector/time-selector';
 import { Input } from '@/components/ui/input';
 import { Json } from '@/types/supabase';
 
@@ -37,7 +37,10 @@ const WorkingHoursForm = ({ workSchedule }: Props) => {
 				sortedSchedule.map(([key, value]) => {
 					const isEnabled = value['closed'] === false || value['open'] !== null || value['close'] !== null;
 					return (
-						<div key={key} className='grid grid-cols-3 items-center gap-3 justify-between border-t first:border-t-0 py-2'>
+						<div
+							key={key}
+							className='grid grid-cols-3 items-center gap-3 justify-between border-t first:border-t-0 py-2'
+						>
 							<div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
 								<Switch defaultChecked={isEnabled} />
 								<p>{key}</p>
@@ -46,9 +49,15 @@ const WorkingHoursForm = ({ workSchedule }: Props) => {
 							{isEnabled ? (
 								<div className='flex items-center gap-3 text-xs text-muted-foreground col-span-2'>
 									{/* <TimeSelector day={day} /> */}
-									<Input type='time' defaultValue={value['open']} />
+									<Input
+										type='time'
+										defaultValue={value['open']}
+									/>
 									<p>To</p>
-									<Input type='time' defaultValue={value['close']} />
+									<Input
+										type='time'
+										defaultValue={value['close']}
+									/>
 									{/* <TimeSelector day={day} /> */}
 								</div>
 							) : (

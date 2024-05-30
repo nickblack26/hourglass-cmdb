@@ -40,7 +40,7 @@ const DeleteAccount = (props: Props) => {
 						<p className='font-medium'>Delete user account nblack@velomethod.com?</p>
 
 						<div className='p-1.5 bg-red-50 grid grid-cols-[24px_1fr] items-center rounded-md '>
-							<AlertCircleIcon className='w-3.5 h-3.5 fill-red-500 stroke-white' />
+							<AlertCircleIcon className=' h-3.5 fill-red-500 stroke-white' />
 							<p className='text-primary'>This action can not be undone, proceed with caution.</p>
 						</div>
 

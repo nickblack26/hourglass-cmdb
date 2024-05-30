@@ -48,7 +48,7 @@ const WorkflowForm = ({ workflow, queues, workers, teams }: Props) => {
 				className='w-full'
 				onClick={() => setTargets((prev) => [...prev, { priority: 0, queue: '', timeout: 300 }])}
 			>
-				<Plus className='h-3.5 w-3.5 mr-1.5' />
+				<Plus className=' w-3.5 mr-1.5' />
 				Add another group
 			</Button>
 		</form>

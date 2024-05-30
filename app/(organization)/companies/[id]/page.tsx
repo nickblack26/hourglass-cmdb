@@ -13,7 +13,10 @@ export default async function Page({ params }: IDPageProps) {
 	const companyQuery = supabase.from('companies').select('*, contacts(*)').eq('id', params.id).single();
 	const allCompaniesQuery = supabase.from('companies').select('id, name');
 
-	const [{ data: company, error: companyError }, { data: companies, error: companiesError }] = await Promise.all([companyQuery, allCompaniesQuery]);
+	const [{ data: company, error: companyError }, { data: companies, error: companiesError }] = await Promise.all([
+		companyQuery,
+		allCompaniesQuery,
+	]);
 
 	if (!company || companyError || !companies || companiesError) {
 		console.error(companyError, companiesError);
@@ -64,7 +67,10 @@ export default async function Page({ params }: IDPageProps) {
 					</CardHeader>
 					<CardContent className='px-3 space-y-3'>
 						{details.map((detail) => (
-							<div key={detail.label} className='text-sm font-medium'>
+							<div
+								key={detail.label}
+								className='text-sm font-medium'
+							>
 								<div className='flex items-center text-muted-foreground font-normal'>
 									<detail.icon className='w-3 h-3 mr-1.5' /> {detail.label}
 									{detail.action && detail.action}
@@ -80,7 +86,10 @@ export default async function Page({ params }: IDPageProps) {
 
 				<div className='space-y-3'>
 					<h2>Contacts</h2>
-					<ContactList data={company.contacts ?? []} companies={companies ?? []} />
+					<ContactList
+						data={company.contacts ?? []}
+						companies={companies ?? []}
+					/>
 				</div>
 			</section>
 

@@ -16,7 +16,7 @@ export type Database = {
           created: string | null
           id: string
           label: string | null
-          name: string | null
+          name: string
           objectKey: string | null
           product: string | null
           type: string | null
@@ -28,7 +28,7 @@ export type Database = {
           created?: string | null
           id?: string
           label?: string | null
-          name?: string | null
+          name: string
           objectKey?: string | null
           product?: string | null
           type?: string | null
@@ -40,7 +40,7 @@ export type Database = {
           created?: string | null
           id?: string
           label?: string | null
-          name?: string | null
+          name?: string
           objectKey?: string | null
           product?: string | null
           type?: string | null
@@ -152,10 +152,12 @@ export type Database = {
           dateAcquired: string | null
           faxNumber: string | null
           id: string
+          identifier: string | null
           name: string | null
           organization: string
           phoneNumber: string | null
           state: string | null
+          team: string | null
           website: string | null
           zip: string | null
         }
@@ -167,10 +169,12 @@ export type Database = {
           dateAcquired?: string | null
           faxNumber?: string | null
           id?: string
+          identifier?: string | null
           name?: string | null
           organization: string
           phoneNumber?: string | null
           state?: string | null
+          team?: string | null
           website?: string | null
           zip?: string | null
         }
@@ -182,10 +186,12 @@ export type Database = {
           dateAcquired?: string | null
           faxNumber?: string | null
           id?: string
+          identifier?: string | null
           name?: string | null
           organization?: string
           phoneNumber?: string | null
           state?: string | null
+          team?: string | null
           website?: string | null
           zip?: string | null
         }
@@ -195,6 +201,13 @@ export type Database = {
             columns: ["organization"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "companies_team_fkey"
+            columns: ["team"]
+            isOneToOne: false
+            referencedRelation: "teams"
             referencedColumns: ["id"]
           },
         ]
@@ -780,6 +793,45 @@ export type Database = {
             columns: ["user"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      views: {
+        Row: {
+          company: string | null
+          filter: Json
+          id: number
+          name: string
+          type: string | null
+        }
+        Insert: {
+          company?: string | null
+          filter: Json
+          id?: number
+          name: string
+          type?: string | null
+        }
+        Update: {
+          company?: string | null
+          filter?: Json
+          id?: number
+          name?: string
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "views_company_fkey"
+            columns: ["company"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "views_type_fkey"
+            columns: ["type"]
+            isOneToOne: false
+            referencedRelation: "assetTypes"
             referencedColumns: ["id"]
           },
         ]

@@ -24,7 +24,7 @@ const Page = async () => {
 					<Dialog>
 						<DialogTrigger asChild>
 							<Button size='sm' className='gap-1'>
-								<PlusCircle className='h-3.5 w-3.5' />
+								<PlusCircle className=' w-3.5' />
 								Create Product
 							</Button>
 						</DialogTrigger>

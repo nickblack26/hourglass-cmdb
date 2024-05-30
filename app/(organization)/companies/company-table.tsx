@@ -47,7 +47,10 @@ export default function CompanyTable({ data }: { data: Company[] }) {
 	});
 	return (
 		<>
-			<DataTableToolbar table={table} searchKey='name' />
+			<DataTableToolbar
+				table={table}
+				searchKey='name'
+			/>
 			<DataTable table={table} />
 		</>
 	);

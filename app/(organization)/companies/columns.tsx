@@ -1,7 +1,8 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -33,16 +34,19 @@ export const columns: ColumnDef<Company>[] = [
 	{
 		accessorKey: 'identifier',
 		header: 'ID',
-		cell: ({ row }) => (
-			<Button variant='link' size='default' className='p-0' asChild>
-				<Link href={`/companies/${row.original.id}`}>{row.getValue('identifier')}</Link>
-			</Button>
-		),
+		cell: ({ row }) => <span>{row.getValue('identifier')}</span>,
 	},
 	{
 		accessorKey: 'name',
 		header: 'Name',
-		cell: ({ row }) => <span>{row.getValue('name')}</span>,
+		cell: ({ row }) => (
+			<Link
+				href={`/companies/${row.original.id}`}
+				className={cn(buttonVariants({ variant: 'link', size: 'default' }), 'p-0 text-blue-600')}
+			>
+				{row.getValue('name')}
+			</Link>
+		),
 	},
 	{
 		accessorKey: 'phoneNumber',
@@ -73,7 +77,10 @@ export const columns: ColumnDef<Company>[] = [
 		accessorKey: 'actions',
 		header: '',
 		cell: () => (
-			<Button variant='ghost' size='sm'>
+			<Button
+				variant='ghost'
+				size='sm'
+			>
 				<EllipsisIcon className='w-4 h-4' />
 			</Button>
 		),
