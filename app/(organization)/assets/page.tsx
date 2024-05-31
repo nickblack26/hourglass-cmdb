@@ -1,12 +1,13 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import ConfigurationsList from './configurations-list';
 import AssetLayout from './asset-layout';
 
 const Page = async () => {
-	const supabase = createClient();
+	const db = await createClient();
 
 	const { data: assets } = await supabase
-		.from('assets')
+		.collection('assets')
 		.select('*, type(name, icon), company(name), contact(firstName, lastName)')
 		.order('name');
 

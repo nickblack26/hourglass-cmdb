@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { SquarePlus } from 'lucide-react';
 import React from 'react';
 
@@ -9,22 +10,28 @@ type Props = {
 };
 
 const Page = async ({ params }: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 
-	const { data: files, error } = await supabase.storage.from('Hourglass').list(`Contacts/${params.id}`, {
+	const { data: files, error } = await supabase.storage.collection('Hourglass').list(`Contacts/${params.id}`, {
 		limit: 100,
 		offset: 0,
 		sortBy: { column: 'name', order: 'asc' },
 	});
 
-	// supabase.storage.from('hourlgass').upload('/', {});
+	// supabase.storage.collection('hourlgass').upload('/', {});
 
 	console.log(files);
 
 	return (
 		<section>
-			<Button variant='ghost' className='h-auto w-auto space-x-1.5 relative'>
-				<Input type='file' className='absolute z-10 opacity-0' />
+			<Button
+				variant='ghost'
+				className='h-auto w-auto space-x-1.5 relative'
+			>
+				<Input
+					type='file'
+					className='absolute z-10 opacity-0'
+				/>
 
 				<SquarePlus className='stroke-blue-500 w-12 h-12 stroke-1' />
 

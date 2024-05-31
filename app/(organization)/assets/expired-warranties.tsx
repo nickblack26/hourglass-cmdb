@@ -1,5 +1,6 @@
 import Metric from '@/components/Metric';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { addDays } from 'date-fns';
 import React from 'react';
 import { DateRange } from 'react-day-picker';
@@ -10,24 +11,30 @@ interface ConfigurationData {
 }
 
 export default async function ExpiredWarranties() {
-	const supabase = createClient();
+	const db = await createClient();
 	const dateRange: DateRange = {
 		from: new Date(),
 		to: addDays(new Date(), 30),
 	};
-	const { data, error } = await supabase
-		.from('configurations')
-		.select('total_expired:count()')
-		.gte('expiration_date', dateRange.from?.toISOString())
-		.lte('expiration_date', dateRange.to?.toISOString())
-		.returns<ConfigurationData[]>()
-		.single();
+	const data = await db.collection('assets').countDocuments();
+	// .select('total_expired:count()')
+	// .gte('expiration_date', dateRange.from?.toISOString())
+	// .lte('expiration_date', dateRange.to?.toISOString())
+	// .returns<ConfigurationData[]>()
+	// .single();
 
-	console.log(data, error);
+	// console.log(data, error);
 
-	if (!data || error) {
-		return <div></div>;
-	}
+	// if (!data || error) {
+	// 	return <div></div>;
+	// }
 
-	return <Metric isDraggingEnabled title='Expired Warranties' amount={data.total_expired.toString()} timeline='In the next month' />;
+	return (
+		<Metric
+			isDraggingEnabled
+			title='Expired Warranties'
+			amount={data.toString()}
+			timeline='In the next month'
+		/>
+	);
 }

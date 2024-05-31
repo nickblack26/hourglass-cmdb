@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/mongodb';
 import ContactSelector from '@/components/selector/contact-selector';
 import { Suspense } from 'react';
 import CompanySelector from '@/components/selector/company-selector';
@@ -30,7 +30,7 @@ const formSchema = z.object({
 });
 
 export default function NewConfigurationForm({ products }: { products: Product[] }) {
-	const supabase = createClient();
+	const db = await createClient();
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -42,7 +42,7 @@ export default function NewConfigurationForm({ products }: { products: Product[]
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
 		// console.log(values);
-		const { error } = await supabase.from('configurations').insert({
+		const { error } = await db.collection('configurations').insert({
 			...values,
 			company: parseInt(values.company),
 			contact: parseInt(values.contact),

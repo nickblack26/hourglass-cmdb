@@ -1,14 +1,15 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 type Props = {
 	defaultValue?: string;
 };
 
 const SubTypeSelector = async ({ defaultValue }: Props) => {
-	const supabase = createClient();
-	const { data: types, error } = await supabase.from('asset_types').select('*').order('name');
+	const db = await createClient();
+	const { data: types, error } = await db.collection('asset_types').select('*').order('name');
 
 	if (!types) {
 		console.error(error);
@@ -16,13 +17,19 @@ const SubTypeSelector = async ({ defaultValue }: Props) => {
 	}
 
 	return (
-		<Select name='type' defaultValue={defaultValue}>
+		<Select
+			name='type'
+			defaultValue={defaultValue}
+		>
 			<SelectTrigger aria-label='Select type'>
 				<SelectValue placeholder='Select type' />
 			</SelectTrigger>
 			<SelectContent>
 				{types?.map((type) => (
-					<SelectItem key={type.id} value={type.id.toString()}>
+					<SelectItem
+						key={type.id}
+						value={type.id.toString()}
+					>
 						{type.name}
 					</SelectItem>
 				))}

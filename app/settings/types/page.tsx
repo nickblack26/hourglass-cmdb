@@ -15,7 +15,6 @@ import {
 	Router,
 	Server,
 } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
 import { IconSelector } from './icon-selector';
 import SettingsSection from '../settings-section';
 import { Separator } from '@/components/ui/separator';
@@ -35,6 +34,8 @@ import SubmitButton from '@/components/submit-button';
 import { Suspense } from 'react';
 import SelectorFallback from '@/components/selector/selector-fallback';
 import TypeSelector from '@/components/selector/type-selector';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 interface Icon {
 	name: string;
@@ -43,16 +44,14 @@ interface Icon {
 }
 
 export default async function Page() {
-	const supabase = createClient();
+	const db = await createClient();
 
-	const [{ data: types }, { data: organization }] = await Promise.all([
-		supabase
-			.from('assetTypes')
-			.select('*, assetTypes(*)')
-			.is('parent', null)
-			.order('name')
-			.order('name', { referencedTable: 'assetTypes' }),
-		supabase.from('organizations').select('id').single(),
+	const [types, organization] = await Promise.all([
+		db
+			.collection('assetTypes')
+			.find<AssetType>({ organization: new ObjectId('665888e02684136c5e529eb4') })
+			.toArray(),
+		db.collection('organizations').findOne<Organization>({ _id: new ObjectId('665888e02684136c5e529eb4') }),
 	]);
 
 	const icons: Icon[] = [

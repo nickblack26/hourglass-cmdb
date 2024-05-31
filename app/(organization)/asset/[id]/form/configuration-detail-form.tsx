@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/mongodb';
 import CompanySelector from '@/components/selector/company-selector';
 import { Suspense } from 'react';
 import ContactSelector from '@/components/selector/contact-selector';
@@ -26,7 +26,7 @@ type Props = {
 };
 
 const ConfigurationDetailForm = ({ configuration }: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -48,10 +48,10 @@ const ConfigurationDetailForm = ({ configuration }: Props) => {
 		// ✅ This will be type-safe and validated.
 		// console.log(values);
 		if (configuration) {
-			const { error } = await supabase.from('configurations').update(values).eq('id', configuration.id);
+			const { error } = await db.collection('configurations').update(values).eq('id', configuration.id);
 			console.log(error);
 		} else {
-			const { error } = await supabase.from('configurations').insert(values);
+			const { error } = await db.collection('configurations').insert(values);
 			console.log(error);
 		}
 	}

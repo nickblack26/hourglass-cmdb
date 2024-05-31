@@ -6,8 +6,8 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 
 export const updateBlock = async (id: string, block: BlockUpdate) => {
 	'use server';
-	const supabase = createClient();
-	const { error } = await supabase.from('blocks').update(block).eq('id', id);
+	const db = await createClient();
+	const { error } = await db.collection('blocks').update(block).eq('id', id);
 
 	if (error) {
 		redirect(`/knowledge-base/${block.page}?error=${error.message}`);
@@ -18,6 +18,6 @@ export const updateBlock = async (id: string, block: BlockUpdate) => {
 
 export const updateConfiguration = async (id: string, configuration: ConfigurationUpdate) => {
 	'use server';
-	const supabase = createClient();
-	const { error } = await supabase.from('configurations').update(configuration).eq('id', id);
+	const db = await createClient();
+	const { error } = await db.collection('configurations').update(configuration).eq('id', id);
 };

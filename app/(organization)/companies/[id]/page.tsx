@@ -2,16 +2,17 @@ import ContactList from '@/app/(organization)/contacts/contact-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { IDPageProps } from '@/types/data';
 import { BoxIcon, Building2Icon, CalendarDaysIcon, UserIcon } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import React from 'react';
 
 export default async function Page({ params }: IDPageProps) {
-	const supabase = createClient();
-	const companyQuery = supabase.from('companies').select('*, contacts(*)').eq('id', params.id).single();
-	const allCompaniesQuery = supabase.from('companies').select('id, name');
+	const db = await createClient();
+	const companyQuery = db.collection('companies').select('*, contacts(*)').eq('id', params.id).single();
+	const allCompaniesQuery = db.collection('companies').select('id, name');
 
 	const [{ data: company, error: companyError }, { data: companies, error: companiesError }] = await Promise.all([
 		companyQuery,

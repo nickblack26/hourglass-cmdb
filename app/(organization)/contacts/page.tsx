@@ -4,7 +4,8 @@ import { Building2Icon, CalendarDaysIcon, EllipsisIcon, FilterIcon, PanelsTopLef
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import ContactList from './contact-list';
 import CSVImporter from '@/components/csv-importer';
@@ -12,10 +13,10 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import NewContactForm from './new-contact-form';
 
 const Page = async () => {
-	const supabase = createClient();
-	const contactsWithCompany = supabase.from('users').select('*, company(id, name)').order('firstName');
+	const db = await createClient();
+	const contactsWithCompany = db.collection('users').select('*, company(id, name)').order('firstName');
 
-	const companiesQuery = supabase.from('companies').select().limit(15).order('id');
+	const companiesQuery = db.collection('companies').select().limit(15).order('id');
 
 	const [{ data: contacts, error: contactsError }, { data: companies, error: companiesError }] = await Promise.all([
 		contactsWithCompany,
@@ -69,7 +70,10 @@ const Page = async () => {
 						<FilterIcon className='w-4 h-4 mr-1.5' /> All sources
 					</Button>
 
-					<Button variant='ghost' className='ml-auto'>
+					<Button
+						variant='ghost'
+						className='ml-auto'
+					>
 						<PanelsTopLeftIcon className='w-4 h-4 mr-1.5' /> Manage Columns
 					</Button>
 
@@ -79,11 +83,19 @@ const Page = async () => {
 					</TabsList>
 				</section>
 
-				<TabsContent value='customers' className='px-6'>
-					<ContactList data={contacts ?? []} companies={companies} />
+				<TabsContent
+					value='customers'
+					className='px-6'
+				>
+					<ContactList
+						data={contacts ?? []}
+						companies={companies}
+					/>
 					{/* <DataTable columns={columns} data={contacts ?? []} searchKey='firstName' /> */}
 				</TabsContent>
-				<TabsContent value='organizations'>{/* <DataTable columns={companyColumns} data={companies ?? []} /> */}</TabsContent>
+				<TabsContent value='organizations'>
+					{/* <DataTable columns={companyColumns} data={companies ?? []} /> */}
+				</TabsContent>
 			</main>
 		</Tabs>
 	);

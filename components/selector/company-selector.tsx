@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { createClient } from '@/lib/supabase/client';
+// import { createClient } from '@/lib/mongodb';
 
 type Props = {
 	onValueChange?: (...event: any[]) => void;
@@ -16,15 +16,15 @@ const CompanySelector = ({ onValueChange, defaultValue }: Props) => {
 		  }[]
 		| null
 	>([]);
-	const supabase = createClient();
 
 	useEffect(() => {
-		supabase
-			.from('companies')
-			.select('id, name')
-			.order('name')
-			.then(({ data }) => setCompanies(data));
-	}, [supabase]);
+		// const getData = async () => {
+		// 	const db = await createClient();
+		// 	const companies = await db.collection<{ id: string; name: string }>('companies').find().toArray();
+		// 	setCompanies(companies);
+		// };
+		// getData();
+	}, []);
 
 	if (companies === null) {
 		return <div></div>;

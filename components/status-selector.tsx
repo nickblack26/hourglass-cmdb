@@ -1,14 +1,15 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 type Props = {
 	defaultValue?: string;
 };
 
 const StatusSelector = async ({ defaultValue }: Props) => {
-	const supabase = createClient();
-	const { data: statuses, error } = await supabase.from('statuses').select('*').order('name');
+	const db = await createClient();
+	const { data: statuses, error } = await db.collection('statuses').select('*').order('name');
 
 	if (!statuses) {
 		console.error(error);
@@ -16,13 +17,20 @@ const StatusSelector = async ({ defaultValue }: Props) => {
 	}
 
 	return (
-		<Select name='status' aria-label='Select status' defaultValue={defaultValue}>
+		<Select
+			name='status'
+			aria-label='Select status'
+			defaultValue={defaultValue}
+		>
 			<SelectTrigger>
 				<SelectValue placeholder='Select status' />
 			</SelectTrigger>
 			<SelectContent>
 				{statuses?.map((status) => (
-					<SelectItem key={status.id} value={status.id.toString()}>
+					<SelectItem
+						key={status.id}
+						value={status.id.toString()}
+					>
 						{status.name}
 					</SelectItem>
 				))}

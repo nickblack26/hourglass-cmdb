@@ -4,14 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
-import Panel from './panel';
 import { Textarea } from '@/components/ui/textarea';
-import { Bird, Rabbit, Turtle } from 'lucide-react';
-
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ContactSelector from '@/components/selector/contact-selector';
 import { DatePicker } from '@/components/ui/date-picker';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -24,12 +20,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const Page = async ({ params }: { params: { id: string } }) => {
-	const supabase = createClient();
-	const { data: ticket, error } = await supabase.from('tickets').select().eq('id', params.id).single();
+	const db = await createClient();
+	const ticket = await db.collection('tickets').findOne<Ticket>({ _id: new ObjectId(params.id) });
 
-	if (error || !ticket) {
-		console.error(error);
-
+	if (!ticket) {
 		notFound();
 	}
 

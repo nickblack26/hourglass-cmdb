@@ -1,7 +1,8 @@
 import StatusBadge from '@/components/status-badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import {
 	Building2Icon,
 	GlobeIcon,
@@ -21,10 +22,10 @@ import { notFound } from 'next/navigation';
 import TicketTable from '@/components/ticket-table';
 
 const Page = async ({ params }: { params: { id: string } }) => {
-	const supabase = createClient();
+	const db = await createClient();
 
 	const { data: contact } = await supabase
-		.from('users')
+		.collection('users')
 		.select('id, firstName, lastName, title, company(id, name)')
 		.eq('id', params.id)
 		.single();
@@ -32,13 +33,13 @@ const Page = async ({ params }: { params: { id: string } }) => {
 	if (!contact) return notFound();
 
 	const { data: tickets, error: ticketError } = await supabase
-		.from('tickets')
+		.collection('tickets')
 		.select('*, contact(id, firstName, lastName)')
 		.eq('contact', contact.id)
 		.limit(25);
 
 	const { data: configurations, error: configurationError } = await supabase
-		.from('configurations')
+		.collection('configurations')
 		.select('id, name, status(id, name), type(icon), company(id, name), user(id, firstName, lastName)')
 		.eq('user', contact?.id);
 	console.log(configurations);

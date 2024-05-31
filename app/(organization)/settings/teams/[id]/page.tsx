@@ -1,6 +1,7 @@
 import React from 'react';
 import SettingsSection from '../../settings-section';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
 import LabeledInput from '@/components/labled-input';
@@ -14,28 +15,41 @@ type Props = {
 };
 
 const Page = async ({ params }: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 
-	const { data: team } = await supabase.from('teams').select().eq('identifier', params.id).single();
+	const { data: team } = await db.collection('teams').select().eq('identifier', params.id).single();
 
 	if (!team) return notFound();
 
 	return (
 		<div className='space-y-6'>
-			<SettingsSection title={team.name} description='Manage team settings' />
+			<SettingsSection
+				title={team.name}
+				description='Manage team settings'
+			/>
 
 			<Separator />
 
 			<SettingsSection title='General'>
 				<div className='flex items-center gap-3'>
-					<LabeledInput name='name' label='Icon & Name'>
+					<LabeledInput
+						name='name'
+						label='Icon & Name'
+					>
 						<div className='flex items-center gap-3'>
-							<IconSelector defaultValue={team.icon} className='w-9' />
+							<IconSelector
+								defaultValue={team.icon}
+								className='w-9'
+							/>
 							<Input defaultValue={team.name} />
 						</div>
 					</LabeledInput>
 
-					<LabeledInput name='identifier' label='Identifier' defaultValue={team.identifier} />
+					<LabeledInput
+						name='identifier'
+						label='Identifier'
+						defaultValue={team.identifier}
+					/>
 				</div>
 			</SettingsSection>
 

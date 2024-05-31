@@ -14,7 +14,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import AssetForm from '@/components/forms/asset-form';
 import SubmitButton from '@/components/submit-button';
 
@@ -24,10 +25,10 @@ type Props = {
 };
 
 const AssetLayout = async ({ children, params }: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 
 	const { data: assetTypes } = await supabase
-		.from('assetTypes')
+		.collection('assetTypes')
 		.select('id, name, assetTypes(id, name)')
 		.is('parent', null)
 		.order('name')

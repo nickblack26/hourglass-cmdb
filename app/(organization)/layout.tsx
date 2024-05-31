@@ -1,9 +1,10 @@
 import React from 'react';
 import { Velo } from '@/components/velo';
 import { cookies } from 'next/headers';
-import { createClient } from '@/lib/supabase/server';
 import { JabraProvider } from '@/providers/jabraProvider';
 import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 type Props = {
 	children: React.ReactNode;
@@ -11,19 +12,15 @@ type Props = {
 
 const Layout = async ({ children }: Props) => {
 	const cookieStore = cookies();
-	const supabase = createClient();
+	const db = await createClient();
 
-	const { data: teams } = await supabase.from('teams').select();
-
-	const {
-		data: { session },
-	} = await supabase.auth.getSession();
-
-	const { data: user } = await supabase
-		.from('users')
-		.select()
-		.eq('id', session?.user?.id ?? '')
-		.single();
+	const [teams, user] = await Promise.all([
+		db
+			.collection('teams')
+			.find<Team>({ organization: new ObjectId('665888e02684136c5e529eb4') })
+			.toArray(),
+		db.collection('users').findOne<Contact>({ _id: new ObjectId('665889a02684136c5e529eb5') }),
+	]);
 
 	if (!user) return redirect('/login');
 
@@ -33,14 +30,14 @@ const Layout = async ({ children }: Props) => {
 	const defaultLayout = layout ? JSON.parse(layout.value) : undefined;
 	const defaultCollapsed = collapsed ? JSON?.parse(collapsed.value) : true;
 
-	const body = new FormData();
-	body.set('accountSid', '');
-	body.set('authToken', '');
+	// const body = new FormData();
+	// body.set('accountSid', '');
+	// body.set('authToken', '');
 
-	await fetch('http://localhost:3000/api/orgContext', {
-		method: 'POST',
-		body: body,
-	});
+	// await fetch('http://localhost:3000/api/orgContext', {
+	// 	method: 'POST',
+	// 	body: body,
+	// });
 
 	return (
 		<JabraProvider>

@@ -4,30 +4,47 @@ import React from 'react';
 import SettingsSection from '../settings-section';
 import { ArrowRight, LinkIcon, MoreHorizontal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import LabeledInput from '@/components/labled-input';
 import { Textarea } from '@/components/ui/textarea';
-import { createClient } from '@/lib/supabase/server';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 type Props = {};
 
 const Page = async (props: Props) => {
-	const supabase = createClient();
-	const { data: users } = await supabase.from('users').select('id, firstName, lastName, email');
+	const db = await createClient();
+
+	const users = await db
+		.collection('users')
+		.find<Contact>({ organization: new ObjectId('665888e02684136c5e529eb4') })
+		.toArray();
 
 	const action = async (formData: FormData) => {
 		'use server';
 		const userEntry = formData.get('users') as string;
 		const emails = userEntry.split(',');
-		await Promise.all(emails.map((email) => supabase.auth.signUp({ email: email.trim(), password: '' })));
+		// await Promise.all(emails.map((email) => supabase.auth.signUp({ email: email.trim(), password: '' })));
 	};
 
 	return (
 		<div className='space-y-6'>
-			<SettingsSection title='Members' header description='Manage who has access to this workspace' />
+			<SettingsSection
+				title='Members'
+				header
+				description='Manage who has access to this workspace'
+			/>
 
 			<Separator />
 
@@ -35,9 +52,12 @@ const Page = async (props: Props) => {
 				title='Manage members'
 				description={
 					<span>
-						On the Free plan all members in a workspace are administrators. Upgrade to the Standard plan to add the ability to assign or remove
-						administrator roles.{' '}
-						<Link href='/settings/plans' className='text-accent-foreground hover:underline'>
+						On the Free plan all members in a workspace are administrators. Upgrade to the Standard plan to add the
+						ability to assign or remove administrator roles.{' '}
+						<Link
+							href='/settings/plans'
+							className='text-accent-foreground hover:underline'
+						>
 							Go to Plans <ArrowRight className=' h-3.5 inline-block' />
 						</Link>
 					</span>
@@ -45,7 +65,10 @@ const Page = async (props: Props) => {
 			>
 				<div className='flex items-center justify-between gap-1.5'>
 					<div className='flex items-center gap-1.5'>
-						<Input placeholder='Filter by name...' className='max-w-72 h-8 w-full' />
+						<Input
+							placeholder='Filter by name...'
+							className='max-w-72 h-8 w-full'
+						/>
 					</div>
 
 					<div className='flex items-center gap-1.5'>
@@ -58,9 +81,20 @@ const Page = async (props: Props) => {
 								<DialogHeader>
 									<DialogTitle>Invite to your workspace</DialogTitle>
 								</DialogHeader>
-								<form action={action} name='inviteUsers' id='inviteUsers'>
-									<LabeledInput name='users' label='Email'>
-										<Textarea placeholder='email@example.com, email2@example.com...' name='users' minRows={3} />
+								<form
+									action={action}
+									name='inviteUsers'
+									id='inviteUsers'
+								>
+									<LabeledInput
+										name='users'
+										label='Email'
+									>
+										<Textarea
+											placeholder='email@example.com, email2@example.com...'
+											name='users'
+											minRows={3}
+										/>
 									</LabeledInput>
 								</form>
 
@@ -71,12 +105,18 @@ const Page = async (props: Props) => {
 									</Button>
 									<div className='flex items-center gap-1.5'>
 										<DialogClose asChild>
-											<Button type='button' variant='secondary'>
+											<Button
+												type='button'
+												variant='secondary'
+											>
 												Cancel
 											</Button>
 										</DialogClose>
 
-										<Button type='submit' form='inviteUsers'>
+										<Button
+											type='submit'
+											form='inviteUsers'
+										>
 											Save
 										</Button>
 									</div>
@@ -90,7 +130,10 @@ const Page = async (props: Props) => {
 
 				<div className='space-y-3'>
 					{users?.map((member) => (
-						<div key={member.id} className='grid grid-cols-[40px_224px_1fr_1fr] items-center gap-3 text-sm'>
+						<div
+							key={member.id}
+							className='grid grid-cols-[40px_224px_1fr_1fr] items-center gap-3 text-sm'
+						>
 							<Avatar className='w-10 h-10'>
 								<AvatarFallback>NB</AvatarFallback>
 							</Avatar>
@@ -116,7 +159,10 @@ const Page = async (props: Props) => {
 
 			<Separator />
 
-			<SettingsSection title='Export members list' description='Export a CSV with information of all the members in your workspace.'>
+			<SettingsSection
+				title='Export members list'
+				description='Export a CSV with information of all the members in your workspace.'
+			>
 				<Button>Export CSV</Button>
 			</SettingsSection>
 		</div>

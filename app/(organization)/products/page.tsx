@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import React from 'react';
 import ProductsList from './products-list';
@@ -9,9 +10,9 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { createProduct } from '@/lib/supabase/create';
 
 const Page = async () => {
-	const supabase = createClient();
+	const db = await createClient();
 
-	const { data, error } = await supabase.from('products').select().is('parent', null);
+	const { data, error } = await db.collection('products').select().is('parent', null);
 
 	if (!data) return notFound();
 
@@ -23,7 +24,10 @@ const Page = async () => {
 				<div className='flex items-center gap-3 col-span-2 justify-self-end items'>
 					<Dialog>
 						<DialogTrigger asChild>
-							<Button size='sm' className='gap-1'>
+							<Button
+								size='sm'
+								className='gap-1'
+							>
 								<PlusCircle className=' w-3.5' />
 								Create Product
 							</Button>
@@ -32,16 +36,40 @@ const Page = async () => {
 							<DialogHeader>
 								<DialogTitle>Create Product</DialogTitle>
 							</DialogHeader>
-							<form action={createProduct} className='grid gap-3'>
-								<LabeledInput name='name' label='Name' description='Give your variant a short and clear description.' placeholder='Variant Name' />
+							<form
+								action={createProduct}
+								className='grid gap-3'
+							>
+								<LabeledInput
+									name='name'
+									label='Name'
+									description='Give your variant a short and clear description.'
+									placeholder='Variant Name'
+								/>
 
-								<LabeledInput name='description' label='Description' placeholder='Variant Name' />
+								<LabeledInput
+									name='description'
+									label='Description'
+									placeholder='Variant Name'
+								/>
 
-								<LabeledInput name='cost' label='Cost' placeholder='$123.45' />
+								<LabeledInput
+									name='cost'
+									label='Cost'
+									placeholder='$123.45'
+								/>
 
-								<LabeledInput name='price' label='Price' placeholder='$123.45' />
+								<LabeledInput
+									name='price'
+									label='Price'
+									placeholder='$123.45'
+								/>
 
-								<LabeledInput name='quantity' label='Quantity' placeholder='1' />
+								<LabeledInput
+									name='quantity'
+									label='Quantity'
+									placeholder='1'
+								/>
 
 								<DialogFooter>
 									<Button>Save</Button>

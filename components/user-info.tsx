@@ -20,17 +20,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 type Props = {
+	user: Contact;
 	worker: Worker | null;
 	isCollapsed: boolean;
 };
 const UserInfo = ({ user, worker, isCollapsed }: Props) => {
 	const { callControlDevices, currentCallControl, setCurrentCallControl } = useJabra();
-
-	const supabase = createClient();
-
-	useEffect(() => {
-		supabase.auth.getSession().then(({ data }) => setUser(data.session?.user));
-	}, [supabase.auth]);
 
 	return (
 		<Popover>
@@ -74,8 +69,10 @@ const UserInfo = ({ user, worker, isCollapsed }: Props) => {
 			>
 				<header className='p-0 justify-start gap-3'>
 					<div>
-						<p className='font-semibold text-sm'>Nick Black</p>
-						<p className='text-sm'>{user?.user_metadata.email}</p>
+						<p className='font-semibold text-sm'>
+							{user.firstName} {user.lastName}
+						</p>
+						<p className='text-sm'>{user.email}</p>
 					</div>
 				</header>
 

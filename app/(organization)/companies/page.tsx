@@ -1,13 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import React from 'react';
 import CompanyTable from './company-table';
 
 export default async function Page() {
-	const supabase = createClient();
-	const companiesQuery = supabase.from('companies').select().order('name');
-	const viewsQuery = supabase.from('views').select().order('name');
+	const db = await createClient();
+	const companiesQuery = db.collection('companies').select().order('name');
+	const viewsQuery = db.collection('views').select().order('name');
 
 	const [{ data: companies }, { data: views }] = await Promise.all([companiesQuery, viewsQuery]);
 

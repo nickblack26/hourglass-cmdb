@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Input } from '@/components/ui/input';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { ChevronLeft, PlusCircle } from 'lucide-react';
@@ -22,9 +23,9 @@ type Props = {
 };
 
 const Page = async ({ params }: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 	const { data: product, error } = await supabase
-		.from('products')
+		.collection('products')
 		.select('*, products(*)')
 		.eq('id', params.id)
 		.order('name', { referencedTable: 'products', ascending: false })
@@ -38,21 +39,34 @@ const Page = async ({ params }: Props) => {
 		<main className='grid flex-1 items-start gap-4 p-4 sm:px-6 md:gap-8'>
 			<div className='grid flex-1 auto-rows-max gap-4'>
 				<div className='flex items-center gap-4'>
-					<Button variant='outline' size='icon' className='h-7 w-7' asChild>
+					<Button
+						variant='outline'
+						size='icon'
+						className='h-7 w-7'
+						asChild
+					>
 						<Link href='/products'>
 							<ChevronLeft className='h-4 w-4' />
 							<span className='sr-only'>Back</span>
 						</Link>
 					</Button>
 
-					<h1 className='flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0'>{product.name}</h1>
+					<h1 className='flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0'>
+						{product.name}
+					</h1>
 
-					<Badge variant='outline' className='ml-auto sm:ml-0'>
+					<Badge
+						variant='outline'
+						className='ml-auto sm:ml-0'
+					>
 						In stock
 					</Badge>
 
 					<div className='hidden items-center gap-2 md:ml-auto md:flex'>
-						<Button variant='outline' size='sm'>
+						<Button
+							variant='outline'
+							size='sm'
+						>
 							Discard
 						</Button>
 
@@ -86,19 +100,37 @@ const Page = async ({ params }: Props) => {
 												<TableRow key={variant.id}>
 													<TableCell className='font-semibold'>{variant.name}</TableCell>
 													<TableCell>
-														<Label htmlFor='stock-1' className='sr-only'>
+														<Label
+															htmlFor='stock-1'
+															className='sr-only'
+														>
 															Stock
 														</Label>
-														<Input id='stock-1' type='number' defaultValue={variant.quantity ?? undefined} />
+														<Input
+															id='stock-1'
+															type='number'
+															defaultValue={variant.quantity ?? undefined}
+														/>
 													</TableCell>
 													<TableCell>
-														<Label htmlFor='price-1' className='sr-only'>
+														<Label
+															htmlFor='price-1'
+															className='sr-only'
+														>
 															Price
 														</Label>
-														<Input id='price-1' type='number' defaultValue={variant.price ?? undefined} />
+														<Input
+															id='price-1'
+															type='number'
+															defaultValue={variant.price ?? undefined}
+														/>
 													</TableCell>
 													<TableCell>
-														<ToggleGroup type='single' defaultValue='s' variant='outline'>
+														<ToggleGroup
+															type='single'
+															defaultValue='s'
+															variant='outline'
+														>
 															<ToggleGroupItem value='s'>S</ToggleGroupItem>
 															<ToggleGroupItem value='m'>M</ToggleGroupItem>
 															<ToggleGroupItem value='l'>L</ToggleGroupItem>
@@ -113,7 +145,11 @@ const Page = async ({ params }: Props) => {
 							<CardFooter className='justify-center border-t p-4'>
 								<Dialog>
 									<DialogTrigger asChild>
-										<Button size='sm' variant='ghost' className='gap-1'>
+										<Button
+											size='sm'
+											variant='ghost'
+											className='gap-1'
+										>
 											<PlusCircle className=' w-3.5' />
 											Add Variant
 										</Button>
@@ -136,11 +172,23 @@ const Page = async ({ params }: Props) => {
 												placeholder='Variant Name'
 											/>
 
-											<LabeledInput name='description' label='Description' placeholder='Variant Name' />
+											<LabeledInput
+												name='description'
+												label='Description'
+												placeholder='Variant Name'
+											/>
 
-											<LabeledInput name='cost' label='Cost' placeholder='$123.45' />
+											<LabeledInput
+												name='cost'
+												label='Cost'
+												placeholder='$123.45'
+											/>
 
-											<LabeledInput name='price' label='Price' placeholder='$123.45' />
+											<LabeledInput
+												name='price'
+												label='Price'
+												placeholder='$123.45'
+											/>
 
 											<DialogFooter>
 												<Button>Save</Button>
@@ -227,7 +275,13 @@ const Page = async ({ params }: Props) => {
 							</CardHeader>
 
 							<CardContent>
-								<Image alt='Product image' className='aspect-square w-full rounded-md object-cover' height='300' src='/asset-tag.png' width='300' />
+								<Image
+									alt='Product image'
+									className='aspect-square w-full rounded-md object-cover'
+									height='300'
+									src='/asset-tag.png'
+									width='300'
+								/>
 							</CardContent>
 						</Card>
 
@@ -241,7 +295,10 @@ const Page = async ({ params }: Props) => {
 							<CardContent>
 								<div></div>
 
-								<Button size='sm' variant='secondary'>
+								<Button
+									size='sm'
+									variant='secondary'
+								>
 									Archive Product
 								</Button>
 							</CardContent>
@@ -250,7 +307,10 @@ const Page = async ({ params }: Props) => {
 				</div>
 
 				<div className='flex items-center justify-center gap-2 md:hidden'>
-					<Button variant='outline' size='sm'>
+					<Button
+						variant='outline'
+						size='sm'
+					>
 						Discard
 					</Button>
 					<Button size='sm'>Save Product</Button>

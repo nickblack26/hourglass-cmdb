@@ -9,7 +9,8 @@ import type { Queue, Workflow, Worker } from '@/types/twilio/taskrouter';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -28,10 +29,10 @@ import CallWorkflowBuilder from '@/components/call-workflow-builder';
 type Props = {};
 
 const Page = async (props: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 	type CompanyWithSecrets = Organization & { company: Company & { company_secrets: CompanySecret[] } };
 	const { data: organization, error } = await supabase
-		.from('organizations')
+		.collection('organizations')
 		.select('*, company(*, company_secrets(*))')
 		.returns<CompanyWithSecrets[]>()
 		.single();

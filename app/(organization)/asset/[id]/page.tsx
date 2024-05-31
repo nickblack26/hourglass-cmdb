@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Input } from '@/components/ui/input';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { IDPageProps } from '@/types/data';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -24,19 +25,11 @@ import { updateConfiguration } from '@/lib/supabase/update';
 import SystemStatus from './system-status';
 
 const Page = async ({ params }: IDPageProps) => {
-	const supabase = createClient();
+	const db = await createClient();
 
-	const nestedConfig = supabase.from('assets').select(`*`).eq('id', params.id).single();
+	const configuration = await db.collection('assets').findOne<Asset>({ _id: new ObjectId(params.id) });
 
-	type NestedConfig = QueryData<typeof nestedConfig>;
-
-	const { data, error } = await nestedConfig;
-
-	console.log(data, error);
-
-	if (!data) return notFound();
-
-	const configuration: NestedConfig = data;
+	if (!configuration) return notFound();
 
 	return (
 		<main className='grid flex-1 items-start gap-4 p-4 sm:px-6 md:gap-8'>
@@ -124,7 +117,7 @@ const Page = async ({ params }: IDPageProps) => {
 														formAction={async (data: FormData) => {
 															'use server';
 															await supabase
-																.from('answers')
+																.collection('answers')
 																.update({ meets_expectations: data.get('meets_expectations') ? true : false })
 																.eq('id', question.answers[0].id);
 														}}
@@ -380,7 +373,7 @@ const Page = async ({ params }: IDPageProps) => {
 													</Select>
 												}
 											>
-												<StatusSelector defaultValue={configuration.status?.toString()} />
+												{/* <StatusSelector defaultValue={configuration.status?.toString()} /> */}
 											</Suspense>
 										</div>
 									</div>

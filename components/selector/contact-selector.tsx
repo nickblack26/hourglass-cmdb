@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { createClient } from '@/lib/supabase/client';
+// import { createClient } from '@/lib/mongodb';
 
 type Props = {
 	onValueChange?: (...event: any[]) => void;
@@ -11,16 +11,16 @@ type Props = {
 };
 
 const ContactSelector = ({ onValueChange, defaultValue, className }: Props) => {
-	const supabase = createClient();
 	const [contacts, setContacts] = useState<Contact[] | null>([]);
 
 	useEffect(() => {
-		supabase
-			.from('users')
-			.select()
-			.order('firstName')
-			.then(({ data }) => setContacts(data));
-	}, [supabase]);
+		// const getData = async () => {
+		// 	const db = await createClient();
+		// 	const contact = await db.collection<Contact>('users').find().toArray();
+		// 	setContacts(contact);
+		// };
+		// getData();
+	}, []);
 
 	if (contacts === null) {
 		// console.error(error);

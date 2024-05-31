@@ -1,7 +1,7 @@
 import StatusBadge from '@/components/status-badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/mongodb';
 import { v4 as uuid } from 'uuid';
 import React, { Suspense } from 'react';
 import Image from 'next/image';
@@ -12,22 +12,44 @@ import { PlusCircleIcon } from 'lucide-react';
 import CustomerTicketPreview from './customer-ticket-preview';
 
 export default async function CustomerPreviewSheet({ id }: { id: number }) {
-	const supabase = createClient();
+	const db = await createClient();
 	const { data: contact, error } = await supabase
-		.from('users')
+		.collection('users')
 		.select('id, firstName, lastName, title, defaultPhoneNbr, company(id, name), tickets(*)')
 		.eq('id', id)
 		.single();
 
 	const customerDetails = [
 		{ label: 'Source', value: 'Contact us form' },
-		{ label: 'Response Time', value: <StatusBadge color='red' text='Slow response' /> },
-		{ label: 'Phone Numbers', value: <StatusBadge color='blue' text='(209) 555-01014' /> },
+		{
+			label: 'Response Time',
+			value: (
+				<StatusBadge
+					color='red'
+					text='Slow response'
+				/>
+			),
+		},
+		{
+			label: 'Phone Numbers',
+			value: (
+				<StatusBadge
+					color='blue'
+					text='(209) 555-01014'
+				/>
+			),
+		},
 		{
 			label: 'Organization',
 			value: (
 				<p className='flex items-center'>
-					<Image src='/microsoftLogo.png' alt='Microsoft logo' height={12} width={12} className='inline-block mr-1.5 rounded-sm' />{' '}
+					<Image
+						src='/microsoftLogo.png'
+						alt='Microsoft logo'
+						height={12}
+						width={12}
+						className='inline-block mr-1.5 rounded-sm'
+					/>{' '}
 					{/* {contact?.company} */}
 				</p>
 			),
@@ -36,7 +58,11 @@ export default async function CustomerPreviewSheet({ id }: { id: number }) {
 			label: 'Email',
 			value: [
 				// <StatusBadge key='nick-personal-email' color='blue' text='nicholas.black98@icloud.com' />,
-				<StatusBadge key='nick-work-email' color='blue' text='nblack@velomethod.com' />,
+				<StatusBadge
+					key='nick-work-email'
+					color='blue'
+					text='nblack@velomethod.com'
+				/>,
 			],
 		},
 		{ label: 'Description', value: '' },
@@ -71,7 +97,8 @@ export default async function CustomerPreviewSheet({ id }: { id: number }) {
 			id: uuid(),
 			text: (
 				<p className='text-sm text-muted-foreground'>
-					<span className='font-semibold'>Nick Black</span> was created by <span className='font-semibold'>Fikri Studio</span>
+					<span className='font-semibold'>Nick Black</span> was created by{' '}
+					<span className='font-semibold'>Fikri Studio</span>
 				</p>
 			),
 			date: '11:12 AM - May 17, 2023',
@@ -94,12 +121,24 @@ export default async function CustomerPreviewSheet({ id }: { id: number }) {
 						<h2 className='text-2xl font-semibold'>
 							{contact?.firstName} {contact?.lastName}
 						</h2>
-						<StatusBadge color='green' text='Fikri Studio' />
-						<StatusBadge color='gray' text='Fikri Studio - 5 days ago' />
+						<StatusBadge
+							color='green'
+							text='Fikri Studio'
+						/>
+						<StatusBadge
+							color='gray'
+							text='Fikri Studio - 5 days ago'
+						/>
 					</div>
 
 					<p className='flex items-center'>
-						<Image src='/microsoftLogo.png' alt='Microsoft logo' height={12} width={12} className='inline-block mr-1.5' />
+						<Image
+							src='/microsoftLogo.png'
+							alt='Microsoft logo'
+							height={12}
+							width={12}
+							className='inline-block mr-1.5'
+						/>
 						{/* {contact?.company.name} */}
 					</p>
 				</div>
@@ -111,21 +150,30 @@ export default async function CustomerPreviewSheet({ id }: { id: number }) {
 					<h3 className='font-semibold text-lg'>{tickets?.length}</h3>
 				</div>
 
-				<Separator orientation='vertical' className='h-6' />
+				<Separator
+					orientation='vertical'
+					className='h-6'
+				/>
 
 				<div className='space-y-1.5 w-full'>
 					<p className='text-xs text-muted-foreground tracking-tight'>OVERDUE TICKETS</p>
 					<h3 className='font-semibold text-lg'>4</h3>
 				</div>
 
-				<Separator orientation='vertical' className='h-6' />
+				<Separator
+					orientation='vertical'
+					className='h-6'
+				/>
 
 				<div className='space-y-1.5 w-full'>
 					<p className='text-xs text-muted-foreground tracking-tight'>AVG. RESPONSE TIME</p>
 					<h3 className='font-semibold text-lg'>25:00 </h3>
 				</div>
 
-				<Separator orientation='vertical' className='h-6' />
+				<Separator
+					orientation='vertical'
+					className='h-6'
+				/>
 
 				<div className='space-y-1.5 w-full'>
 					<p className='text-xs text-muted-foreground tracking-tight'>TOTAL RESPONSE TIME</p>
@@ -137,7 +185,10 @@ export default async function CustomerPreviewSheet({ id }: { id: number }) {
 				<h3 className='font-medium text-muted-foreground'>Customer Details</h3>
 				<div className='grid grid-cols-2 gap-6'>
 					{customerDetails.map((detail, index) => (
-						<div key={detail.label} className='space-y-3'>
+						<div
+							key={detail.label}
+							className='space-y-3'
+						>
 							<div className='flex justify-between items-center gap-1.5'>
 								<p className='text-muted-foreground text-sm text-nowrap'>{detail.label}</p>
 								<div className='col-span-2 justify-self-end truncate text-sm'>{detail.value}</div>
@@ -169,17 +220,26 @@ export default async function CustomerPreviewSheet({ id }: { id: number }) {
 			<section className='space-y-3'>
 				<div className='flex items-center justify-between'>
 					<h3 className='font-medium text-muted-foreground'>Activity</h3>
-					<Button variant='link' asChild>
+					<Button
+						variant='link'
+						asChild
+					>
 						<Link href={`/contacts/${id}/activity`}>View more activity</Link>
 					</Button>
 				</div>
 				{actities.map(({ id, text, date }) => (
-					<div key={id} className='flex items-center w-full gap-3'>
+					<div
+						key={id}
+						className='flex items-center w-full gap-3'
+					>
 						<div className='flex flex-col items-center h-full'>
 							<div className='p-2 bg-muted rounded-full'>
 								<PlusCircleIcon className='w-3 h-3' />
 							</div>
-							<Separator orientation='vertical' className='flex-1' />
+							<Separator
+								orientation='vertical'
+								className='flex-1'
+							/>
 						</div>
 						<div>
 							<div>{text}</div>

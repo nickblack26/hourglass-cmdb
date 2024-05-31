@@ -1,5 +1,6 @@
 import PieChart from '@/components/pie-chart';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import React from 'react';
 
 export interface ChartData {
@@ -8,21 +9,13 @@ export interface ChartData {
 }
 
 export async function TicketByFirstReply({ className }: { className?: string }) {
-	const supabase = createClient();
-	const { data, error } = await supabase.from('ticket_by_first_reply_time').select().order('response_time_group');
-
-	if (!data || error) {
-		return <div></div>;
-	}
+	const db = await createClient();
+	const data = await db.collection('tickets').countDocuments();
 
 	return (
 		<PieChart
 			className={className}
-			data={
-				data.map((d) => {
-					return { name: d.response_time_group, value: d.ticket_count } as ChartData;
-				}) ?? []
-			}
+			data={[]}
 		/>
 	);
 }

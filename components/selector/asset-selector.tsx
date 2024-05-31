@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/mongodb';
 
 type Props = {
 	onValueChange?: (...event: any[]) => void;
@@ -11,12 +11,12 @@ type Props = {
 };
 
 const AssetSelector = ({ onValueChange, defaultValue, className }: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 	const [items, setItems] = useState<Asset[] | null>([]);
 
 	useEffect(() => {
 		supabase
-			.from('assets')
+			.collection('assets')
 			.select()
 			.order('name')
 			.then(({ data }) => setItems(data));

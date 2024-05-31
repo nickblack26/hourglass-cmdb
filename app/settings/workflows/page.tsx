@@ -6,7 +6,15 @@ import Link from 'next/link';
 import React from 'react';
 import QueueForm from '@/components/queue-form';
 import { Card } from '@/components/ui/card';
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -22,12 +30,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Info, MoreHorizontal, Pencil } from 'lucide-react';
 import type { WorkflowInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/workflow';
 import WorkflowForm from '@/components/workflow-form';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 type Props = {};
 
 const Page = async (props: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 	const headers = new Headers();
 	headers.append('authToken', '927970c354916b481735c0d2d3d46591' ?? '');
 	const responses = await Promise.all([
@@ -35,7 +44,7 @@ const Page = async (props: Props) => {
 		fetch(`http://localhost:3000/api/twilio/1/workspace/1/workflows`, { headers, next: { tags: ['workflows'] } }),
 		fetch(`http://localhost:3000/api/twilio/1/workspace/1/workers`, { headers, next: { tags: ['workers'] } }),
 	]);
-	const { data: teams, error } = await supabase.from('teams').select();
+	const { data: teams, error } = await db.collection('teams').select();
 
 	const [queues, workflows, workers] = await Promise.all(responses.map((response) => response.json()));
 
@@ -52,7 +61,10 @@ const Page = async (props: Props) => {
 				<section className='space-y-6 px-0'>
 					<p className='text-sm text-muted-foreground'>
 						Use workflows to control how communication will be prioritized and routed into{' '}
-						<Link href='/settings/queues' className='text-accent-foreground hover:underline'>
+						<Link
+							href='/settings/queues'
+							className='text-accent-foreground hover:underline'
+						>
 							Queues
 						</Link>
 						, and how they should escalate in priority or move across queues over time.
@@ -60,7 +72,10 @@ const Page = async (props: Props) => {
 
 					<div className='flex items-center justify-between gap-1.5'>
 						<div className='flex items-center gap-1.5'>
-							<Input placeholder='Filter by name...' className='max-w-72 h-8 w-full' />
+							<Input
+								placeholder='Filter by name...'
+								className='max-w-72 h-8 w-full'
+							/>
 							<Button variant='outline'>
 								<ListFilter className=' h-3.5 mr-1.5' /> Filters
 							</Button>
@@ -78,16 +93,26 @@ const Page = async (props: Props) => {
 										<DialogTitle>New Queue</DialogTitle>
 									</DialogHeader>
 
-									<WorkflowForm queues={queues} workers={workers} teams={teams ?? []} />
+									<WorkflowForm
+										queues={queues}
+										workers={workers}
+										teams={teams ?? []}
+									/>
 
 									<DialogFooter>
 										<DialogClose asChild>
-											<Button type='button' variant='secondary'>
+											<Button
+												type='button'
+												variant='secondary'
+											>
 												Cancel
 											</Button>
 										</DialogClose>
 
-										<Button type='submit' form='queueForm'>
+										<Button
+											type='submit'
+											form='queueForm'
+										>
 											Save
 										</Button>
 									</DialogFooter>
@@ -98,7 +123,10 @@ const Page = async (props: Props) => {
 
 					<div className='space-y-3'>
 						{workflows.map((workflow: WorkflowInstance) => (
-							<Card key={workflow.sid} className='flex items-cente justify-between gap-1.5 py-3 px-6 group'>
+							<Card
+								key={workflow.sid}
+								className='flex items-cente justify-between gap-1.5 py-3 px-6 group'
+							>
 								<div className='text-sm'>{workflow.friendlyName}</div>
 								<div className='flex items-center gap-3 opacity-0 group-hover:opacity-100'>
 									<Tooltip>
@@ -120,15 +148,26 @@ const Page = async (props: Props) => {
 													<DialogTitle>{workflow.friendlyName}</DialogTitle>
 												</DialogHeader>
 
-												<WorkflowForm workflow={workflow} queues={queues} workers={workers} teams={teams ?? []} />
+												<WorkflowForm
+													workflow={workflow}
+													queues={queues}
+													workers={workers}
+													teams={teams ?? []}
+												/>
 
 												<DialogFooter>
 													<DialogClose asChild>
-														<Button type='button' variant='secondary'>
+														<Button
+															type='button'
+															variant='secondary'
+														>
 															Cancel
 														</Button>
 													</DialogClose>
-													<Button type='submit' form='queueForm'>
+													<Button
+														type='submit'
+														form='queueForm'
+													>
 														Save
 													</Button>
 												</DialogFooter>

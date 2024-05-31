@@ -2,7 +2,8 @@ import CompanyTable from '@/app/(organization)/companies/company-table';
 import { Combobox } from '@/components/combobox';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { QueryData } from '@supabase/supabase-js';
 import { ListFilter } from 'lucide-react';
 import { notFound } from 'next/navigation';
@@ -13,9 +14,9 @@ type Props = {
 };
 
 const Page = async ({ params }: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 	const { key } = params;
-	const teamWithCompanieQuery = supabase.from('teams').select('companies(*)').eq('identifier', key).single();
+	const teamWithCompanieQuery = db.collection('teams').select('companies(*)').eq('identifier', key).single();
 	type TeamWithCompanies = QueryData<typeof teamWithCompanieQuery>;
 	const { data } = await teamWithCompanieQuery;
 

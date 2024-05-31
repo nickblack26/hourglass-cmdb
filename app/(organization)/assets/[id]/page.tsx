@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import React from 'react';
 import ConfigurationsList from '../configurations-list';
 import AssetLayout from '../asset-layout';
@@ -8,9 +9,9 @@ type Props = {
 };
 
 const Page = async ({ params }: Props) => {
-	const supabase = createClient();
+	const db = await createClient();
 	const { data } = await supabase
-		.from('assets')
+		.collection('assets')
 		.select('*, company(name), contact(firstName, lastName)')
 		.order('name')
 		.eq('type', params.id);
