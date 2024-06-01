@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Check, ChevronDown, Plus, SlidersHorizontal } from 'lucide-react';
 import React, { ReactNode, Suspense } from 'react';
@@ -14,10 +13,9 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
 import AssetForm from '@/components/forms/asset-form';
 import SubmitButton from '@/components/submit-button';
+import { getDocuments } from '@/lib/mongodb/read';
 
 type Props = {
 	children: ReactNode;
@@ -25,14 +23,7 @@ type Props = {
 };
 
 const AssetLayout = async ({ children, params }: Props) => {
-	const db = await createClient();
-
-	const { data: assetTypes } = await supabase
-		.collection('assetTypes')
-		.select('id, name, assetTypes(id, name)')
-		.is('parent', null)
-		.order('name')
-		.returns<{ id: string; name: string; assetTypes: AssetType[] }[]>();
+	const assetTypes = await getDocuments<AssetType>('assetTypes');
 
 	return (
 		<main>
@@ -42,57 +33,63 @@ const AssetLayout = async ({ children, params }: Props) => {
 
 					<div className='flex items-center gap-1.5 grow overflow-x-scroll'>
 						{assetTypes?.map((type) => {
-							const href = `/assets/${type.id}`;
+							const href = `/assets/${type._id.toString()}`;
 							const isCurrent = href === `/assets/${params?.id}`;
 							console.log(isCurrent, href, params?.id);
 
 							return (
-								<>
-									{type.assetTypes.length ? (
-										<DropdownMenu key={type.id}>
-											<DropdownMenuTrigger>
-												<Badge variant={isCurrent ? 'secondary' : 'outline'}>
-													<span>{type.name}</span>
+								// <>
+								// 	{type.childTypes.length ? (
+								// 		<DropdownMenu key={type.id}>
+								// 			<DropdownMenuTrigger>
+								// 				<Badge variant={isCurrent ? 'secondary' : 'outline'}>
+								// 					<span>{type.name}</span>
 
-													<ChevronDown className='w-3 h-3 ml-1.5' />
-												</Badge>
-											</DropdownMenuTrigger>
+								// 					<ChevronDown className='w-3 h-3 ml-1.5' />
+								// 				</Badge>
+								// 			</DropdownMenuTrigger>
 
-											<DropdownMenuContent
-												align='start'
-												className='w-52'
-											>
-												{type.assetTypes.map((t) => {
-													const secondHref = `/assets/${t.id}`;
-													const isAlsoCurrent = secondHref === `/assets/${params?.id}`;
+								// 			<DropdownMenuContent
+								// 				align='start'
+								// 				className='w-52'
+								// 			>
+								// 				{type.childTypes.map((t) => {
+								// 					const secondHref = `/assets/${t.id}`;
+								// 					const isAlsoCurrent = secondHref === `/assets/${params?.id}`;
 
-													return (
-														<DropdownMenuItem
-															key={t.id}
-															asChild
-														>
-															<Link
-																key={t.id}
-																href={secondHref}
-																className='flex items-center justify-between'
-															>
-																<span>{t.name}</span>
-																{isAlsoCurrent && <Check />}
-															</Link>
-														</DropdownMenuItem>
-													);
-												})}
-											</DropdownMenuContent>
-										</DropdownMenu>
-									) : (
-										<Link
-											key={type.id}
-											href={href}
-										>
-											<Badge variant={isCurrent ? 'secondary' : 'outline'}>{type.name}</Badge>
-										</Link>
-									)}
-								</>
+								// 					return (
+								// 						<DropdownMenuItem
+								// 							key={t.id}
+								// 							asChild
+								// 						>
+								// 							<Link
+								// 								key={t.id}
+								// 								href={secondHref}
+								// 								className='flex items-center justify-between'
+								// 							>
+								// 								<span>{t.name}</span>
+								// 								{isAlsoCurrent && <Check />}
+								// 							</Link>
+								// 						</DropdownMenuItem>
+								// 					);
+								// 				})}
+								// 			</DropdownMenuContent>
+								// 		</DropdownMenu>
+								// 	) : (
+								// 		<Link
+								// 			key={type.id}
+								// 			href={href}
+								// 		>
+								// 			<Badge variant={isCurrent ? 'secondary' : 'outline'}>{type.name}</Badge>
+								// 		</Link>
+								// 	)}
+								// </>
+								<Link
+									key={type._id.toString()}
+									href={href}
+								>
+									<Badge variant={isCurrent ? 'secondary' : 'outline'}>{type.name}</Badge>
+								</Link>
 							);
 						})}
 					</div>
@@ -130,8 +127,6 @@ const AssetLayout = async ({ children, params }: Props) => {
 					</Dialog>
 				</div>
 			</header>
-
-			<Separator />
 
 			<section className='grid grid-cols-4 p-0'>
 				<Suspense fallback={<div>Loading...</div>}>

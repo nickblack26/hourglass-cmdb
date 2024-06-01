@@ -22,7 +22,7 @@ export const {
 	// session: {
 	// 	strategy: 'jwt',
 	// },
-	secret: process.env.NEXTAUTH_SECRET,
+	secret: process.env.NEXT_AUTH_SECRET,
 	callbacks: {
 		async signIn() {
 			return true;
@@ -41,7 +41,7 @@ export const {
 		async session({ session, user }) {
 			console.log(session, user);
 			session.user = user;
-			session.sessionToken = user.sessionToken;
+			// session.sessionToken = user.sessionToken;
 			// console.log(session);
 
 			// Add additional user data to the session object

@@ -1,15 +1,16 @@
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import ConfigurationsList from './configurations-list';
 import AssetLayout from './asset-layout';
+import { getDocuments } from '@/lib/mongodb/read';
 
 const Page = async () => {
-	const db = await createClient();
+	const assets = await getDocuments<Asset>(
+		'assets',
+		{ organization: new ObjectId('665888e02684136c5e529eb4') },
+		{ name: 1 }
+	);
 
-	const { data: assets } = await supabase
-		.collection('assets')
-		.select('*, type(name, icon), company(name), contact(firstName, lastName)')
-		.order('name');
+	console.log(assets);
 
 	return (
 		<AssetLayout>

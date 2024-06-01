@@ -12,12 +12,12 @@ declare global {
 	type AssetTypeUpdate = DB['public']['Tables']['assetTypes']['Update'];
 
 	type Company = DB['public']['Tables']['companies']['Row'];
-	type CompanyInsert = DB['public']['Tables']['companies']['Row'];
+	type CompanyInsert = DB['public']['Tables']['companies']['Insert'];
+
 	type CompanySecret = DB['public']['Tables']['company_secrets']['Row'];
 
 	type Contact = DB['public']['Tables']['users']['Row'];
 	type ContactInsert = DB['public']['Tables']['users']['Row'];
-
 
 	type Organization = DB['public']['Tables']['organizations']['Row'];
 	type Product = DB['public']['Tables']['products']['Row'];
@@ -26,7 +26,6 @@ declare global {
 	type Status = DB['public']['Tables']['statuses']['Row'];
 	type Ticket = DB['public']['Tables']['tickets']['Row'];
 	type Page = DB['public']['Tables']['pages']['Row'];
-	
 
 	type Impact = DB['public']['Enums']['impact'];
 	type RecordType = DB['public']['Enums']['recordType'];
@@ -34,9 +33,9 @@ declare global {
 	type Where = DB['public']['Enums']['where'];
 	type BlockType = DB['public']['Enums']['Block Type'];
 
-	type IconEnum = DB['public']['Enums']['icon']
+	type IconEnum = DB['public']['Enums']['icon'];
 
 	type Team = DB['public']['Tables']['teams']['Row'];
 
-	type Integration = DB['public']['Tables']['integrations']['Row']
+	type Integration = DB['public']['Tables']['integrations']['Row'];
 }

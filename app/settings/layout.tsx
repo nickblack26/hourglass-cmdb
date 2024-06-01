@@ -1,19 +1,14 @@
 import React, { ReactNode } from 'react';
 import Links from './links';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { getDocuments } from '@/lib/mongodb/read';
 
 type Props = {
 	children: ReactNode;
 };
 
 const Layout = async ({ children }: Props) => {
-	const db = await createClient();
-
-	const teams = await db
-		.collection('teams')
-		.find<Team>({ organization: new ObjectId('665888e02684136c5e529eb4') })
-		.toArray();
+	const teams = await getDocuments<Team>('teams', { organization: new ObjectId('665888e02684136c5e529eb4') });
 
 	return (
 		<main className='min-h-screen flex flex-col'>

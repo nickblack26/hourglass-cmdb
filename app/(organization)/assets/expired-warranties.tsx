@@ -1,9 +1,9 @@
 import Metric from '@/components/Metric';
 import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
 import { addDays } from 'date-fns';
 import React from 'react';
 import { DateRange } from 'react-day-picker';
+import { getDocuments } from '@/lib/mongodb/read';
 
 interface ConfigurationData {
 	total_expired: number;
@@ -16,7 +16,7 @@ export default async function ExpiredWarranties() {
 		from: new Date(),
 		to: addDays(new Date(), 30),
 	};
-	const data = await db.collection('assets').countDocuments();
+	const data = (await getDocuments('assets')).length;
 	// .select('total_expired:count()')
 	// .gte('expiration_date', dateRange.from?.toISOString())
 	// .lte('expiration_date', dateRange.to?.toISOString())

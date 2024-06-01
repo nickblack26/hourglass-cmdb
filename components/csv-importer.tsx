@@ -1,5 +1,5 @@
 'use client';
-import { createClient } from '@/lib/mongodb';
+import { getDocument } from '@/lib/mongodb/read';
 import React, { useEffect, useState } from 'react';
 import { Importer, ImporterField } from 'react-csv-importer';
 
@@ -7,18 +7,13 @@ import { Importer, ImporterField } from 'react-csv-importer';
 import 'react-csv-importer/dist/index.css';
 
 export default function CSVImporter() {
-	const db = await createClient();
 	const [company, setCompany] = useState<Company | undefined>();
 
 	// const test = {}
 
 	useEffect(() => {
-		supabase
-			.collection('companies')
-			.select()
-			.single()
-			.then((data) => setCompany(data.data ?? undefined));
-	}, [supabase]);
+		getDocument<Company>('companies').then((data) => setCompany(data ?? undefined));
+	}, []);
 
 	return (
 		<Importer
@@ -30,8 +25,6 @@ export default function CSVImporter() {
 				// 	await myAppMethod(row);
 				// }
 				console.log(rows);
-				const { error } = await db.collection('companies').insert(rows as CompanyInsert[]);
-				console.log(error);
 			}}
 			defaultNoHeader={false} // optional, keeps "data has headers" checkbox off by default
 			restartable={false} // optional, lets user choose to upload another file when import is complete

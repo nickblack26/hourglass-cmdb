@@ -1,7 +1,8 @@
 import { cookies as nextCookies } from 'next/headers';
 import { Twilio } from 'twilio';
 import { revalidateTag } from 'next/cache';
-import { createClient } from '@/lib/supabase/server';
+import { getDocument } from '@/lib/mongodb/read';
+import { ObjectId } from 'mongodb';
 
 export async function GET(request: Request) {
 	const authToken = request.headers.get('authToken');
@@ -21,16 +22,10 @@ export async function POST(request: Request, { params }: { params: { account: st
 	const authToken = request.headers.get('authToken');
 	if (!authToken) return;
 	const formData = await request.formData();
-	const db = await createClient();
-	const { data, error } = await supabase
-		.collection('users')
-		.select('email')
-		.eq('id', formData.get('contact') as string)
-		.single();
-	if (!data || error) {
-		console.log(error);
-		return;
-	}
+	const data = await getDocument<Contact>('users', { _id: new ObjectId(formData.get('contact') as string) });
+
+	if (!data) return new Response("Can't find contact", { status: 400 });
+
 	const cookies = nextCookies();
 	const account = cookies.get('twilio:accountSid')?.value;
 	const workspace = cookies.get('twilio:workspaceSid')?.value;

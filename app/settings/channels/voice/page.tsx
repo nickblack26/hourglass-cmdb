@@ -9,7 +9,6 @@ import type { Queue, Workflow, Worker } from '@/types/twilio/taskrouter';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
@@ -23,23 +22,20 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import ContactSelector from '@/components/selector/contact-selector';
-import { cookies } from 'next/headers';
 import CallWorkflowBuilder from '@/components/call-workflow-builder';
+import { getDocument } from '@/lib/mongodb/read';
 
 type Props = {};
 
 const Page = async (props: Props) => {
-	const db = await createClient();
-	type CompanyWithSecrets = Organization & { company: Company & { company_secrets: CompanySecret[] } };
-	const { data: organization, error } = await supabase
-		.collection('organizations')
-		.select('*, company(*, company_secrets(*))')
-		.returns<CompanyWithSecrets[]>()
-		.single();
+	const organization = await getDocument<Organization & { company: Company & { company_secrets: CompanySecret[] } }>(
+		'organizations',
+		{
+			_id: new ObjectId(''),
+		}
+	);
 
-	// console.log(error);
-
-	if (!organization || error) return notFound();
+	if (!organization) return notFound();
 
 	const data = organization.company;
 	const authToken = data.company_secrets.find((s) => s.key === 'TWILIO_AUTH_TOKEN')?.value;

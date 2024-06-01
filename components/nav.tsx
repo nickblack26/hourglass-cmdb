@@ -73,27 +73,27 @@ export function Nav({ isCollapsed, teams, user }: Props) {
 	const mappedTeams: LinkItem[] = teams.map((team) => ({
 		name: team.name,
 		icon: icons.find((icon) => icon.value === team.icon)?.icon,
-		href: `/team/${team.identifier}`,
+		href: `/team/${team._id.toString()}`,
 		links: [
 			{
 				name: 'Companies',
 				icon: SquareUser,
-				href: `/team/${team.identifier}/companies`,
+				href: `/team/${team._id.toString()}/companies`,
 			},
 			{
 				name: 'Contacts',
 				icon: Users,
-				href: `/team/${team.identifier}/contacts`,
+				href: `/team/${team._id.toString()}/contacts`,
 			},
 			{
 				name: 'Assets',
 				icon: Cable,
-				href: `/team/${team.identifier}/assets`,
+				href: `/team/${team._id.toString()}/assets`,
 			},
 			{
 				name: 'Tickets',
 				icon: Ticket,
-				href: `/team/${team.identifier}/tickets`,
+				href: `/team/${team._id.toString()}/tickets`,
 			},
 		],
 	}));

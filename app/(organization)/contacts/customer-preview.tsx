@@ -1,7 +1,6 @@
 import StatusBadge from '@/components/status-badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { createClient } from '@/lib/mongodb';
+import { SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { v4 as uuid } from 'uuid';
 import React, { Suspense } from 'react';
 import Image from 'next/image';
@@ -10,14 +9,11 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { PlusCircleIcon } from 'lucide-react';
 import CustomerTicketPreview from './customer-ticket-preview';
+import { getDocument } from '@/lib/mongodb/read';
+import { ObjectId } from 'mongodb';
 
-export default async function CustomerPreviewSheet({ id }: { id: number }) {
-	const db = await createClient();
-	const { data: contact, error } = await supabase
-		.collection('users')
-		.select('id, firstName, lastName, title, defaultPhoneNbr, company(id, name), tickets(*)')
-		.eq('id', id)
-		.single();
+export default async function CustomerPreviewSheet({ id }: { id: string }) {
+	const contact = await getDocument<Contact>('users', { _id: new ObjectId(id) });
 
 	const customerDetails = [
 		{ label: 'Source', value: 'Contact us form' },

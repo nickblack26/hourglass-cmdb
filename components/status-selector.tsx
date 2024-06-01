@@ -1,18 +1,15 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { getDocuments } from '@/lib/mongodb/read';
 
 type Props = {
 	defaultValue?: string;
 };
 
 const StatusSelector = async ({ defaultValue }: Props) => {
-	const db = await createClient();
-	const { data: statuses, error } = await db.collection('statuses').select('*').order('name');
+	const statuses = await getDocuments<Status>('statuses');
 
 	if (!statuses) {
-		console.error(error);
 		return <div></div>;
 	}
 

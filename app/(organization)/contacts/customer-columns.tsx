@@ -36,7 +36,10 @@ export const columns: ColumnDef<Contact>[] = [
 		accessorKey: 'firstName',
 		header: 'Name',
 		cell: ({ row }) => (
-			<Link href={`/contacts/${row.original.id}`} className='grid grid-cols-[24px_1fr] gap-1.5 items-center hover:underline'>
+			<Link
+				href={`/contacts/${row.original._id.toString()}`}
+				className='grid grid-cols-[24px_1fr] gap-1.5 items-center hover:underline'
+			>
 				<Avatar className='h-6 w-6'>
 					<AvatarFallback className='uppercase h-6 w-6 text-xs'>{`${row.original?.firstName[0]}${row.original?.lastName[0]}`}</AvatarFallback>
 				</Avatar>
@@ -51,7 +54,10 @@ export const columns: ColumnDef<Contact>[] = [
 		header: 'Email',
 		cell: ({ row }) => (
 			<div>
-				<StatusBadge color='blue' text={row.getValue('email')} />
+				<StatusBadge
+					color='blue'
+					text={row.getValue('email')}
+				/>
 			</div>
 		),
 	},
@@ -60,7 +66,10 @@ export const columns: ColumnDef<Contact>[] = [
 		header: 'Phone number',
 		cell: ({ row }) => (
 			<div>
-				<StatusBadge color='blue' text={row.getValue('defaultPhoneNbr')} />
+				<StatusBadge
+					color='blue'
+					text={row.getValue('defaultPhoneNbr')}
+				/>
 			</div>
 		),
 	},
@@ -77,10 +86,16 @@ export const columns: ColumnDef<Contact>[] = [
 		header: '',
 		cell: () => (
 			<div className='flex items-center gap-3'>
-				<Button variant='ghost' size='sm'>
+				<Button
+					variant='ghost'
+					size='sm'
+				>
 					<StarIcon className='w-4 h-4' />
 				</Button>
-				<Button variant='ghost' size='sm'>
+				<Button
+					variant='ghost'
+					size='sm'
+				>
 					<EllipsisIcon className='w-4 h-4' />
 				</Button>
 			</div>

@@ -52,7 +52,7 @@ export function Velo({
 				<ResizableHandle />
 
 				<ResizablePanel defaultSize={defaultLayout[1]}>
-					<ScrollArea className='flex flex-col grow bg-background'>{children}</ScrollArea>
+					<ScrollArea className='flex flex-col min-h-0 h-full grow bg-background'>{children}</ScrollArea>
 				</ResizablePanel>
 			</ResizablePanelGroup>
 		</TooltipProvider>

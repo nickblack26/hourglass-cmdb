@@ -18,9 +18,8 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
-import { notFound } from 'next/navigation';
+import { getDocument } from '@/lib/mongodb/read';
 
 type Props = {
 	children: ReactNode;
@@ -28,15 +27,7 @@ type Props = {
 };
 
 const Layout = async ({ children, params }: Props) => {
-	const db = await createClient();
-
-	const { data: contact } = await supabase
-		.collection('users')
-		.select('id, firstName, lastName, title, company(id, name)')
-		.eq('id', params.id)
-		.single();
-
-	if (!contact) return notFound();
+	const contact = await getDocument<Contact>('users', { _id: new ObjectId(params.id) });
 
 	const actions = [
 		{ icon: PhoneIcon, name: 'Call' },

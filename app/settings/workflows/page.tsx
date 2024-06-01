@@ -4,7 +4,6 @@ import { Separator } from '@/components/ui/separator';
 import { ListFilter } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-import QueueForm from '@/components/queue-form';
 import { Card } from '@/components/ui/card';
 import {
 	Dialog,
@@ -30,13 +29,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Info, MoreHorizontal, Pencil } from 'lucide-react';
 import type { WorkflowInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/workflow';
 import WorkflowForm from '@/components/workflow-form';
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { getDocuments } from '@/lib/mongodb/read';
 
 type Props = {};
 
 const Page = async (props: Props) => {
-	const db = await createClient();
 	const headers = new Headers();
 	headers.append('authToken', '927970c354916b481735c0d2d3d46591' ?? '');
 	const responses = await Promise.all([
@@ -44,7 +41,7 @@ const Page = async (props: Props) => {
 		fetch(`http://localhost:3000/api/twilio/1/workspace/1/workflows`, { headers, next: { tags: ['workflows'] } }),
 		fetch(`http://localhost:3000/api/twilio/1/workspace/1/workers`, { headers, next: { tags: ['workers'] } }),
 	]);
-	const { data: teams, error } = await db.collection('teams').select();
+	const teams = await getDocuments<Team>('teams');
 
 	const [queues, workflows, workers] = await Promise.all(responses.map((response) => response.json()));
 

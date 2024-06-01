@@ -2,36 +2,54 @@ import CompanyTable from '@/app/(organization)/companies/company-table';
 import { Combobox } from '@/components/combobox';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
-import { QueryData } from '@supabase/supabase-js';
-import { ListFilter } from 'lucide-react';
-import { notFound } from 'next/navigation';
+import { ListFilter, Plus } from 'lucide-react';
 import React from 'react';
+import { getDocuments } from '@/lib/mongodb/read';
+import { ObjectId } from 'mongodb';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import SubmitButton from '@/components/submit-button';
+import CompanyForm from '@/components/forms/company-form';
 
 type Props = {
 	params: { key: string };
 };
 
 const Page = async ({ params }: Props) => {
-	const db = await createClient();
 	const { key } = params;
-	const teamWithCompanieQuery = db.collection('teams').select('companies(*)').eq('identifier', key).single();
-	type TeamWithCompanies = QueryData<typeof teamWithCompanieQuery>;
-	const { data } = await teamWithCompanieQuery;
 
-	if (!data) return notFound();
+	const companies = await getDocuments<Company>('companies', { teams: new ObjectId(key) });
 
-	const teamWithCompanies: TeamWithCompanies = data;
-	const { companies } = teamWithCompanies;
+	console.log(companies);
 
 	return (
 		<div>
 			<header>
 				<h1 className='text-sm'>Companies</h1>
+
+				<Dialog>
+					<DialogTrigger>
+						<Badge variant='outline'>
+							<Plus className='mr-1.5' />
+							New Company
+						</Badge>
+					</DialogTrigger>
+
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Create Asset</DialogTitle>
+						</DialogHeader>
+
+						<CompanyForm team={params.key}>
+							<DialogFooter>
+								<SubmitButton>Create</SubmitButton>
+							</DialogFooter>
+						</CompanyForm>
+					</DialogContent>
+				</Dialog>
 			</header>
 
-			<Separator />
+			{/* <Separator /> */}
 
 			<section>
 				<Combobox

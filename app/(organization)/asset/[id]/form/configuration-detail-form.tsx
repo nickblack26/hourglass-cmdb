@@ -8,11 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { createClient } from '@/lib/mongodb';
 import CompanySelector from '@/components/selector/company-selector';
 import { Suspense } from 'react';
 import ContactSelector from '@/components/selector/contact-selector';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { ObjectId } from 'mongodb';
+import { updateDocument } from '@/lib/mongodb/update';
 
 const formSchema = z.object({
 	name: z.string(),
@@ -22,11 +23,10 @@ const formSchema = z.object({
 });
 
 type Props = {
-	configuration?: Configuration;
+	configuration?: Asset;
 };
 
 const ConfigurationDetailForm = ({ configuration }: Props) => {
-	const db = await createClient();
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -48,11 +48,8 @@ const ConfigurationDetailForm = ({ configuration }: Props) => {
 		// ✅ This will be type-safe and validated.
 		// console.log(values);
 		if (configuration) {
-			const { error } = await db.collection('configurations').update(values).eq('id', configuration.id);
-			console.log(error);
+			await updateDocument('assets', { _id: new ObjectId('') }, []);
 		} else {
-			const { error } = await db.collection('configurations').insert(values);
-			console.log(error);
 		}
 	}
 

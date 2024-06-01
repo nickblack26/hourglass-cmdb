@@ -1,6 +1,4 @@
 'use client';
-
-import StatusBadge from '@/components/status-badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -21,7 +19,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { icons } from '@/lib/data';
-import { deleteConfiguration } from '@/lib/supabase/delete';
+import { deleteDocument } from '@/lib/mongodb/delete';
 import { cn } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisIcon, Trash2 } from 'lucide-react';
@@ -60,7 +58,7 @@ export const columns: ColumnDef<Asset>[] = [
 
 			return (
 				<Link
-					href={`/asset/${row.original.id}`}
+					href={`/asset/${row.original._id.toString()}`}
 					className={cn(buttonVariants({ variant: 'link', size: 'default' }), 'text-blue-600')}
 				>
 					{icon && <icon.icon className='mr-1.5' />}
@@ -119,13 +117,11 @@ export const columns: ColumnDef<Asset>[] = [
 			<Dialog>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button
-							variant='ghost'
-							size='sm'
-						>
+						<Button variant='ghost'>
 							<EllipsisIcon className='w-4 h-4' />
 						</Button>
 					</DropdownMenuTrigger>
+
 					<DropdownMenuContent>
 						<DialogTrigger asChild>
 							<DropdownMenuItem className='text-red-500 focus:bg-red-50 focus:text-red-500'>
@@ -135,11 +131,14 @@ export const columns: ColumnDef<Asset>[] = [
 						</DialogTrigger>
 					</DropdownMenuContent>
 				</DropdownMenu>
+
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Are you sure?</DialogTitle>
 					</DialogHeader>
-					<form action={async () => deleteConfiguration(row.original.id)}></form>
+
+					<form action={async () => await deleteDocument('companies', { _id: row.original._id })}></form>
+
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button variant='secondary'>Close</Button>

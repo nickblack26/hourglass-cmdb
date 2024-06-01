@@ -1,23 +1,21 @@
 import React from 'react';
-import SettingsSection from '../../settings-section';
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
 import LabeledInput from '@/components/labled-input';
-import { IconSelector } from '../../types/icon-selector';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { getDocument } from '@/lib/mongodb/read';
+import SettingsSection from '@/app/settings/settings-section';
+import { IconSelector } from '@/app/settings/types/icon-selector';
+import { ObjectId } from 'mongodb';
 
 type Props = {
 	params: { id: string };
 };
 
 const Page = async ({ params }: Props) => {
-	const db = await createClient();
-
-	const { data: team } = await db.collection('teams').select().eq('identifier', params.id).single();
+	const team = await getDocument('teams', { _id: new ObjectId(params.id) });
 
 	if (!team) return notFound();
 

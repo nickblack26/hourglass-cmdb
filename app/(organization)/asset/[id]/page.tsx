@@ -1,6 +1,6 @@
+'use server';
 import React, { Suspense } from 'react';
 import { Input } from '@/components/ui/input';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { IDPageProps } from '@/types/data';
 import { notFound } from 'next/navigation';
@@ -14,20 +14,13 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import StatusSelector from '@/components/status-selector';
-import TypeSelector from '@/components/selector/type-selector';
-import SubTypeSelector from '@/components/subType-selector';
-import { QueryData } from '@supabase/supabase-js';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import Link from 'next/link';
-import ConfigurationDetailForm from './form/configuration-detail-form';
-import { updateConfiguration } from '@/lib/supabase/update';
 import SystemStatus from './system-status';
+import { getDocument } from '@/lib/mongodb/read';
 
 const Page = async ({ params }: IDPageProps) => {
-	const db = await createClient();
-
-	const configuration = await db.collection('assets').findOne<Asset>({ _id: new ObjectId(params.id) });
+	const configuration = await getDocument<Asset>('assets', { _id: new ObjectId(params.id) });
 
 	if (!configuration) return notFound();
 
@@ -71,7 +64,7 @@ const Page = async ({ params }: IDPageProps) => {
 										size={300}
 										className='max-w-[300px] max-h-[300px] w-full h-full'
 										viewBox={`0 0 300 300`}
-										value='http://localhost:3000/configurations/0a7d3716-97fc-46ad-8311-b3e02927b2f5'
+										value={`http://localhost:3000/asset/${params.id}`}
 									/>
 								</div>
 							</DialogContent>
@@ -90,64 +83,7 @@ const Page = async ({ params }: IDPageProps) => {
 
 				<div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8'>
 					<div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
-						<ConfigurationDetailForm configuration={configuration} />
-						{/* 
-						{configuration.type && configuration.type?.questions.length > 0 && (
-							<Card>
-								<CardHeader>
-									<CardTitle>Best Practices</CardTitle>
-
-									<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
-								</CardHeader>
-
-								<CardContent>
-									<div className='grid gap-6'>
-										{configuration.type?.questions.map(({ question }) => (
-											<div
-												className={cn('grid grid-cols-4 items-center gap-3', !question.answers[0].meets_expectations && 'text-red-500')}
-												key={question.id}
-											>
-												<Label htmlFor='name' className='col-span-3'>
-													{question.title}
-												</Label>
-												<div className='flex items-center gap-1.5'>
-													<Input id='name' type='text' className='w-full' defaultValue={question.answers[0].text} />
-
-													<Switch
-														formAction={async (data: FormData) => {
-															'use server';
-															await supabase
-																.collection('answers')
-																.update({ meets_expectations: data.get('meets_expectations') ? true : false })
-																.eq('id', question.answers[0].id);
-														}}
-														defaultChecked={question.answers[0].meets_expectations}
-														name='meets_expectations'
-													/>
-												</div>
-											</div>
-										))}
-
-										<div className='grid gap-3'>
-										<Label htmlFor='description'>Description</Label>
-
-										<Textarea
-											id='description'
-											defaultValue={configuration.product.description}
-											placeholder='Configuration Description'
-											className='min-h-32'
-										/>
-									</div>
-									</div>
-								</CardContent>
-
-								<CardFooter className='border-t p-4'>
-									<Button disabled className='ml-auto'>
-										Save
-									</Button>
-								</CardFooter>
-							</Card>
-						)} */}
+						{/* <ConfigurationDetailForm configuration={configuration} /> */}
 
 						<Card>
 							<CardHeader>
@@ -322,7 +258,7 @@ const Page = async ({ params }: IDPageProps) => {
 												</Select>
 											}
 										>
-											<TypeSelector defaultValue={configuration?.type ?? undefined} />
+											{/* <TypeSelector defaultValue={configuration?.type ?? undefined} /> */}
 										</Suspense>
 									</div>
 
@@ -338,7 +274,7 @@ const Page = async ({ params }: IDPageProps) => {
 												</Select>
 											}
 										>
-											<SubTypeSelector />
+											{/* <SubTypeSelector /> */}
 										</Suspense>
 									</div>
 								</div>
@@ -354,7 +290,7 @@ const Page = async ({ params }: IDPageProps) => {
 								action={async (data: FormData) => {
 									'use server';
 									const status = parseInt(data.get('status') as string);
-									await updateConfiguration(configuration.id, { status });
+									// await updateConfiguration(configuration._id.toString(), { status });
 								}}
 							>
 								<CardHeader>

@@ -3,8 +3,8 @@ import { Velo } from '@/components/velo';
 import { cookies } from 'next/headers';
 import { JabraProvider } from '@/providers/jabraProvider';
 import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { getDocument, getDocuments } from '@/lib/mongodb/read';
 
 type Props = {
 	children: React.ReactNode;
@@ -12,14 +12,9 @@ type Props = {
 
 const Layout = async ({ children }: Props) => {
 	const cookieStore = cookies();
-	const db = await createClient();
-
 	const [teams, user] = await Promise.all([
-		db
-			.collection('teams')
-			.find<Team>({ organization: new ObjectId('665888e02684136c5e529eb4') })
-			.toArray(),
-		db.collection('users').findOne<Contact>({ _id: new ObjectId('665889a02684136c5e529eb5') }),
+		getDocuments<Team>('teams', { organization: new ObjectId('665888e02684136c5e529eb4') }),
+		getDocument<Contact>('users', { _id: new ObjectId('665889a02684136c5e529eb5') }),
 	]);
 
 	if (!user) return redirect('/login');
