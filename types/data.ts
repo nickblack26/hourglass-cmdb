@@ -42,3 +42,17 @@ export interface Ticket {
 	client: Client;
 	requestDate: Date;
 }
+
+export interface LinkSection {
+	name?: string;
+	icon?: LucideIcon;
+	href?: string;
+	links: LinkItem[];
+}
+
+export interface LinkItem {
+	name: string;
+	href: string;
+	icon?: LucideIcon;
+	links?: LinkItem[];
+}
