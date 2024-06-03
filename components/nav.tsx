@@ -9,8 +9,7 @@ import { LinkItem, LinkSection } from '@/types/data';
 import { icons } from '@/lib/data';
 import Image from 'next/image';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { Button, buttonVariants } from './ui/button';
+import { Button } from './ui/button';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -78,22 +77,22 @@ export function Nav({ isCollapsed, teams, user }: Props) {
 			{
 				name: 'Companies',
 				icon: SquareUser,
-				href: `/team/${team.id}/companies`,
+				href: `/team/${team.identifier}/companies`,
 			},
 			{
 				name: 'Contacts',
 				icon: Users,
-				href: `/team/${team.id}/contacts`,
+				href: `/team/${team.identifier}/contacts`,
 			},
 			{
 				name: 'Assets',
 				icon: Cable,
-				href: `/team/${team.id}/assets`,
+				href: `/team/${team.identifier}/assets`,
 			},
 			{
 				name: 'Tickets',
 				icon: Ticket,
-				href: `/team/${team.id}/tickets`,
+				href: `/team/${team.identifier}/tickets`,
 			},
 		],
 	}));
