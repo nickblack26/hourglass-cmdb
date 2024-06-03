@@ -1,11 +1,9 @@
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { getDocuments } from '@/lib/mongodb/read';
 import React from 'react';
 
 export default async function CustomerTicketPreview({ id }: { id: number }) {
-	const db = await createClient();
-	const tickets = await db.collection('tickets').find().toArray();
+	const tickets = await getDocuments<Ticket>('tickets');
 
 	return (
 		<div>

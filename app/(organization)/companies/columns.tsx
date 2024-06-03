@@ -14,7 +14,6 @@ export const columns: ColumnDef<Company>[] = [
 			<Checkbox
 				checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
 				className='ml-3'
-				// @ts-ignore
 				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
 				aria-label='Select all'
 			/>
@@ -22,7 +21,6 @@ export const columns: ColumnDef<Company>[] = [
 		cell: ({ row }) => (
 			<Checkbox
 				checked={row.getIsSelected()}
-				// @ts-ignore
 				className='ml-3'
 				onCheckedChange={(value) => row.toggleSelected(!!value)}
 				aria-label='Select row'
@@ -41,7 +39,7 @@ export const columns: ColumnDef<Company>[] = [
 		header: 'Name',
 		cell: ({ row }) => (
 			<Link
-				href={`/companies/${row.original.id}`}
+				href={`/companies/${row.original._id.toString()}`}
 				className={cn(buttonVariants({ variant: 'link', size: 'default' }), 'p-0 text-blue-600')}
 			>
 				{row.getValue('name')}

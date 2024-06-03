@@ -8,12 +8,6 @@ export async function POST(request: Request, response: Response) {
 	console.log(formData);
 
 	try {
-		// const { data, error } = await db.collection('tickets').insert({ summary, source: 4 }).select()
-
-		// console.log(data, error)
-
-		// if (error) throw error
-
 		return new Response('OK');
 	} catch (error) {
 		return new Response(`Error: ${JSON.stringify(error)}`, {

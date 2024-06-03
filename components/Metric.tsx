@@ -1,11 +1,13 @@
-'use client';
+'use server';
+import React from 'react';
 import { cn } from '@/lib/utils';
 import { EllipsisVertical, GripVertical, Pencil, TrendingDownIcon, TrendingUpIcon } from 'lucide-react';
-import React, { useRef, useEffect } from 'react';
 import { Button } from './ui/button';
-import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
+import LabeledInput from './labled-input';
+import clientPromise from '@/lib/mongodb';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 type MetricProps = {
 	title: string;
@@ -15,30 +17,26 @@ type MetricProps = {
 	isDraggingEnabled?: boolean;
 };
 
-const Metric = ({ title, amount, timeline, percentage, isDraggingEnabled = false }: MetricProps) => {
-	const ref = useRef<HTMLDivElement>(null);
-	const dragRef = useRef<HTMLButtonElement>(null);
-	useEffect(() => {
-		if (!isDraggingEnabled || !ref.current || !dragRef.current) return;
+const operationOptions = [
+	{ name: 'Add', value: 'add' },
+	{ name: 'Subtract', value: 'subtract' },
+	{ name: 'Multiply', value: 'multiply' },
+	{ name: 'Divide', value: 'divide' },
+	{ name: 'Average', value: 'average' },
+];
 
-		return draggable({
-			element: ref.current,
-			dragHandle: dragRef.current,
-		});
-	}, [isDraggingEnabled]);
+const Metric = async ({ title, amount, timeline, percentage, isDraggingEnabled = false }: MetricProps) => {
+	const listCollections = await clientPromise;
+	const collections = await listCollections.db('public').listCollections().toArray();
 
 	return (
-		<div
-			className='p-4 border-r last:border-r-0 space-y-1 group'
-			ref={ref}
-		>
+		<div className='p-4 border-r last:border-r-0 space-y-1 group'>
 			<div className='flex items-center justify-between gap-3'>
 				<h2 className='text-sm text-muted-foreground font-medium'>{title}</h2>
 				{isDraggingEnabled && (
 					<Button
 						variant={'ghost'}
 						className='opacity-0 transition-opacity group-hover:opacity-100'
-						ref={dragRef}
 					>
 						<GripVertical className=' h-3.5' />
 					</Button>
@@ -48,6 +46,7 @@ const Metric = ({ title, amount, timeline, percentage, isDraggingEnabled = false
 						<DropdownMenuTrigger>
 							<EllipsisVertical className=' h-3.5' />
 						</DropdownMenuTrigger>
+
 						<DropdownMenuContent>
 							<SheetTrigger asChild>
 								<DropdownMenuItem>
@@ -57,10 +56,100 @@ const Metric = ({ title, amount, timeline, percentage, isDraggingEnabled = false
 							</SheetTrigger>
 						</DropdownMenuContent>
 					</DropdownMenu>
+
 					<SheetContent>
 						<SheetHeader>
 							<SheetTitle>Edit Metric</SheetTitle>
 						</SheetHeader>
+
+						<form
+							action=''
+							className='space-y-3'
+						>
+							<LabeledInput
+								name='name'
+								label='Metric Name'
+								placeholder='e.g. Expired Warranties'
+								required
+							/>
+
+							<LabeledInput
+								name='field'
+								label='Field'
+								required
+							>
+								<Select>
+									<SelectTrigger>
+										<SelectValue
+											placeholder='Testing'
+											className='capitalize'
+										/>
+									</SelectTrigger>
+
+									<SelectContent>
+										{collections?.map((collection) => (
+											<SelectItem
+												key={collection.name}
+												value={collection.name}
+												className='capitalize'
+											>
+												{collection.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</LabeledInput>
+
+							<LabeledInput
+								name='collection'
+								label='Collection'
+								required
+							>
+								<Select>
+									<SelectTrigger>
+										<SelectValue
+											placeholder='Testing'
+											className='capitalize'
+										/>
+									</SelectTrigger>
+
+									<SelectContent>
+										{collections?.map((collection) => (
+											<SelectItem
+												key={collection.name}
+												value={collection.name}
+												className='capitalize'
+											>
+												{collection.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</LabeledInput>
+
+							<LabeledInput
+								name='operation'
+								label='Operation'
+								required
+							>
+								<Select defaultValue={operationOptions[0].value}>
+									<SelectTrigger>
+										<SelectValue placeholder='Operation' />
+									</SelectTrigger>
+
+									<SelectContent>
+										{operationOptions.map((option) => (
+											<SelectItem
+												key={option.value}
+												value={option.value}
+											>
+												{option.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</LabeledInput>
+						</form>
 					</SheetContent>
 				</Sheet>
 			</div>

@@ -86,7 +86,7 @@
 		@apply text-lg font-medium;
 	}
 	header {
-		@apply flex w-full justify-between items-center py-3 px-6 sticky top-0 bg-background/80 z-10 backdrop-blur-lg;
+		@apply flex w-full justify-between items-center py-3 px-6 sticky top-0 bg-background/80 z-10 backdrop-blur-lg border-b;
 	}
 	section {
 		@apply py-3 px-6;

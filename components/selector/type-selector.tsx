@@ -1,20 +1,15 @@
 import React from 'react';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { getDocuments } from '@/lib/mongodb/read';
 
 type Props = {
 	defaultValue?: string;
 };
 
 const TypeSelector = async ({ defaultValue }: Props) => {
-	const db = await createClient();
-	const { data: types, error } = await db.collection('assetTypes').select('id, name').order('name');
-	// .is('parent', null)
-	// .returns<{ id: string; name: string; assetTypes: { id: string; name: string }[] }[]>();
+	const types = await getDocuments<AssetType>('assetTypes');
 
 	if (!types) {
-		console.error(error);
 		return <div></div>;
 	}
 

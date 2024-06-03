@@ -2,16 +2,10 @@ import Metric from '@/components/Metric';
 import { Button } from '@/components/ui/button';
 import { DatePicker } from '@/components/ui/date-picker';
 import { EllipsisIcon } from 'lucide-react';
-import AverageCreatedTickets from './charts/average-tickets-created';
-import { ChartData, TicketByFirstReply } from './charts/ticket-by-first-reply';
-import { TicketByChannel } from './charts/ticket-by-channel';
 import { Progress } from '@/components/ui/progress';
-import { createClient } from '@/lib/mongodb';
-import { addDays, getTime, subDays } from 'date-fns';
+import { getTime, subDays } from 'date-fns';
 import { DateRange } from 'react-day-picker';
-import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { auth } from '@/auth';
 
 interface TicketData {
 	total_tickets: number;
@@ -19,33 +13,15 @@ interface TicketData {
 }
 
 export default async function Home() {
-	const session = await auth();
-	const db = await createClient();
 	const dateRange: DateRange = {
 		from: new Date(),
 		to: subDays(new Date(), 30),
 	};
 
-	// console.log(await outboundResponse.json());
-
-	// const { data: ticketData, error } = await db
-	// 	.collection('tickets')
-	// 	.select('total_tickets:count(), avg_response_time:respondMinutes.avg()')
-	// 	.lte('dateEntered', dateRange.from?.toISOString())
-	// 	.gte('dateEntered', dateRange.to?.toISOString())
-	// 	.returns<TicketData[]>()
-	// 	.single();
-
 	const ticketData: TicketData = {
 		avg_response_time: 1,
 		total_tickets: 1,
 	};
-
-	// if (error) {
-	// 	console.error(error);
-	// 	notFound();
-	// }
-
 	return (
 		<main>
 			<header className='grid grid-cols-3 w-full items-center border-b sticky top-0'>
@@ -60,8 +36,6 @@ export default async function Home() {
 					<Button>Export CSV</Button>
 				</div>
 			</header>
-
-			<pre>{JSON.stringify(session, null, 2)}</pre>
 
 			<section className='grid grid-cols-4 gap-3 p-0'>
 				<Metric
@@ -107,26 +81,20 @@ export default async function Home() {
 							</div>
 						</div>
 
-						<Suspense fallback={<div>Loading...</div>}>
-							<AverageCreatedTickets className='col-span-3' />
-						</Suspense>
+						<Suspense fallback={<div>Loading...</div>}></Suspense>
 					</div>
 				</div>
 
 				<div className='p-6 col-span-2'>
 					<h2>Ticket By First Reply Time</h2>
-					<Suspense fallback={<div>Loading...</div>}>
-						<TicketByFirstReply />
-					</Suspense>
+					<Suspense fallback={<div>Loading...</div>}></Suspense>
 				</div>
 			</section>
 
 			<section className='grid grid-cols-2 border-t p-0'>
 				<div className='p-6 border-r'>
 					<h2>Ticket By Channel</h2>
-					<Suspense fallback={<div>Loading...</div>}>
-						<TicketByChannel />
-					</Suspense>
+					<Suspense fallback={<div>Loading...</div>}></Suspense>
 				</div>
 
 				<div className='p-6'>

@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { createClient } from '@/lib/mongodb';
+import { getDocument } from '@/lib/mongodb/read';
 import { ObjectId } from 'mongodb';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,12 +10,11 @@ import React from 'react';
 type Props = {};
 
 const Page = async (props: Props) => {
-	const db = await createClient();
-	const { data, error } = await db.collection('organizations').select().single();
+	const data = await getDocument<Organization>('organizations', { _id: new ObjectId('') });
 
-	console.log(data, error);
+	console.log(data);
 
-	if (!data || error) return <div></div>;
+	if (!data) return <div></div>;
 
 	return (
 		<div>

@@ -2,27 +2,17 @@ import ContactList from '@/app/(organization)/contacts/contact-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { IDPageProps } from '@/types/data';
 import { BoxIcon, Building2Icon, CalendarDaysIcon, UserIcon } from 'lucide-react';
-import { notFound } from 'next/navigation';
 import React from 'react';
+import { getDocument, getDocuments } from '@/lib/mongodb/read';
 
 export default async function Page({ params }: IDPageProps) {
-	const db = await createClient();
-	const companyQuery = db.collection('companies').select('*, contacts(*)').eq('id', params.id).single();
-	const allCompaniesQuery = db.collection('companies').select('id, name');
-
-	const [{ data: company, error: companyError }, { data: companies, error: companiesError }] = await Promise.all([
-		companyQuery,
-		allCompaniesQuery,
+	const [company, companies] = await Promise.all([
+		getDocument<Company>('companies', { _id: new ObjectId(params.id) }),
+		getDocuments<Company>('companies'),
 	]);
-
-	if (!company || companyError || !companies || companiesError) {
-		console.error(companyError, companiesError);
-		return notFound();
-	}
 
 	const details = [
 		{
@@ -60,7 +50,8 @@ export default async function Page({ params }: IDPageProps) {
 				<Button>Add Ticket</Button>
 			</header>
 
-			<Separator />
+			{/* <Separator /> */}
+
 			<section className='grid grid-cols-[256px_1fr] gap-12 px-6 flex-1'>
 				<Card className='bg-secondary/50 shadow-none border-none justify-self-stretch mb-6'>
 					<CardHeader className='px-3'>

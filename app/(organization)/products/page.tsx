@@ -1,5 +1,3 @@
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import React from 'react';
 import ProductsList from './products-list';
@@ -8,11 +6,10 @@ import { PlusCircle } from 'lucide-react';
 import LabeledInput from '@/components/labled-input';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { createProduct } from '@/lib/supabase/create';
+import { getDocuments } from '@/lib/mongodb/read';
 
 const Page = async () => {
-	const db = await createClient();
-
-	const { data, error } = await db.collection('products').select().is('parent', null);
+	const data = await getDocuments<Product>('products');
 
 	if (!data) return notFound();
 

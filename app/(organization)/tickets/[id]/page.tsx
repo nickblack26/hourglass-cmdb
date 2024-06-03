@@ -1,10 +1,8 @@
 import { ArrowRight, ChevronDown, CornerDownLeft, Mic, Paperclip } from 'lucide-react';
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,10 +16,10 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { getDocument } from '@/lib/mongodb/read';
 
 const Page = async ({ params }: { params: { id: string } }) => {
-	const db = await createClient();
-	const ticket = await db.collection('tickets').findOne<Ticket>({ _id: new ObjectId(params.id) });
+	const ticket = getDocument<Ticket>('tickets', { _id: new ObjectId(params.id) });
 
 	if (!ticket) {
 		notFound();

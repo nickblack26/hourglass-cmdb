@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-// import { createClient } from '@/lib/mongodb';
+import { getDocuments } from '@/lib/mongodb/read';
 
 type Props = {
 	onValueChange?: (...event: any[]) => void;
@@ -18,12 +18,11 @@ const CompanySelector = ({ onValueChange, defaultValue }: Props) => {
 	>([]);
 
 	useEffect(() => {
-		// const getData = async () => {
-		// 	const db = await createClient();
-		// 	const companies = await db.collection<{ id: string; name: string }>('companies').find().toArray();
-		// 	setCompanies(companies);
-		// };
-		// getData();
+		const getData = async () => {
+			const companies = await getDocuments<Company>('companies');
+			setCompanies(companies);
+		};
+		getData();
 	}, []);
 
 	if (companies === null) {

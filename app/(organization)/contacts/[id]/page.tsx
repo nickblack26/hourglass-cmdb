@@ -1,7 +1,6 @@
 import StatusBadge from '@/components/status-badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import {
 	Building2Icon,
@@ -18,31 +17,15 @@ import {
 import Image from 'next/image';
 import React from 'react';
 import ConfigurationsList from '@/app/(organization)/assets/configurations-list';
-import { notFound } from 'next/navigation';
 import TicketTable from '@/components/ticket-table';
+import { getDocument, getDocuments } from '@/lib/mongodb/read';
 
 const Page = async ({ params }: { params: { id: string } }) => {
-	const db = await createClient();
-
-	const { data: contact } = await supabase
-		.collection('users')
-		.select('id, firstName, lastName, title, company(id, name)')
-		.eq('id', params.id)
-		.single();
-
-	if (!contact) return notFound();
-
-	const { data: tickets, error: ticketError } = await supabase
-		.collection('tickets')
-		.select('*, contact(id, firstName, lastName)')
-		.eq('contact', contact.id)
-		.limit(25);
-
-	const { data: configurations, error: configurationError } = await supabase
-		.collection('configurations')
-		.select('id, name, status(id, name), type(icon), company(id, name), user(id, firstName, lastName)')
-		.eq('user', contact?.id);
-	console.log(configurations);
+	const [contact, tickets, configurations] = await Promise.all([
+		getDocument<Contact>('users', { _id: new ObjectId(params.id) }),
+		getDocuments<Ticket>('tickets', { _id: new ObjectId(params.id) }),
+		getDocuments<Asset>('assets', { _id: new ObjectId(params.id) }),
+	]);
 
 	const customerDetails = [
 		{ label: 'Source', value: 'Contact us form', icon: SquareArrowDownIcon },

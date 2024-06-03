@@ -1,16 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
 import React from 'react';
 import CompanyTable from './company-table';
+import { getDocuments } from '@/lib/mongodb/read';
 
 export default async function Page() {
-	const db = await createClient();
-	const companiesQuery = db.collection('companies').select().order('name');
-	const viewsQuery = db.collection('views').select().order('name');
-
-	const [{ data: companies }, { data: views }] = await Promise.all([companiesQuery, viewsQuery]);
+	const [companies, views] = await Promise.all([getDocuments<Company>('companies'), getDocuments('views')]);
 
 	return (
 		<main>
@@ -20,7 +15,7 @@ export default async function Page() {
 				<Button>Add Company</Button>
 			</header>
 
-			<Separator />
+			{/* <Separator /> */}
 
 			<section className='space-y-3'>
 				<CompanyTable data={companies ?? []} />

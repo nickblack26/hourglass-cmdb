@@ -34,8 +34,8 @@ import SubmitButton from '@/components/submit-button';
 import { Suspense } from 'react';
 import SelectorFallback from '@/components/selector/selector-fallback';
 import TypeSelector from '@/components/selector/type-selector';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { getDocument, getDocuments } from '@/lib/mongodb/read';
 
 interface Icon {
 	name: string;
@@ -44,14 +44,9 @@ interface Icon {
 }
 
 export default async function Page() {
-	const db = await createClient();
-
 	const [types, organization] = await Promise.all([
-		db
-			.collection('assetTypes')
-			.find<AssetType>({ organization: new ObjectId('665888e02684136c5e529eb4') })
-			.toArray(),
-		db.collection('organizations').findOne<Organization>({ _id: new ObjectId('665888e02684136c5e529eb4') }),
+		getDocuments<AssetType>('assetTypes', { organization: new ObjectId('665888e02684136c5e529eb4') }),
+		getDocument<Organization>('organizations', { _id: new ObjectId('665888e02684136c5e529eb4') }),
 	]);
 
 	const icons: Icon[] = [

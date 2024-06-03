@@ -16,16 +16,17 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Metadata } from 'next';
 import WorkingHoursForm from '../(organization)/contacts/new-contact-form/working-hours';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { getDocument } from '@/lib/mongodb/read';
 
 export const metadata: Metadata = {
 	title: 'Workspace',
 };
 
 export default async function Page() {
-	const db = await createClient();
-	const organization = await db.collection('organizations').findOne({ _id: new ObjectId('665888e02684136c5e529eb4') });
+	const organization = await getDocument<Organization>('organizations', {
+		_id: new ObjectId('665888e02684136c5e529eb4'),
+	});
 
 	return (
 		<div className='grid gap-6'>

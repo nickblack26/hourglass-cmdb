@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { getDocuments } from '@/lib/mongodb/read';
 // import { createClient } from '@/lib/mongodb';
 
 type Props = {
@@ -14,12 +15,11 @@ const ContactSelector = ({ onValueChange, defaultValue, className }: Props) => {
 	const [contacts, setContacts] = useState<Contact[] | null>([]);
 
 	useEffect(() => {
-		// const getData = async () => {
-		// 	const db = await createClient();
-		// 	const contact = await db.collection<Contact>('users').find().toArray();
-		// 	setContacts(contact);
-		// };
-		// getData();
+		const getData = async () => {
+			const contact = await getDocuments<Contact>('users');
+			setContacts(contact);
+		};
+		getData();
 	}, []);
 
 	if (contacts === null) {

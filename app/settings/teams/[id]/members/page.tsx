@@ -1,8 +1,6 @@
 import { Separator } from '@/components/ui/separator';
-import Link from 'next/link';
 import React from 'react';
-import SettingsSection from '../settings-section';
-import { ArrowRight, LinkIcon, MoreHorizontal } from 'lucide-react';
+import { LinkIcon, MoreHorizontal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
 	Dialog,
@@ -19,44 +17,34 @@ import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ObjectId } from 'mongodb';
-import { getDocuments } from '@/lib/mongodb/read';
+import { getDocument, getDocuments } from '@/lib/mongodb/read';
+import { notFound } from 'next/navigation';
+import SettingsSection from '@/app/settings/settings-section';
 
-type Props = {};
+type Props = {
+	params: { id: string };
+};
 
-const Page = async (props: Props) => {
-	const users = await getDocuments<Contact>('users', { organization: new ObjectId('665888e02684136c5e529eb4') });
+const Page = async ({ params }: Props) => {
+	const team = await getDocument<Team>('teams', { _id: new ObjectId(params.id) });
+	const users = await getDocuments<Contact>(
+		'users',
+		{ teams: [new ObjectId(params.id)] },
+		{ firstName: 1, lastName: 1 }
+	);
 
-	const action = async (formData: FormData) => {
-		'use server';
-		const userEntry = formData.get('users') as string;
-		const emails = userEntry.split(',');
-	};
+	if (!users) return notFound();
 
 	return (
 		<div className='space-y-6'>
 			<SettingsSection
 				title='Members'
-				header
-				description='Manage who has access to this workspace'
+				description={`Manage who is a member of the ${team?.name} team`}
 			/>
 
 			<Separator />
 
-			<SettingsSection
-				title='Manage members'
-				description={
-					<span>
-						On the Free plan all members in a workspace are administrators. Upgrade to the Standard plan to add the
-						ability to assign or remove administrator roles.{' '}
-						<Link
-							href='/settings/plans'
-							className='text-accent-foreground hover:underline'
-						>
-							Go to Plans <ArrowRight className=' h-3.5 inline-block' />
-						</Link>
-					</span>
-				}
-			>
+			<SettingsSection title='Manage members'>
 				<div className='flex items-center justify-between gap-1.5'>
 					<div className='flex items-center gap-1.5'>
 						<Input
@@ -76,7 +64,7 @@ const Page = async (props: Props) => {
 									<DialogTitle>Invite to your workspace</DialogTitle>
 								</DialogHeader>
 								<form
-									action={action}
+									action=''
 									name='inviteUsers'
 									id='inviteUsers'
 								>
@@ -120,7 +108,7 @@ const Page = async (props: Props) => {
 					</div>
 				</div>
 
-				<p>{users?.length} active member</p>
+				<p>{users?.length} active member(s)</p>
 
 				<div className='space-y-3'>
 					{users?.map((member) => (
@@ -149,15 +137,6 @@ const Page = async (props: Props) => {
 						</div>
 					))}
 				</div>
-			</SettingsSection>
-
-			<Separator />
-
-			<SettingsSection
-				title='Export members list'
-				description='Export a CSV with information of all the members in your workspace.'
-			>
-				<Button>Export CSV</Button>
 			</SettingsSection>
 		</div>
 	);

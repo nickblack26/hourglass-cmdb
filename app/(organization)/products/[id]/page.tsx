@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { Input } from '@/components/ui/input';
-import { createClient } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -12,26 +11,18 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import SubTypeSelector from '@/components/subType-selector';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import Link from 'next/link';
 import LabeledInput from '@/components/labled-input';
 import { createProduct } from '@/lib/supabase/create';
+import { getDocument } from '@/lib/mongodb/read';
 
 type Props = {
 	params: { id: string };
 };
 
 const Page = async ({ params }: Props) => {
-	const db = await createClient();
-	const { data: product, error } = await supabase
-		.collection('products')
-		.select('*, products(*)')
-		.eq('id', params.id)
-		.order('name', { referencedTable: 'products', ascending: false })
-		.single();
-
-	console.log(error);
+	const product = await getDocument('products', { _id: new ObjectId(params.id) });
 
 	if (!product) return notFound();
 

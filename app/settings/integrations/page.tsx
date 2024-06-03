@@ -1,21 +1,18 @@
-import { createClient } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
 import React from 'react';
-import SettingsSection from '../settings-section';
 import { Separator } from '@/components/ui/separator';
 import { notFound } from 'next/navigation';
 import { groupBy } from '@/lib/utils';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { getDocuments } from '@/lib/mongodb/read';
+import SettingsSection from '@/app/settings/settings-section';
 
 type Props = {};
 
 const Page = async (props: Props) => {
-	const db = await createClient();
-
-	const [{ data: integrations }, { data: organizationIntegrations }] = await Promise.all([
-		db.collection('integrations').select(),
-		db.collection('organizationIntegrations').select('integration(id, name)'),
+	const [integrations, organizationIntegrations] = await Promise.all([
+		getDocuments('integrations'),
+		getDocuments('organizationIntegrations'),
 	]);
 
 	if (!integrations || !organizationIntegrations) return notFound();
