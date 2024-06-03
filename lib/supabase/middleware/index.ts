@@ -54,12 +54,14 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-	const {data: {user}, error} = await supabase.auth.getUser()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  
+  console.log(user, error)
 	
-  if (!!!user && !!!request.nextUrl.pathname.includes('login')) {
+  if (!user && !request.nextUrl.pathname.includes('login')) {
     console.log('no user')
     // await supabase.auth.signOut()
-		// return NextResponse.redirect(new URL('/login', request.url))
+		return NextResponse.redirect(new URL('/login', request.url))
 	}
 
   return response
