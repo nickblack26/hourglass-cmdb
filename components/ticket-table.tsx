@@ -47,7 +47,10 @@ export default function TicketTable({ data }: { data: Ticket[] }) {
 	});
 	return (
 		<>
-			<DataTableToolbar table={table} searchKey='summary' />
+			<DataTableToolbar
+				table={table}
+				searchKey='summary'
+			/>
 			<DataTable table={table} />
 		</>
 	);

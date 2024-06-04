@@ -18,8 +18,8 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/server';
-import { notFound } from 'next/navigation';
+import { ObjectId } from 'mongodb';
+import { getDocument } from '@/lib/mongodb/read';
 
 type Props = {
 	children: ReactNode;
@@ -27,11 +27,7 @@ type Props = {
 };
 
 const Layout = async ({ children, params }: Props) => {
-	const supabase = createClient();
-
-	const { data: contact } = await supabase.from('users').select('id, firstName, lastName, title, company(id, name)').eq('id', params.id).single();
-
-	if (!contact) return notFound();
+	const contact = await getDocument<Contact>('users', { _id: new ObjectId(params.id) });
 
 	const actions = [
 		{ icon: PhoneIcon, name: 'Call' },
@@ -50,7 +46,10 @@ const Layout = async ({ children, params }: Props) => {
 		<TooltipProvider>
 			<main className='relative'>
 				<header className='flex w-full justify-between items-center pt-3 container sticky top-0 bg-background/80 z-10 backdrop-blur-lg'>
-					<Button variant='ghost' asChild>
+					<Button
+						variant='ghost'
+						asChild
+					>
 						<Link href='/contacts'>
 							<ArrowLeftIcon className='w-4 h-4' />
 						</Link>
@@ -76,12 +75,25 @@ const Layout = async ({ children, params }: Props) => {
 							<h2 className='text-2xl font-semibold'>
 								{contact?.firstName} {contact?.lastName}
 							</h2>
-							<StatusBadge color='green' text='Fikri Studio' />
-							<StatusBadge color='gray' text='Fikri Studio - 5 days ago' />
+							<StatusBadge
+								color='green'
+								text='Fikri Studio'
+							/>
+							<StatusBadge
+								color='gray'
+								text='Fikri Studio - 5 days ago'
+							/>
 						</div>
 
 						<p className='flex items-center'>
-							<Image src='/microsoftLogo.png' alt='Microsoft logo' height={12} width={12} className='inline-block mr-1.5' /> {contact?.company.name}
+							<Image
+								src='/microsoftLogo.png'
+								alt='Microsoft logo'
+								height={12}
+								width={12}
+								className='inline-block mr-1.5'
+							/>{' '}
+							{contact?.company.name}
 						</p>
 					</div>
 				</section>
@@ -90,9 +102,15 @@ const Layout = async ({ children, params }: Props) => {
 					<div className='grid grid-cols-[256px_1fr] gap-12 container'>
 						<div className='flex gap-3'>
 							{actions.map((action) => (
-								<Tooltip key={action.name} delayDuration={0}>
+								<Tooltip
+									key={action.name}
+									delayDuration={0}
+								>
 									<TooltipTrigger asChild>
-										<Button variant='outline' className='p-1.5 h-[26px] w-[26px] relative top-1/2'>
+										<Button
+											variant='outline'
+											className='p-1.5 h-[26px] w-[26px] relative top-1/2'
+										>
 											<action.icon className='w-3 h-3' />
 										</Button>
 									</TooltipTrigger>
@@ -103,7 +121,11 @@ const Layout = async ({ children, params }: Props) => {
 
 						<div className='flex gap-3 '>
 							{links.map((link) => (
-								<Button key={link.name} variant='link' asChild>
+								<Button
+									key={link.name}
+									variant='link'
+									asChild
+								>
 									<Link href={link.href}>
 										<link.icon className='w-3 h-3 mr-1.5' /> {link.name}
 									</Link>

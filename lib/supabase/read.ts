@@ -1,27 +1,12 @@
 'use server';
-import { unstable_cache } from 'next/cache';
 import { createClient } from './server';
 import { redirect } from 'next/navigation';
 
-export const getCachedPage = unstable_cache(async (id: string) => await getPage(id), ['pages'], { tags: ['pages'] });
-
-const getPage = async (id: string) => {
-	const supabase = createClient();
-	const { data: page, error } = await supabase
-		.from('pages')
-		.select('*, blocks(*)')
-		.eq('id', id)
-		.order('created_at', { referencedTable: 'blocks', ascending: true })
-		.single();
-
-	return page;
-};
-
 export const signOut = async () => {
-	const supabase = createClient()
-	await supabase.auth.signOut()
+	const db = await createClient();
+	// await supabase.auth.sign Out();
 
-	console.log('signing out')
+	console.log('signing out');
 
-	redirect('/login')
-}
+	redirect('/login');
+};

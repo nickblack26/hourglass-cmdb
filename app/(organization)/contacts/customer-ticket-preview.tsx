@@ -1,21 +1,20 @@
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/supabase/server';
+import { getDocuments } from '@/lib/mongodb/read';
 import React from 'react';
 
 export default async function CustomerTicketPreview({ id }: { id: number }) {
-	const supabase = createClient();
-	const { data: tickets, error } = await supabase.from('tickets').select().eq('contact', id);
+	const tickets = await getDocuments<Ticket>('tickets');
 
-	if (!tickets || error) {
-		return <div></div>;
-	}
 	return (
 		<div>
 			{tickets &&
 				tickets
 					?.filter((ticket) => ticket.dateResolved === null)
 					.map((ticket) => (
-						<div key={ticket.id} className='rounded-lg border grid grid-cols-4'>
+						<div
+							key={ticket.id}
+							className='rounded-lg border grid grid-cols-4'
+						>
 							<div className='px-6 py-3 flex items-center justify-between w-full col-span-4'>
 								<h4 className='line-clamp-1'>
 									<span className='font-semibold'>#TC-{ticket.id}</span>

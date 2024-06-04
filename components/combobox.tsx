@@ -17,17 +17,26 @@ type Props = {
 	items: ComboBoxItem[];
 	placeholder: string;
 	children?: React.ReactNode;
+	align?: 'center' | 'end' | 'start';
 };
 
-export function Combobox({ items, placeholder, children }: Props) {
+export function Combobox({ items, placeholder, children, align = 'start' }: Props) {
 	const [open, setOpen] = React.useState(false);
 	const [value, setValue] = React.useState('');
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
+		<Popover
+			open={open}
+			onOpenChange={setOpen}
+		>
+			<PopoverTrigger asChild={children === undefined}>
 				{children === undefined ? (
-					<Button variant='outline' role='combobox' aria-expanded={open} className='justify-between'>
+					<Button
+						variant='outline'
+						role='combobox'
+						aria-expanded={open}
+						className='justify-between'
+					>
 						{value ? items.find((item) => item.value === value)?.label : placeholder}
 						<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 					</Button>
@@ -35,7 +44,10 @@ export function Combobox({ items, placeholder, children }: Props) {
 					children
 				)}
 			</PopoverTrigger>
-			<PopoverContent className='w-[200px] p-0'>
+			<PopoverContent
+				align={align}
+				className='w-[200px] p-0'
+			>
 				<Command>
 					<CommandInput placeholder={placeholder} />
 					<CommandEmpty>No framework found.</CommandEmpty>

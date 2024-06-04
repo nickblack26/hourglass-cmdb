@@ -1,5 +1,5 @@
 'use client';
-import { createClient } from '@/lib/supabase/client';
+import { getDocument } from '@/lib/mongodb/read';
 import React, { useEffect, useState } from 'react';
 import { Importer, ImporterField } from 'react-csv-importer';
 
@@ -7,18 +7,13 @@ import { Importer, ImporterField } from 'react-csv-importer';
 import 'react-csv-importer/dist/index.css';
 
 export default function CSVImporter() {
-	const supabase = createClient();
 	const [company, setCompany] = useState<Company | undefined>();
 
 	// const test = {}
 
 	useEffect(() => {
-		supabase
-			.from('companies')
-			.select()
-			.single()
-			.then((data) => setCompany(data.data ?? undefined));
-	}, [supabase]);
+		getDocument<Company>('companies').then((data) => setCompany(data ?? undefined));
+	}, []);
 
 	return (
 		<Importer
@@ -30,8 +25,6 @@ export default function CSVImporter() {
 				// 	await myAppMethod(row);
 				// }
 				console.log(rows);
-				const { error } = await supabase.from('companies').insert(rows as CompanyInsert[]);
-				console.log(error);
 			}}
 			defaultNoHeader={false} // optional, keeps "data has headers" checkbox off by default
 			restartable={false} // optional, lets user choose to upload another file when import is complete
@@ -61,18 +54,54 @@ export default function CSVImporter() {
 			// encoding={...} // defaults to utf-8, see FileReader API
 		>
 			{/* {company && Object.keys(company).map((key) => <ImporterField key={key} name={key} label={key.toLocaleUpperCase()} />)} */}
-			<ImporterField name='name' label='Name' />
-			<ImporterField name='identifier' label='identifier' />
-			<ImporterField name='addressLine1' label='Address Line 1' />
-			<ImporterField name='addressLine2' label='Address Line 2' />
-			<ImporterField name='city' label='City' />
-			<ImporterField name='state' label='State' />
-			<ImporterField name='zip' label='Zip' />
-			<ImporterField name='phoneNumber' label='Phone Number' />
-			<ImporterField name='faxNumber' label='Fax Number' />
-			<ImporterField name='website' label='Website' />
-			<ImporterField name='id' label='ID' />
-			<ImporterField name='dateAcquired' label='Date Acquired' />
+			<ImporterField
+				name='name'
+				label='Name'
+			/>
+			<ImporterField
+				name='identifier'
+				label='identifier'
+			/>
+			<ImporterField
+				name='addressLine1'
+				label='Address Line 1'
+			/>
+			<ImporterField
+				name='addressLine2'
+				label='Address Line 2'
+			/>
+			<ImporterField
+				name='city'
+				label='City'
+			/>
+			<ImporterField
+				name='state'
+				label='State'
+			/>
+			<ImporterField
+				name='zip'
+				label='Zip'
+			/>
+			<ImporterField
+				name='phoneNumber'
+				label='Phone Number'
+			/>
+			<ImporterField
+				name='faxNumber'
+				label='Fax Number'
+			/>
+			<ImporterField
+				name='website'
+				label='Website'
+			/>
+			<ImporterField
+				name='id'
+				label='ID'
+			/>
+			<ImporterField
+				name='dateAcquired'
+				label='Date Acquired'
+			/>
 		</Importer>
 	);
 }

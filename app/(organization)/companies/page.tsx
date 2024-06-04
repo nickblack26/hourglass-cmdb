@@ -1,12 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/supabase/server';
 import React from 'react';
 import CompanyTable from './company-table';
+import { getDocuments } from '@/lib/mongodb/read';
 
 export default async function Page() {
-	const supabase = createClient();
-	const { data } = await supabase.from('companies').select();
+	const [companies, views] = await Promise.all([getDocuments<Company>('companies'), getDocuments('views')]);
 
 	return (
 		<main>
@@ -16,10 +15,10 @@ export default async function Page() {
 				<Button>Add Company</Button>
 			</header>
 
-			<Separator />
+			{/* <Separator /> */}
 
 			<section className='space-y-3'>
-				<CompanyTable data={data ?? []} />
+				<CompanyTable data={companies ?? []} />
 			</section>
 		</main>
 	);

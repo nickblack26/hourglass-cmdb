@@ -1,5 +1,7 @@
 'use server';
 import React from 'react';
+'use server';
+import React from 'react';
 import { cn } from '@/lib/utils';
 import { EllipsisVertical, GripVertical, Pencil, TrendingDownIcon, TrendingUpIcon } from 'lucide-react';
 import { Button } from './ui/button';
@@ -31,9 +33,16 @@ const Metric = async ({ title, amount, timeline, percentage, isDraggingEnabled =
 
 	return (
 		<div className='p-4 border-r last:border-r-0 space-y-1 group'>
+		<div className='p-4 border-r last:border-r-0 space-y-1 group'>
 			<div className='flex items-center justify-between gap-3'>
 				<h2 className='text-sm text-muted-foreground font-medium'>{title}</h2>
+				<h2 className='text-sm text-muted-foreground font-medium'>{title}</h2>
 				{isDraggingEnabled && (
+					<Button
+						variant={'ghost'}
+						className='opacity-0 transition-opacity group-hover:opacity-100'
+					>
+						<GripVertical className=' h-3.5' />
 					<Button
 						variant={'ghost'}
 						className='opacity-0 transition-opacity group-hover:opacity-100'
@@ -156,6 +165,12 @@ const Metric = async ({ title, amount, timeline, percentage, isDraggingEnabled =
 			<p className='text-xl font-semibold flex items-center gap-1'>
 				{amount}
 				{percentage && (
+					<span
+						className={cn(
+							'rounded-lg text-xs px-1.5 py-0.5',
+							percentage > 0 ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'
+						)}
+					>
 					<span
 						className={cn(
 							'rounded-lg text-xs px-1.5 py-0.5',

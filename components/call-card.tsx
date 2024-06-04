@@ -37,7 +37,7 @@ const CallCard = ({ call, reservation, isCollapsed }: Props) => {
 			<PopoverTrigger asChild>
 				{/* <Button variant='ghost' size='sm' className='flex items-center h-9 w-auto p-0'>
 					<div className='p-1.5 rounded-md bg-secondary'>
-						<Phone className='h-3.5 w-3.5' />
+						<Phone className=' w-3.5' />
 					</div>
 
 					{!isCollapsed && (
@@ -52,7 +52,7 @@ const CallCard = ({ call, reservation, isCollapsed }: Props) => {
 					<Tooltip delayDuration={0}>
 						<TooltipTrigger asChild>
 							<Button variant='ghost' size='icon' className='h-9 w-9'>
-								<Phone className='h-3.5 w-3.5' />
+								<Phone className=' w-3.5' />
 								<span className='sr-only'>Phone</span>
 							</Button>
 						</TooltipTrigger>
@@ -62,7 +62,7 @@ const CallCard = ({ call, reservation, isCollapsed }: Props) => {
 					</Tooltip>
 				) : (
 					<Button variant='ghost' size='icon' className='justify-start'>
-						<Phone className='h-3.5 w-3.5' />
+						<Phone className=' w-3.5' />
 
 						<div>
 							<p>Call</p>
@@ -104,7 +104,7 @@ const CallCard = ({ call, reservation, isCollapsed }: Props) => {
 						</SelectContent>
 					</Select>
 					<Button variant={'ghost'} size={'icon'} className='col-span-2 justify-self-end' onClick={() => setIsOpen(!isOpen)}>
-						<X className='w-3.5 h-3.5' />
+						<X className=' h-3.5' />
 					</Button>
 				</header>
 

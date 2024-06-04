@@ -1,7 +1,7 @@
 import StatusBadge from '@/components/status-badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/lib/supabase/server';
+import { ObjectId } from 'mongodb';
 import {
 	Building2Icon,
 	GlobeIcon,
@@ -17,48 +17,68 @@ import {
 import Image from 'next/image';
 import React from 'react';
 import ConfigurationsList from '@/app/(organization)/assets/configurations-list';
-import { notFound } from 'next/navigation';
 import TicketTable from '@/components/ticket-table';
+import { getDocument, getDocuments } from '@/lib/mongodb/read';
 
 const Page = async ({ params }: { params: { id: string } }) => {
-	const supabase = createClient();
-
-	const { data: contact } = await supabase.from('users').select('id, firstName, lastName, title, company(id, name)').eq('id', params.id).single();
-
-	if (!contact) return notFound();
-
-	const { data: tickets, error: ticketError } = await supabase
-		.from('tickets')
-		.select('*, contact(id, firstName, lastName)')
-		.eq('contact', contact.id)
-		.limit(25);
-
-	const { data: configurations, error: configurationError } = await supabase
-		.from('configurations')
-		.select('id, name, status(id, name), type(icon), company(id, name), user(id, firstName, lastName)')
-		.eq('user', contact?.id);
-	console.log(configurations);
+	const [contact, tickets, configurations] = await Promise.all([
+		getDocument<Contact>('users', { _id: new ObjectId(params.id) }),
+		getDocuments<Ticket>('tickets', { _id: new ObjectId(params.id) }),
+		getDocuments<Asset>('assets', { _id: new ObjectId(params.id) }),
+	]);
 
 	const customerDetails = [
 		{ label: 'Source', value: 'Contact us form', icon: SquareArrowDownIcon },
-		{ label: 'Phone Numbers', value: <StatusBadge color='blue' text='(209) 555-01014' />, icon: PhoneIcon },
+		{
+			label: 'Phone Numbers',
+			value: (
+				<StatusBadge
+					color='blue'
+					text='(209) 555-01014'
+				/>
+			),
+			icon: PhoneIcon,
+		},
 		{
 			label: 'Email',
 			value: [
-				<StatusBadge key='nick-personal-email' color='blue' text='nicholas.black98@icloud.com' />,
-				<StatusBadge key='nick-work-email' color='blue' text='nblack@velomethod.com' />,
+				<StatusBadge
+					key='nick-personal-email'
+					color='blue'
+					text='nicholas.black98@icloud.com'
+				/>,
+				<StatusBadge
+					key='nick-work-email'
+					color='blue'
+					text='nblack@velomethod.com'
+				/>,
 			],
 			icon: MailIcon,
 		},
 		{ label: 'Location', value: 'Dallas, Texas', icon: MapPinIcon },
 		{ label: 'Languages Spoken', value: 'English', icon: LanguagesIcon },
 		{ label: 'Timezone', value: 'UTC+07:00', icon: GlobeIcon },
-		{ label: 'Response Time', value: <StatusBadge color='red' text='Slow response' />, icon: TimerIcon },
+		{
+			label: 'Response Time',
+			value: (
+				<StatusBadge
+					color='red'
+					text='Slow response'
+				/>
+			),
+			icon: TimerIcon,
+		},
 		{
 			label: 'Organization',
 			value: (
 				<p className='flex items-center'>
-					<Image src='/microsoftLogo.png' alt='Microsoft logo' height={12} width={12} className='inline-block mr-1.5 rounded-sm' />
+					<Image
+						src='/microsoftLogo.png'
+						alt='Microsoft logo'
+						height={12}
+						width={12}
+						className='inline-block mr-1.5 rounded-sm'
+					/>
 					{contact?.company.name}
 				</p>
 			),
@@ -72,10 +92,16 @@ const Page = async ({ params }: { params: { id: string } }) => {
 		<section className='grid grid-cols-[256px_1fr] gap-12 container'>
 			<aside className='space-y-3 pt-6'>
 				{customerDetails.map((detail) => (
-					<div key={detail.label} className='space-y-1.5'>
+					<div
+						key={detail.label}
+						className='space-y-1.5'
+					>
 						<div className='flex items-center text-muted-foreground'>
 							<detail.icon className='w-3 h-3 mr-1.5' /> {detail.label}
-							<Button variant='ghost' className='ml-auto'>
+							<Button
+								variant='ghost'
+								className='ml-auto'
+							>
 								<PlusIcon className='w-3 h-3' />
 							</Button>
 						</div>
@@ -91,21 +117,30 @@ const Page = async ({ params }: { params: { id: string } }) => {
 						<h3 className='font-semibold text-lg'>15</h3>
 					</div>
 
-					<Separator orientation='vertical' className='h-6' />
+					<Separator
+						orientation='vertical'
+						className='h-6'
+					/>
 
 					<div className='space-y-1.5 w-full'>
 						<p className='text-xs text-muted-foreground tracking-tight'>OVERDUE TICKETS</p>
 						<h3 className='font-semibold text-lg'>4</h3>
 					</div>
 
-					<Separator orientation='vertical' className='h-6' />
+					<Separator
+						orientation='vertical'
+						className='h-6'
+					/>
 
 					<div className='space-y-1.5 w-full'>
 						<p className='text-xs text-muted-foreground tracking-tight'>AVG. RESPONSE TIME</p>
 						<h3 className='font-semibold text-lg'>25:00 </h3>
 					</div>
 
-					<Separator orientation='vertical' className='h-6' />
+					<Separator
+						orientation='vertical'
+						className='h-6'
+					/>
 
 					<div className='space-y-1.5 w-full'>
 						<p className='text-xs text-muted-foreground tracking-tight'>TOTAL RESPONSE TIME</p>

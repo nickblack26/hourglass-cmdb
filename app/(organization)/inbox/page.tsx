@@ -18,7 +18,7 @@ const Page = () => {
 		{
 			label: (
 				<div className='text-sm'>
-					<PencilRuler className='w-3.5 h-3.5 mr-1.5 inline-block' />
+					<PencilRuler className=' h-3.5 mr-1.5 inline-block' />
 					Notification type
 				</div>
 			),
@@ -27,7 +27,7 @@ const Page = () => {
 		{
 			label: (
 				<div className='text-sm'>
-					<Grid2X2 className='w-3.5 h-3.5 mr-1.5 inline-block' />
+					<Grid2X2 className=' h-3.5 mr-1.5 inline-block' />
 					Project
 				</div>
 			),
@@ -36,7 +36,7 @@ const Page = () => {
 		{
 			label: (
 				<div className='text-sm'>
-					<BarChartBig className='w-3.5 h-3.5 mr-1.5 inline-block' />
+					<BarChartBig className=' h-3.5 mr-1.5 inline-block' />
 					Priority
 				</div>
 			),
@@ -55,12 +55,12 @@ const Page = () => {
 					<div>
 						<Combobox items={filters} placeholder='Filter...'>
 							<Button variant='ghost' size='sm'>
-								<ListFilter className='w-3.5 h-3.5' />
+								<ListFilter className=' h-3.5' />
 							</Button>
 						</Combobox>
 
 						<Button variant='ghost' size='sm'>
-							<SlidersHorizontal className='w-3.5 h-3.5' />
+							<SlidersHorizontal className=' h-3.5' />
 						</Button>
 					</div>
 				</header>

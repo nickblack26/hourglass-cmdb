@@ -13,7 +13,10 @@ type Props = {
 
 const Layout = async ({ children }: Props) => {
 	const cookieStore = cookies();
-	const supabase = createClient();
+	const [teams, user] = await Promise.all([
+		getDocuments<Team>('teams', { organization: new ObjectId('665888e02684136c5e529eb4') }),
+		getDocument<Contact>('users', { _id: new ObjectId('665889a02684136c5e529eb5') }),
+	]);
 
 	const { data: teams } = await supabase.from('teams').select();
 	const {
@@ -27,6 +30,9 @@ const Layout = async ({ children }: Props) => {
 	const defaultLayout = layout ? JSON.parse(layout.value) : undefined;
 	const defaultCollapsed = collapsed ? JSON?.parse(collapsed.value) : true;
 
+	// const body = new FormData();
+	// body.set('accountSid', '');
+	// body.set('authToken', '');
 	// const body = new FormData();
 	// body.set('accountSid', '');
 	// body.set('authToken', '');
