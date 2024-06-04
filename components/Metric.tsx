@@ -26,7 +26,7 @@ const operationOptions = [
 ];
 
 const Metric = async ({ title, amount, timeline, percentage, isDraggingEnabled = false }: MetricProps) => {
-	const supabase = await createClient;
+	// const supabase = await createClient;
 	// const collections = await listCollections.db('public').listCollections().toArray();
 
 	return (
@@ -87,7 +87,7 @@ const Metric = async ({ title, amount, timeline, percentage, isDraggingEnabled =
 									</SelectTrigger>
 
 									<SelectContent>
-										{collections?.map((collection) => (
+										{/* {collections?.map((collection) => (
 											<SelectItem
 												key={collection.name}
 												value={collection.name}
@@ -95,7 +95,7 @@ const Metric = async ({ title, amount, timeline, percentage, isDraggingEnabled =
 											>
 												{collection.name}
 											</SelectItem>
-										))}
+										))} */}
 									</SelectContent>
 								</Select>
 							</LabeledInput>
@@ -114,7 +114,7 @@ const Metric = async ({ title, amount, timeline, percentage, isDraggingEnabled =
 									</SelectTrigger>
 
 									<SelectContent>
-										{collections?.map((collection) => (
+										{/* {collections?.map((collection) => (
 											<SelectItem
 												key={collection.name}
 												value={collection.name}
@@ -122,7 +122,7 @@ const Metric = async ({ title, amount, timeline, percentage, isDraggingEnabled =
 											>
 												{collection.name}
 											</SelectItem>
-										))}
+										))} */}
 									</SelectContent>
 								</Select>
 							</LabeledInput>

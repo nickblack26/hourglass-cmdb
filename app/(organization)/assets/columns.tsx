@@ -5,8 +5,21 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { icons } from '@/lib/data';
 import { deleteConfiguration } from '@/lib/supabase/delete';
 import { ColumnDef } from '@tanstack/react-table';
@@ -45,8 +58,16 @@ export const columns: ColumnDef<Asset>[] = [
 			const icon = icons.find((icon) => icon.value === type?.icon);
 
 			return (
-				<Button variant='link' size='default' className='text-blue-600' asChild>
-					<Link href={`/assets/${row.original.id}`} className='line-clamp-1'>
+				<Button
+					variant='link'
+					size='default'
+					className='text-blue-600'
+					asChild
+				>
+					<Link
+						href={`/assets/${row.original.id}`}
+						className='line-clamp-1'
+					>
 						{icon && <icon.icon className='w-3.5 h-3.5 mr-1.5' />}
 						{row.getValue('name')}
 					</Link>
@@ -81,19 +102,25 @@ export const columns: ColumnDef<Asset>[] = [
 		accessorKey: 'contact',
 		header: 'User',
 		cell: ({ row }) => {
-			const contact = row.getValue('contact') as Contact;
+			const contact: Contact | undefined = row.getValue('contact') as Contact;
 
 			return (
-				<div className='grid grid-cols-[24px_1fr] gap-1.5 items-center'>
-					<Avatar className='h-6 w-6'>
-						<AvatarFallback className='uppercase h-6 w-6 text-xs'>{`${contact.firstName ? contact?.firstName[0] : ''}${
-							contact.lastName ? contact.lastName[0] : ''
-						}`}</AvatarFallback>
-					</Avatar>
-					<span className='font-medium'>
-						{contact.firstName} {contact.lastName}
-					</span>
-				</div>
+				<>
+					{contact ? (
+						<div className='grid grid-cols-[24px_1fr] gap-1.5 items-center'>
+							<Avatar className='h-6 w-6'>
+								<AvatarFallback className='uppercase h-6 w-6 text-xs'>{`${
+									contact.firstName ? contact?.firstName[0] : ''
+								}${contact.lastName ? contact.lastName[0] : ''}`}</AvatarFallback>
+							</Avatar>
+							<span className='font-medium'>
+								{contact.firstName} {contact.lastName}
+							</span>
+						</div>
+					) : (
+						<div></div>
+					)}
+				</>
 			);
 		},
 	},
@@ -104,7 +131,10 @@ export const columns: ColumnDef<Asset>[] = [
 			<Dialog>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant='ghost' size='sm'>
+						<Button
+							variant='ghost'
+							size='sm'
+						>
 							<EllipsisIcon className='w-4 h-4' />
 						</Button>
 					</DropdownMenuTrigger>

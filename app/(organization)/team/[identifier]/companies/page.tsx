@@ -20,7 +20,7 @@ const Page = async ({ params }: Props) => {
 
 	const {
 		data: { companies },
-	} = await supabase.from('teams').select('companies(*)').eq('identifier', identifier);
+	} = await supabase.from('teams').select('companies(*)').eq('identifier', identifier).single();
 
 	return (
 		<div>
